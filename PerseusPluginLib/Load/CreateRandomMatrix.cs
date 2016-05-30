@@ -37,8 +37,9 @@ namespace PerseusPluginLib.Load{
 			int ncols = param.GetParam<int>("Number of columns").Value;
 			int missingPerc = param.GetParam<int>("Percentage of missing values").Value;
 			int ngroups = param.GetParam<int>("Number of groups").Value;
+		    ParameterWithSubParams<bool> setSeed = param.GetParamWithSubParams<bool>("Set seed");
+			Random2 randy = setSeed.Value? new Random2(setSeed.GetSubParameters().GetParam<int>("Seed").Value) : new Random2();
 			ngroups = Math.Min(ngroups, ncols);
-			Random2 randy = new Random2();
 			float[,] m = new float[nrows, ncols];
 			ParameterWithSubParams<int> x = param.GetParamWithSubParams<int>("Mode");
 			Parameters subParams = x.GetSubParameters();
@@ -143,7 +144,13 @@ namespace PerseusPluginLib.Load{
 						ParamNameWidth = 120,
 						TotalWidth = 800
 					},
-					new IntParam("Number of groups", 3)
+					new IntParam("Number of groups", 3),
+                    new BoolWithSubParams("Set seed")
+                    {
+                        Default = false,
+                        Help = "For a fixed seed the generated 'random' matrix will always be identical",
+                        SubParamsTrue = new Parameters(new Parameter[] { new IntParam("Seed", 0), })
+                    }
 				});
 		}
 	}
