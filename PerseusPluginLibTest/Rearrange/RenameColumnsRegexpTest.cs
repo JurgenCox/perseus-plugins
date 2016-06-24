@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
@@ -54,8 +56,7 @@ namespace PerseusPluginLibTest.Rearrange
             matrix.Setup(m => m.ColumnNames).Returns(colnames);
             string err = "";
             var param = renamer.GetParameters(matrix.Object, ref err);
-            param.GetParam<string>("Pattern").Value = pattern;
-            param.GetParam<string>("Replacement").Value = replacement;
+            param.GetParam<Tuple<Regex, string, List<String>>>("Regex").Value = Tuple.Create(new Regex(pattern), replacement, colnames);
 
             IMatrixData[] supplTables = null;
             IDocumentData[] documents = null;
