@@ -1,4 +1,5 @@
-using System.Drawing;
+using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using BaseLibS.Graph;
 using BaseLibS.Param;
@@ -33,26 +34,18 @@ namespace PerseusPluginLib.Rearrange{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string patternStr = param.GetParam<string>("Pattern").Value;
-			string replacementStr = param.GetParam<string>("Replacement").Value;
-			Regex regex = new Regex(patternStr);
+			var vals = param.GetParam<Tuple<Regex, string, List<String>>>("Regex").Value;
+		    var pattern = vals.Item1;
+		    string replacementStr = vals.Item2;
 			for (int i = 0; i < mdata.ColumnCount; i++){
-				string newName = regex.Replace(mdata.ColumnNames[i], replacementStr);
-				if (string.IsNullOrEmpty(newName)){
-					processInfo.ErrString = $"Applying replacement rule to '{mdata.ColumnNames[i]}' results in an empty string.";
-					return;
-				}
-				mdata.ColumnNames[i] = newName;
+				mdata.ColumnNames[i] = pattern.Replace(mdata.ColumnNames[i], replacementStr);
 			}
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
 				new Parameters(new Parameter[]{
-                    new StringParam("Pattern") { Default = "(*.)",
-                        Help = "The regular expression used to match the column names. See help for examples"},
-                    new StringParam("Replacement"){ Default = "$1",
-                        Help = "The replacement pattern. See help for examples"},
+                    new RegexParam("Regex", mdata.ColumnNames)
 				});
 		}
 	}
