@@ -203,6 +203,7 @@ namespace PerseusPluginLib.Group{
 		private static void ProcessDataCreateFromGoupNames(IMatrixData mdata, Parameters param, ProcessInfo processInfo){
 			ParameterWithSubParams<int> scwsp = param.GetParamWithSubParams<int>("Pattern");
 			Parameters spar = scwsp.GetSubParameters();
+		    string catRowName = spar.GetParam<string>("Group name").Value;
 			string regexString = "";
 			string replacement = "";
 			switch (scwsp.Value){
@@ -215,8 +216,9 @@ namespace PerseusPluginLib.Group{
 					regexString = spar.GetParam<string>("Regex").Value;
 					break;
 				case 4:
-					regexString = spar.GetParam<string>("Regex").Value;
-					replacement = spar.GetParam<string>("Replace with").Value;
+					var repl = spar.GetParam<Tuple<Regex, string, List<string>>>("Regex").Value;
+			        regexString = repl.Item1.ToString();
+			        replacement = repl.Item2;
 					break;
 			}
 			Regex regex;
@@ -236,7 +238,7 @@ namespace PerseusPluginLib.Group{
 				}
 				groupNames.Add(new[]{groupName});
 			}
-			mdata.AddCategoryRow("Grouping", "", groupNames.ToArray());
+			mdata.AddCategoryRow(catRowName, "", groupNames.ToArray());
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
@@ -315,8 +317,8 @@ namespace PerseusPluginLib.Group{
 			for (int i = 0; i < selectableRegexes.Count; i++){
 				subparams.Add(new Parameters(new Parameter[]{}));
 			}
-			subparams.Add(new Parameters(new Parameter[]{new StringParam("Regex", "")}));
-			subparams.Add(new Parameters(new Parameter[]{new StringParam("Regex", ""), new StringParam("Replace with", "")}));
+			subparams.Add(new Parameters(new Parameter[]{new StringParam("Group name", "Grouping"), new StringParam("Regex", "")}));
+			subparams.Add(new Parameters(new Parameter[]{new StringParam("Group name", "Grouping"), new RegexParam("Regex", new Regex("(.*)"), "$1", mdata.ColumnNames)}));
 			return
 				new Parameters(new Parameter[]{
 					new SingleChoiceWithSubParams("Pattern", 0){
