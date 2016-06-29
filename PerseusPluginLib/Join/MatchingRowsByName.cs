@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -193,12 +192,16 @@ namespace PerseusPluginLib.Join{
 							double v = mdata2.Values[ind, exColInds[i]];
 							if (!double.IsNaN(v) && !double.IsInfinity(v)){
 								values.Add(v);
-								double qx = mdata2.Quality[ind, exColInds[i]];
-								if (!double.IsNaN(qx) && !double.IsInfinity(qx)){
-									qual.Add(qx);
+								if (mdata2.Quality.IsInitialized()){
+									double qx = mdata2.Quality[ind, exColInds[i]];
+									if (!double.IsNaN(qx) && !double.IsInfinity(qx)){
+										qual.Add(qx);
+									}
 								}
-								bool isi = mdata2.IsImputed[ind, exColInds[i]];
-								imp.Add(isi);
+								if (mdata2.IsImputed != null){
+									bool isi = mdata2.IsImputed[ind, exColInds[i]];
+									imp.Add(isi);
+								}
 							}
 						}
 						newExColumns[j, i] = values.Count == 0 ? float.NaN : (float) avExpression(values.ToArray());
