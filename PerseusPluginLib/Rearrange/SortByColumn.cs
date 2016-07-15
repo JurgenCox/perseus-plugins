@@ -1,4 +1,3 @@
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Num.Vector;

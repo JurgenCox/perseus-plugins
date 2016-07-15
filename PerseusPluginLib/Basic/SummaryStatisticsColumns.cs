@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -160,7 +159,7 @@ namespace PerseusPluginLib.Basic{
 			if (col < mdata.ColumnCount){
 				List<double> v = new List<double>();
 				for (int j = 0; j < mdata.RowCount; j++){
-					double x = mdata.Values[j, col];
+					double x = mdata.Values.Get(j, col);
 					if (!double.IsNaN(x) && !double.IsInfinity(x)){
 						v.Add(x);
 					}

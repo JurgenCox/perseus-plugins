@@ -1,4 +1,3 @@
-using System.Drawing;
 using System.Text.RegularExpressions;
 using BaseLibS.Graph;
 using BaseLibS.Param;

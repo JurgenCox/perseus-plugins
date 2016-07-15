@@ -171,7 +171,7 @@ namespace PerseusPluginLib.Utils{
 				for (int i = 0; i < mdata.RowCount; i++){
 					int count = 0;
 					for (int j = 0; j < mdata.ColumnCount; j++){
-						if (IsValid(mdata.Values[i, j], threshold, threshold2, filterMode)){
+						if (IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)){
 							count++;
 						}
 					}
@@ -185,7 +185,7 @@ namespace PerseusPluginLib.Utils{
 				for (int j = 0; j < mdata.ColumnCount; j++){
 					int count = 0;
 					for (int i = 0; i < mdata.RowCount; i++){
-						if (IsValid(mdata.Values[i, j], threshold, threshold2, filterMode)){
+						if (IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)){
 							count++;
 						}
 					}

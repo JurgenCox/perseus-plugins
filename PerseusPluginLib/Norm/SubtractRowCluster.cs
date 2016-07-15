@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -56,7 +55,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			for (int i = 0; i < mdata.RowCount; i++){
 				for (int j = 0; j < mdata.ColumnCount; j++){
-					mdata.Values[i, j] -= (float) totalProfile[j];
+					mdata.Values.Set(i, j, mdata.Values.Get(i, j)-(float) totalProfile[j]);
 				}
 			}
 		}

@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;

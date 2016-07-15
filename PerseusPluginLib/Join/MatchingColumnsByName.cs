@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using BaseLib.Graphic;
 using BaseLibS.Graph;
@@ -107,13 +106,13 @@ namespace PerseusPluginLib.Join{
 				if (dic1.ContainsKey(expColNames[i])){
 					int ind = dic1[expColNames[i]];
 					for (int j = 0; j < nrows1; j++){
-						ex[j, i] = mdata1.Values[j, ind];
+						ex[j, i] = mdata1.Values.Get(j, ind);
 					}
 				}
 				if (dic2.ContainsKey(expColNames[i])){
 					int ind = dic2[expColNames[i]];
 					for (int j = 0; j < nrows2; j++){
-						ex[nrows1 + j, i] = mdata2.Values[j, ind];
+						ex[nrows1 + j, i] = mdata2.Values.Get(j, ind);
 					}
 				}
 			}

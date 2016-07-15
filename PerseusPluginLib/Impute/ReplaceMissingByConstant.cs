@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -59,8 +58,8 @@ namespace PerseusPluginLib.Impute{
 			IEnumerable<int> numInds){
 			foreach (int j in mainInds){
 				for (int i = 0; i < data.RowCount; i++){
-					if (float.IsNaN(data.Values[i, j])){
-						data.Values[i, j] = value;
+					if (float.IsNaN(data.Values.Get(i, j))){
+						data.Values.Set(i, j, value);
 						data.IsImputed[i, j] = true;
 					}
 				}

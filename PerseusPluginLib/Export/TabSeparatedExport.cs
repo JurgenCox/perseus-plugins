@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using BaseLib.Graphic;
 using BaseLibS.Graph;
@@ -130,9 +129,9 @@ namespace PerseusPluginLib.Export{
 				for (int j = 0; j < data.RowCount; j++){
 					words = new List<string>();
 					for (int i = 0; i < data.ColumnCount; i++){
-						string s1 = "" + data.Values[j, i];
+						string s1 = "" + data.Values.Get(j, i);
 						if (addtlMatrices){
-							s1 += ";" + data.IsImputed[j, i] + ";" + data.Quality[j, i];
+							s1 += ";" + data.IsImputed[j, i] + ";" + data.Quality.Get(j, i);
 						}
 						words.Add(s1);
 					}

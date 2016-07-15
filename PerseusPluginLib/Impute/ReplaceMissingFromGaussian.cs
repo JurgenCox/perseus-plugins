@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -88,7 +87,7 @@ namespace PerseusPluginLib.Impute{
 			Random2 r){
 			List<float> allValues = new List<float>();
 			for (int i = 0; i < data.RowCount; i++){
-				float x = data.Values[i, colInd];
+				float x = data.Values.Get(i, colInd);
 				if (!float.IsNaN(x) && !float.IsInfinity(x)){
 					allValues.Add(x);
 				}
@@ -101,8 +100,8 @@ namespace PerseusPluginLib.Impute{
 			double m = mean - shift*stddev;
 			double s = stddev*width;
 			for (int i = 0; i < data.RowCount; i++){
-				if (float.IsNaN(data.Values[i, colInd]) || float.IsInfinity(data.Values[i, colInd])){
-					data.Values[i, colInd] = (float) r.NextGaussian(m, s);
+				if (float.IsNaN(data.Values.Get(i, colInd)) || float.IsInfinity(data.Values.Get(i, colInd))){
+					data.Values.Set(i, colInd, (float) r.NextGaussian(m, s));
 					data.IsImputed[i, colInd] = true;
 				}
 			}
@@ -113,7 +112,7 @@ namespace PerseusPluginLib.Impute{
 			List<float> allValues = new List<float>();
 			for (int i = 0; i < data.RowCount; i++){
 				foreach (int t in colInds){
-					float x = data.Values[i, t];
+					float x = data.Values.Get(i, t);
 					if (!float.IsNaN(x) && !float.IsInfinity(x)){
 						allValues.Add(x);
 					}
@@ -126,8 +125,8 @@ namespace PerseusPluginLib.Impute{
 			Random2 r = new Random2();
 			for (int i = 0; i < data.RowCount; i++){
 				foreach (int t in colInds){
-					if (float.IsNaN(data.Values[i, t]) || float.IsInfinity(data.Values[i, t])){
-						data.Values[i, t] = (float) r.NextGaussian(m, s);
+					if (float.IsNaN(data.Values.Get(i, t)) || float.IsInfinity(data.Values.Get(i, t))){
+						data.Values.Set(i, t, (float) r.NextGaussian(m, s));
 						data.IsImputed[i, t] = true;
 					}
 				}

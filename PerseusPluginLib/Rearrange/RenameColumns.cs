@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Param;
 using PerseusApi.Document;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -88,7 +87,7 @@ namespace PerseusPluginLib.Filter{
 							totals[groupInds[j][k]]++;
 						}
 					}
-					if (PerseusPluginUtils.IsValid(mdata.Values[i, j], threshold, threshold2, filterMode)){
+					if (PerseusPluginUtils.IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)){
 						for (int k = 0; k < groupInds[j].Length; k++){
 							if (groupInds[j][k] >= 0){
 								counts[groupInds[j][k]]++;

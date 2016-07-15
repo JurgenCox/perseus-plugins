@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -50,7 +49,7 @@ namespace PerseusPluginLib.Norm{
 				float[] d = v.ToArray();
 				float[] q = ArrayUtils.Quantiles(d, new[]{0.25, 0.5, 0.75});
 				for (int j = 0; j < mdata.RowCount; j++){
-					mdata.Values[j, i] -= q[1];
+					mdata.Values.Set(j, i, mdata.Values.Get(j, i) - q[1]);
 				}
 				dm[i] = q[1] - q[0];
 				dp[i] = q[2] - q[1];
@@ -59,10 +58,10 @@ namespace PerseusPluginLib.Norm{
 			double adp = ArrayUtils.Median(dp);
 			for (int i = 0; i < mdata.ColumnCount; i++){
 				for (int j = 0; j < mdata.RowCount; j++){
-					if (mdata.Values[j, i] < 0){
-						mdata.Values[j, i] = (float) (mdata.Values[j, i]*adm/dm[i]);
+					if (mdata.Values.Get(j, i) < 0){
+						mdata.Values.Set(j, i, (float) (mdata.Values.Get(j, i)*adm/dm[i]));
 					} else{
-						mdata.Values[j, i] = (float) (mdata.Values[j, i]*adp/dp[i]);
+						mdata.Values.Set(j, i, (float) (mdata.Values.Get(j, i)*adp/dp[i]));
 					}
 				}
 			}

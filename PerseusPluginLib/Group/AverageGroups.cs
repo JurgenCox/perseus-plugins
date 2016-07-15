@@ -108,7 +108,7 @@ namespace PerseusPluginLib.Group{
 					List<double> vals = new List<double>();
 					List<bool> imps = new List<bool>();
 					foreach (int ind in colInds[j]){
-						double val = mdata.Values[i, ind];
+						double val = mdata.Values.Get(i, ind);
 						if (!double.IsNaN(val) && !double.IsInfinity(val)){
 							vals.Add(val);
 							imps.Add(mdata.IsImputed[i, ind]);
@@ -159,7 +159,7 @@ namespace PerseusPluginLib.Group{
 				for (int j = 0; j < groupNames.Length; j++){
 					List<double> vals = new List<double>();
 					foreach (int ind in colInds[j]){
-						double val = mdata.Values[i, ind];
+						double val = mdata.Values.Get(i, ind);
 						if (!double.IsNaN(val) && !double.IsInfinity(val)){
 							vals.Add(val);
 						}
@@ -193,7 +193,7 @@ namespace PerseusPluginLib.Group{
 				for (int j = 0; j < groupNames.Length; j++){
 					List<double> vals = new List<double>();
 					foreach (int ind in colInds[j]){
-						double val = mdata.Values[i, ind];
+						double val = mdata.Values.Get(i, ind);
 						if (!double.IsNaN(val) && !double.IsInfinity(val)){
 							vals.Add(val);
 						}

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -334,8 +333,8 @@ namespace PerseusPluginLib.Rearrange{
 			bool[,] newIsImputed = new bool[mdata.RowCount,mdata.ColumnCount + num.Length];
 			for (int i = 0; i < mdata.RowCount; i++){
 				for (int j = 0; j < mdata.ColumnCount; j++){
-					newExp[i, j] = mdata.Values[i, j];
-					newQual[i, j] = mdata.Quality[i, j];
+					newExp[i, j] = mdata.Values.Get(i, j);
+					newQual[i, j] = mdata.Quality.Get(i, j);
 					newIsImputed[i, j] = mdata.IsImputed[i, j];
 				}
 				for (int j = 0; j < newEx.Length; j++){
@@ -379,8 +378,8 @@ namespace PerseusPluginLib.Rearrange{
 			bool[,] newIsImputed = new bool[mdata.RowCount,mdata.ColumnCount + str.Length];
 			for (int i = 0; i < mdata.RowCount; i++){
 				for (int j = 0; j < mdata.ColumnCount; j++){
-					newExp[i, j] = mdata.Values[i, j];
-					newQual[i, j] = mdata.Quality[i, j];
+					newExp[i, j] = mdata.Values.Get(i, j);
+					newQual[i, j] = mdata.Quality.Get(i, j);
 					newIsImputed[i, j] = mdata.IsImputed[i, j];
 				}
 				for (int j = 0; j < newEx.Length; j++){

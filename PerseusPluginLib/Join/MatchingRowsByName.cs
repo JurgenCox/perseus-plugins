@@ -189,11 +189,11 @@ namespace PerseusPluginLib.Join{
 						List<double> qual = new List<double>();
 						List<bool> imp = new List<bool>();
 						foreach (int ind in inds){
-							double v = mdata2.Values[ind, exColInds[i]];
+							double v = mdata2.Values.Get(ind, exColInds[i]);
 							if (!double.IsNaN(v) && !double.IsInfinity(v)){
 								values.Add(v);
 								if (mdata2.Quality.IsInitialized()){
-									double qx = mdata2.Quality[ind, exColInds[i]];
+									double qx = mdata2.Quality.Get(ind, exColInds[i]);
 									if (!double.IsNaN(qx) && !double.IsInfinity(qx)){
 										qual.Add(qx);
 									}
@@ -525,8 +525,8 @@ namespace PerseusPluginLib.Join{
 			bool[,] newImp = new bool[data.RowCount, data.ColumnCount + vals.GetLength(1)];
 			for (int i = 0; i < data.RowCount; i++){
 				for (int j = 0; j < data.ColumnCount; j++){
-					newVals[i, j] = data.Values[i, j];
-					newQual[i, j] = data.Quality[i, j];
+					newVals[i, j] = data.Values.Get(i, j);
+					newQual[i, j] = data.Quality.Get(i, j);
 					newImp[i, j] = data.IsImputed[i, j];
 				}
 				for (int j = 0; j < vals.GetLength(1); j++){

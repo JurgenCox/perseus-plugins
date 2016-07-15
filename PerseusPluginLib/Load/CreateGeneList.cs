@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using BaseLib.Graphic;
 using BaseLibS.Graph;

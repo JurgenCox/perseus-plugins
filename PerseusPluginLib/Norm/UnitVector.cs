@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Param;
 using PerseusApi.Document;
@@ -55,24 +54,24 @@ namespace PerseusPluginLib.Norm{
 				for (int i = 0; i < data.RowCount; i++){
 					double len = 0;
 					for (int j = 0; j < data.ColumnCount; j++){
-						double q = data.Values[i, j];
+						double q = data.Values.Get(i, j);
 						len += q*q;
 					}
 					len = Math.Sqrt(len);
 					for (int j = 0; j < data.ColumnCount; j++){
-						data.Values[i, j] /= (float) len;
+						data.Values.Set(i, j, data.Values.Get(i, j)/(float) len);
 					}
 				}
 			} else{
 				for (int j = 0; j < data.ColumnCount; j++){
 					double len = 0;
 					for (int i = 0; i < data.RowCount; i++){
-						double q = data.Values[i, j];
+						double q = data.Values.Get(i, j);
 						len += q*q;
 					}
 					len = Math.Sqrt(len);
 					for (int i = 0; i < data.RowCount; i++){
-						data.Values[i, j] /= (float) len;
+						data.Values.Set(i, j, data.Values.Get(i, j) / (float) len);
 					}
 				}
 			}

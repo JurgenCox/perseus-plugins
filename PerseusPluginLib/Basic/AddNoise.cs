@@ -44,7 +44,7 @@ namespace PerseusPluginLib.Basic{
 			}
 			foreach (int j in mainInds){
 				for (int i = 0; i < mdata.RowCount; i++){
-					mdata.Values[i, j] += (float) rand.NextGaussian(0, std);
+					mdata.Values.Set(i, j, mdata.Values.Get(i, j)+(float) rand.NextGaussian(0, std));
 				}
 			}
 			foreach (int j in numInds){

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -82,7 +81,7 @@ namespace PerseusPluginLib.Rearrange{
 				entryCount = Math.Max(entryCount, 1);
 				for (int j = 0; j < entryCount; j++){
 					for (int k = 0; k < mdata.ColumnCount; k++){
-						expVals[count + j, k] = mdata.Values[i, k];
+						expVals[count + j, k] = mdata.Values.Get(i, k);
 					}
 					for (int k = 0; k < mdata.NumericColumnCount; k++){
 						numC[k][count + j] = mdata.NumericColumns[k][i];

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -64,7 +63,7 @@ namespace PerseusPluginLib.Norm{
 		private static void Calc1(int i, IMatrixData data, double min, double max){
 			List<double> vals = new List<double>();
 			for (int j = 0; j < data.ColumnCount; j++){
-				double q = data.Values[i, j];
+				double q = data.Values.Get(i, j);
 				if (!double.IsNaN(q) && !double.IsInfinity(q)){
 					vals.Add(q);
 				}
@@ -73,14 +72,14 @@ namespace PerseusPluginLib.Norm{
 			double maxd;
 			ArrayUtils.MinMax(vals, out mind, out maxd);
 			for (int j = 0; j < data.ColumnCount; j++){
-				data.Values[i, j] = (float) (min + (max - min)/(maxd - mind)*(data.Values[i, j] - mind));
+				data.Values.Set(i, j, (float) (min + (max - min)/(maxd - mind)*(data.Values.Get(i, j) - mind)));
 			}
 		}
 
 		private static void Calc2(int j, IMatrixData data, double min, double max){
 			List<double> vals = new List<double>();
 			for (int i = 0; i < data.RowCount; i++){
-				double q = data.Values[i, j];
+				double q = data.Values.Get(i, j);
 				if (!double.IsNaN(q) && !double.IsInfinity(q)){
 					vals.Add(q);
 				}
@@ -89,7 +88,7 @@ namespace PerseusPluginLib.Norm{
 			double maxd;
 			ArrayUtils.MinMax(vals, out mind, out maxd);
 			for (int i = 0; i < data.RowCount; i++){
-				data.Values[i, j] = (float) (min + (max - min)/(maxd - mind)*(data.Values[i, j] - mind));
+				data.Values.Set(i, j, (float) (min + (max - min)/(maxd - mind)*(data.Values.Get(i, j) - mind)));
 			}
 		}
 	}

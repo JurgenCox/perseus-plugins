@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -64,28 +63,28 @@ namespace PerseusPluginLib.Norm{
 		private static void Calc1(int i, Func<double[], double> summarize, IMatrixData data){
 			List<double> vals = new List<double>();
 			for (int j = 0; j < data.ColumnCount; j++){
-				double q = data.Values[i, j];
+				double q = data.Values.Get(i, j);
 				if (!double.IsNaN(q) && !double.IsInfinity(q)){
 					vals.Add(q);
 				}
 			}
 			double med = summarize(vals.ToArray());
 			for (int j = 0; j < data.ColumnCount; j++){
-				data.Values[i, j] /= (float) med;
+				data.Values.Set(i, j, data.Values.Get(i, j)/(float) med);
 			}
 		}
 
 		private static void Calc2(int j, Func<double[], double> summarize, IMatrixData data){
 			List<double> vals = new List<double>();
 			for (int i = 0; i < data.RowCount; i++){
-				double q = data.Values[i, j];
+				double q = data.Values.Get(i, j);
 				if (!double.IsNaN(q) && !double.IsInfinity(q)){
 					vals.Add(q);
 				}
 			}
 			double med = summarize(vals.ToArray());
 			for (int i = 0; i < data.RowCount; i++){
-				data.Values[i, j] /= (float) med;
+				data.Values.Set(i, j, data.Values.Get(i, j)/(float) med);
 			}
 		}
 
