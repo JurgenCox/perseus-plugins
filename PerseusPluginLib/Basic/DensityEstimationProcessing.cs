@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -21,9 +22,7 @@ namespace PerseusPluginLib.Basic{
 		public int NumDocuments => 0;
 
 		public string Url
-			=>
-				"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Basic:DensityEstimationProcessing"
-			;
+			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Basic:DensityEstimationProcessing";
 
 		public string Description
 			=>
@@ -56,7 +55,7 @@ namespace PerseusPluginLib.Basic{
 				float[] yvals = GetColumn(mdata, colIndy[k]);
 				float[] xvals1;
 				float[] yvals1;
-				NumUtils.GetValidPairs(xvals, yvals, out xvals1, out yvals1);
+				GetValidPairs(xvals, yvals, out xvals1, out yvals1);
 				double xmin;
 				double xmax;
 				double ymin;
@@ -106,6 +105,19 @@ namespace PerseusPluginLib.Basic{
 					"Percentage of points with a point density smaller than at this point in the plane spanned by the columns " + xname +
 					" and " + yname + ".", pvals);
 			}
+		}
+
+		private static void GetValidPairs(IList<float> x, IList<float> y, out float[] x1, out float[] y1){
+			List<float> x2 = new List<float>();
+			List<float> y2 = new List<float>();
+			for (int i = 0; i < x.Count; i++){
+				if (!float.IsNaN(x[i]) && !float.IsInfinity(x[i]) && !float.IsNaN(y[i]) && !float.IsInfinity(y[i])){
+					x2.Add(x[i]);
+					y2.Add(y[i]);
+				}
+			}
+			x1 = x2.ToArray();
+			y1 = y2.ToArray();
 		}
 
 		private static void MakeConditional1(float[,] values){
