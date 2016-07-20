@@ -6,14 +6,31 @@ namespace PerseusApi.Generic{
 		void CopyAnnotationRowsFromColumns(IDataWithAnnotationColumns other);
 		int ColumnCount { get; }
 
-		/// <summary>
+        /// <summary>
+        /// Returns the entire category row at the given row index.
+        /// 
 		/// For performance reasons, please do not call this inside a loop when iterating over the elements. 
-		/// Use <code>GetCategoryRowEntryAt</code> instead.
-		/// </summary>
-		string[][] GetCategoryRowAt(int index);
+		/// Use <see cref="GetCategoryRowEntryAt"/>> instead.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+		string[][] GetCategoryRowAt(int row);
 
-		string[] GetCategoryRowEntryAt(int index, int column);
-		string[] GetCategoryRowValuesAt(int index);
+        /// <summary>
+        /// Returns all the categories at the given row and column.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="column"></param>
+        /// <returns></returns>
+		string[] GetCategoryRowEntryAt(int row, int column);
+
+        /// <summary>
+        /// Returns the unique categories used in the given row.
+        /// </summary>
+        /// <param name="row"></param>
+        /// <returns></returns>
+		string[] GetCategoryRowValuesAt(int row);
+
 		void SetCategoryRowAt(string[][] vals, int index);
 		void RemoveCategoryRowAt(int index);
 		void ClearCategoryRows();
