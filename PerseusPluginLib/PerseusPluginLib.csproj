@@ -73,11 +73,19 @@
     <Compile Include="Basic\AddNoise.cs" />
     <Compile Include="Basic\DeHyphenateIds.cs" />
     <Compile Include="Filter\FilterNumericalColumn.cs" />
+    <Compile Include="Join\ReplaceStrings.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
     <Compile Include="Load\CreateRandomMatrix.cs" />
     <Compile Include="Manual\SelectRowsManuallyControl1.xaml.cs">
       <DependentUpon>SelectRowsManuallyControl1.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Mods\AddKnownSites.cs" />
+    <Compile Include="Mods\AddModificationCounts.cs" />
+    <Compile Include="Mods\AddRegulatorySites.cs" />
+    <Compile Include="Mods\AddSequenceFeatures.cs" />
+    <Compile Include="Mods\ExpandSiteTable.cs" />
+    <Compile Include="Mods\KinaseSubstrateRelations.cs" />
+    <Compile Include="Mods\ShortenMotifs.cs" />
     <Compile Include="Norm\UnZScore.cs" />
     <Compile Include="Rearrange\CombineCategoricalColumns.cs" />
     <Compile Include="Basic\DensityEstimationProcessing.cs" />
