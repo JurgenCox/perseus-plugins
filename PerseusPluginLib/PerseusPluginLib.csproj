@@ -68,6 +68,7 @@
     <Compile Include="Basic\CombineAnnotations.cs" />
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />
     <Compile Include="Basic\AddNoise.cs" />
+    <Compile Include="Basic\DeHyphenateIds.cs" />
     <Compile Include="Filter\FilterNumericalColumn.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
     <Compile Include="Load\CreateRandomMatrix.cs" />

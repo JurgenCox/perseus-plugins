@@ -14,7 +14,7 @@ namespace PerseusPluginLib.Group{
 	public class AverageGroups : IMatrixProcessing{
 		public bool HasButton => true;
 		public Bitmap2 DisplayImage => GraphUtils.ToBitmap2(Resources.average);
-		public string HelpOutput => "Averaged expression matrix containing as many columns as there were groups defined.";
+		public string HelpOutput => "Averaged main matrix containing as many columns as there were groups defined.";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string Name => "Average groups";
@@ -33,7 +33,7 @@ namespace PerseusPluginLib.Group{
 
 		public string Description
 			=>
-				"Expression columns are averaged over groups. This requires that at least one categorical annotation row is defined."
+				"Main columns are averaged over groups. This requires that at least one categorical annotation row is defined."
 			;
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
