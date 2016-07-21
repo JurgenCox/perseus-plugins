@@ -62,6 +62,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annot\AddAnnotationToMatrix.cs" />
+    <Compile Include="Annot\AverageCategories.cs" />
+    <Compile Include="Annot\BackToBaseIdentifiers.cs" />
     <Compile Include="Annot\CategoryCounting.cs" />
     <Compile Include="Annot\CountingResult.cs" />
     <Compile Include="Basic\CloneProcessing.cs" />
@@ -239,6 +242,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\list.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\network.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
