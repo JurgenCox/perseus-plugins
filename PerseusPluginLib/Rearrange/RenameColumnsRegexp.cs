@@ -34,7 +34,7 @@ namespace PerseusPluginLib.Rearrange{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			var vals = param.GetParam<Tuple<Regex, string, List<String>>>("Regex").Value;
+			var vals = param.GetParam<Tuple<Regex, string>>("Regex").Value;
 		    var pattern = vals.Item1;
 		    string replacementStr = vals.Item2;
 			for (int i = 0; i < mdata.ColumnCount; i++){
@@ -44,7 +44,7 @@ namespace PerseusPluginLib.Rearrange{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new RegexReplaceParam("Regex", mdata.ColumnNames));
+				new Parameters(new RegexReplaceParam("Regex", new Regex("Column (.*)"), "$1", mdata.ColumnNames));
 		}
 	}
 }
