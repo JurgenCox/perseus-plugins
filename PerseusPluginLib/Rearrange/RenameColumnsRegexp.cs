@@ -44,7 +44,7 @@ namespace PerseusPluginLib.Rearrange{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new RegexReplaceParam("Regex", mdata.ColumnNames));
+				new Parameters(new RegexReplaceParam("Regex", new Regex("Column (.*)"), "$1", mdata.ColumnNames));
 		}
 	}
 }
