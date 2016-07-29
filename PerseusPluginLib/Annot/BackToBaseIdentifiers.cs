@@ -14,11 +14,13 @@ namespace PerseusPluginLib.Annot{
 	public class BackToBaseIdentifiers : IMatrixProcessing{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
+
 		public string Description
 			=>
 				"This activity does the inverse of the 'Add annotation' activity. " +
 				"Any of the columns that can be created by the " +
 				"'Add annotation' activity can be mapped back to the base identifiers (typically UniProt ids).";
+
 		public string HelpOutput => "";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
@@ -28,6 +30,7 @@ namespace PerseusPluginLib.Annot{
 		public float DisplayRank => -19.5f;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
+
 		public string Url
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Annotcolumns:BackToBaseIdentifiers";
 
@@ -65,16 +68,14 @@ namespace PerseusPluginLib.Annot{
 					}
 				}
 				subParams[i] =
-					new Parameters(new Parameter[]{
+					new Parameters(
 						new SingleChoiceParam("Identifiers"){
 							Values = colChoice,
 							Value = colInd,
 							Help =
 								"Specify here the column that contains the identifiers which are going to be matched back to " + baseNames[i] +
 								" identifiers."
-						},
-						new SingleChoiceParam("Identifier type"){Values = annots[i], Value = selInd}
-					});
+						}, new SingleChoiceParam("Identifier type"){Values = annots[i], Value = selInd});
 			}
 			return
 				new Parameters(new SingleChoiceWithSubParams("Source", selFile){
