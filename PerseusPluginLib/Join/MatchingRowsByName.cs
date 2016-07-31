@@ -8,7 +8,6 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusApi.Utils;
 using PerseusPluginLib.Properties;
 
 namespace PerseusPluginLib.Join{
@@ -76,69 +75,55 @@ namespace PerseusPluginLib.Join{
 			List<string> exCol = matrixData2.ColumnNames;
 			int[] exSel = new int[0];
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Matching column in matrix 1"){
-						Values = controlChoice1,
-						Value = index1,
-						Help = "The column in the first matrix that is used for matching rows."
-					},
-					new SingleChoiceParam("Matching column in matrix 2"){
-						Values = controlChoice2,
-						Value = index2,
-						Help = "The column in the second matrix that is used for matching rows."
-					},
-					new BoolWithSubParams("Use additional column pair"){
-						SubParamsTrue =
-							new Parameters(new Parameter[]{
-								new SingleChoiceParam("Additional column in matrix 1"){
-									Values = controlChoice1,
-									Value = index1,
-									Help = "Additional column in the first matrix that is used for matching rows."
-								},
-								new SingleChoiceParam("Additional column in matrix 2"){
-									Values = controlChoice2,
-									Value = index2,
-									Help = "Additional column in the second matrix that is used for matching rows."
-								}
-							})
-					},
-					new BoolParam("Indicator"){
-						Help =
-							"If checked, a categorical column will be added in which it is indicated by a '+' if at least one row of the second " +
-							"matrix matches."
-					},
-					new MultiChoiceParam("Main columns"){
-						Value = exSel,
-						Values = exCol,
-						Help = "Main columns of the second matrix that should be added to the first matrix."
-					},
-					new SingleChoiceParam("Combine main values"){
-						Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum"},
-						Help =
-							"In case multiple rows of the second matrix match to a row of the first matrix, how should multiple " +
-							"values be combined?"
-					},
-					new MultiChoiceParam("Categorical columns"){
-						Values = catCol,
-						Value = catSel,
-						Help = "Categorical columns of the second matrix that should be added to the first matrix."
-					},
-					new MultiChoiceParam("Text columns"){
-						Values = textCol,
-						Value = textSel,
-						Help = "Text columns of the second matrix that should be added to the first matrix."
-					},
-					new MultiChoiceParam("Numerical columns"){
-						Values = numCol,
-						Value = numSel,
-						Help = "Numerical columns of the second matrix that should be added to the first matrix."
-					},
-					new SingleChoiceParam("Combine numerical values"){
-						Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum", "Keep separate"},
-						Help =
-							"In case multiple rows of the second matrix match to a row of the first matrix, how should multiple " +
-							"numerical values be combined?"
-					}
+				new Parameters(new SingleChoiceParam("Matching column in matrix 1"){
+					Values = controlChoice1,
+					Value = index1,
+					Help = "The column in the first matrix that is used for matching rows."
+				}, new SingleChoiceParam("Matching column in matrix 2"){
+					Values = controlChoice2,
+					Value = index2,
+					Help = "The column in the second matrix that is used for matching rows."
+				}, new BoolWithSubParams("Use additional column pair"){
+					SubParamsTrue =
+						new Parameters(new SingleChoiceParam("Additional column in matrix 1"){
+							Values = controlChoice1,
+							Value = index1,
+							Help = "Additional column in the first matrix that is used for matching rows."
+						}, new SingleChoiceParam("Additional column in matrix 2"){
+							Values = controlChoice2,
+							Value = index2,
+							Help = "Additional column in the second matrix that is used for matching rows."
+						})
+				}, new BoolParam("Indicator"){
+					Help =
+						"If checked, a categorical column will be added in which it is indicated by a '+' if at least one row of the second " +
+						"matrix matches."
+				}, new MultiChoiceParam("Main columns"){
+					Value = exSel,
+					Values = exCol,
+					Help = "Main columns of the second matrix that should be added to the first matrix."
+				}, new SingleChoiceParam("Combine main values"){
+					Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum"},
+					Help =
+						"In case multiple rows of the second matrix match to a row of the first matrix, how should multiple " +
+						"values be combined?"
+				}, new MultiChoiceParam("Categorical columns"){
+					Values = catCol,
+					Value = catSel,
+					Help = "Categorical columns of the second matrix that should be added to the first matrix."
+				}, new MultiChoiceParam("Text columns"){
+					Values = textCol,
+					Value = textSel,
+					Help = "Text columns of the second matrix that should be added to the first matrix."
+				}, new MultiChoiceParam("Numerical columns"){
+					Values = numCol,
+					Value = numSel,
+					Help = "Numerical columns of the second matrix that should be added to the first matrix."
+				}, new SingleChoiceParam("Combine numerical values"){
+					Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum", "Keep separate"},
+					Help =
+						"In case multiple rows of the second matrix match to a row of the first matrix, how should multiple " +
+						"numerical values be combined?"
 				});
 		}
 
@@ -546,7 +531,7 @@ namespace PerseusPluginLib.Join{
 			HashSet<string> taken = new HashSet<string>(mainColumnNames);
 			for (int i = 0; i < newExColNames.Count; i++){
 				if (taken.Contains(newExColNames[i])){
-					string n1 = PerseusUtils.GetNextAvailableName(newExColNames[i], taken);
+					string n1 = StringUtils.GetNextAvailableName(newExColNames[i], taken);
 					newExColNames[i] = n1;
 					taken.Add(n1);
 				} else{

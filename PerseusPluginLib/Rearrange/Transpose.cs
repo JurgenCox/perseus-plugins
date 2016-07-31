@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using BaseLibS.Graph;
 using BaseLibS.Param;
+using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusApi.Utils;
 
 namespace PerseusPluginLib.Rearrange{
 	public class Transpose : IMatrixProcessing{
@@ -41,7 +41,7 @@ namespace PerseusPluginLib.Rearrange{
 				HashSet<string> taken = new HashSet<string>();
 				colNames = new List<string>();
 				foreach (string n in mdata.StringColumns[nameCol]){
-					string n1 = PerseusUtils.GetNextAvailableName(n, taken);
+					string n1 = StringUtils.GetNextAvailableName(n, taken);
 					taken.Add(n1);
 					colNames.Add(n1);
 				}

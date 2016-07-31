@@ -367,39 +367,6 @@ namespace PerseusApi.Utils{
 			return w;
 		}
 
-		public static string GetNextAvailableName(string s, ICollection<string> taken){
-			if (!taken.Contains(s)){
-				return s;
-			}
-			while (true){
-				s = GetNext(s);
-				if (!taken.Contains(s)){
-					return s;
-				}
-			}
-		}
-
-		private static string GetNext(string s){
-			if (!HasNumberExtension(s)){
-				return s + "_1";
-			}
-			int x = s.LastIndexOf('_');
-			string s1 = s.Substring(x + 1);
-			int num = int.Parse(s1);
-			return s.Substring(0, x + 1) + (num + 1);
-		}
-
-		private static bool HasNumberExtension(string s){
-			int x = s.LastIndexOf('_');
-			if (x < 0){
-				return false;
-			}
-			string s1 = s.Substring(x + 1);
-			int num;
-			bool succ = int.TryParse(s1, out num);
-			return succ;
-		}
-
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files){
 			AnnotType[][] types;
 			return GetAvailableAnnots(out baseNames, out types, out files);
@@ -652,7 +619,7 @@ namespace PerseusApi.Utils{
 			out string errString){
 			int[] colInds;
 			bool and;
-			Relation[] relations = PerseusUtils.GetRelationsNumFilter(p, out errString, out colInds, out and);
+			Relation[] relations = GetRelationsNumFilter(p, out errString, out colInds, out and);
 			if (errString != null){
 				return;
 			}

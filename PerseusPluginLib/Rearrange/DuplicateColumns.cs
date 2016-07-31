@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
+using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusApi.Utils;
 
 namespace PerseusPluginLib.Rearrange{
 	public class DuplicateColumns : IMatrixProcessing{
@@ -42,33 +42,33 @@ namespace PerseusPluginLib.Rearrange{
 				data.ExtractColumns(ArrayUtils.Concat(ArrayUtils.ConsecutiveInts(data.ColumnCount), exColInds));
 				HashSet<string> taken = new HashSet<string>(data.ColumnNames);
 				for (int i = 0; i < exColInds.Length; i++){
-					string s = PerseusUtils.GetNextAvailableName(data.ColumnNames[ncol + i], taken);
+					string s = StringUtils.GetNextAvailableName(data.ColumnNames[ncol + i], taken);
 					data.ColumnNames[ncol + i] = s;
 					taken.Add(s);
 				}
 			}
 			foreach (int ind in numColInds){
 				HashSet<string> taken = new HashSet<string>(data.NumericColumnNames);
-				string s = PerseusUtils.GetNextAvailableName(data.NumericColumnNames[ind], taken);
+				string s = StringUtils.GetNextAvailableName(data.NumericColumnNames[ind], taken);
 				data.AddNumericColumn(s, data.NumericColumnDescriptions[ind], (double[]) data.NumericColumns[ind].Clone());
 				taken.Add(s);
 			}
 			foreach (int ind in multiNumColInds){
 				HashSet<string> taken = new HashSet<string>(data.MultiNumericColumnNames);
-				string s = PerseusUtils.GetNextAvailableName(data.MultiNumericColumnNames[ind], taken);
+				string s = StringUtils.GetNextAvailableName(data.MultiNumericColumnNames[ind], taken);
 				data.AddMultiNumericColumn(s, data.MultiNumericColumnDescriptions[ind],
 					(double[][]) data.MultiNumericColumns[ind].Clone());
 				taken.Add(s);
 			}
 			foreach (int ind in catColInds){
 				HashSet<string> taken = new HashSet<string>(data.CategoryColumnNames);
-				string s = PerseusUtils.GetNextAvailableName(data.CategoryColumnNames[ind], taken);
+				string s = StringUtils.GetNextAvailableName(data.CategoryColumnNames[ind], taken);
 				data.AddCategoryColumn(s, data.CategoryColumnDescriptions[ind], data.GetCategoryColumnAt(ind));
 				taken.Add(s);
 			}
 			foreach (int ind in textColInds){
 				HashSet<string> taken = new HashSet<string>(data.StringColumnNames);
-				string s = PerseusUtils.GetNextAvailableName(data.StringColumnNames[ind], taken);
+				string s = StringUtils.GetNextAvailableName(data.StringColumnNames[ind], taken);
 				data.AddStringColumn(s, data.StringColumnDescriptions[ind], (string[]) data.StringColumns[ind].Clone());
 				taken.Add(s);
 			}
@@ -81,32 +81,26 @@ namespace PerseusPluginLib.Rearrange{
 			List<string> catCols = mdata.CategoryColumnNames;
 			List<string> textCols = mdata.StringColumnNames;
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Main columns"){
-						Value = new int[0],
-						Values = exCols,
-						Help = "Specify here the main columns that should be duplicated."
-					},
-					new MultiChoiceParam("Numerical columns"){
-						Value = new int[0],
-						Values = numCols,
-						Help = "Specify here the numerical columns that should be duplicated."
-					},
-					new MultiChoiceParam("Multi-numerical columns"){
-						Value = new int[0],
-						Values = multiNumCols,
-						Help = "Specify here the multi-numerical columns that should be duplicated."
-					},
-					new MultiChoiceParam("Categorical columns"){
-						Value = new int[0],
-						Values = catCols,
-						Help = "Specify here the categorical columns that should be duplicated."
-					},
-					new MultiChoiceParam("Text columns"){
-						Value = new int[0],
-						Values = textCols,
-						Help = "Specify here the text columns that should be duplicated."
-					}
+				new Parameters(new MultiChoiceParam("Main columns"){
+					Value = new int[0],
+					Values = exCols,
+					Help = "Specify here the main columns that should be duplicated."
+				}, new MultiChoiceParam("Numerical columns"){
+					Value = new int[0],
+					Values = numCols,
+					Help = "Specify here the numerical columns that should be duplicated."
+				}, new MultiChoiceParam("Multi-numerical columns"){
+					Value = new int[0],
+					Values = multiNumCols,
+					Help = "Specify here the multi-numerical columns that should be duplicated."
+				}, new MultiChoiceParam("Categorical columns"){
+					Value = new int[0],
+					Values = catCols,
+					Help = "Specify here the categorical columns that should be duplicated."
+				}, new MultiChoiceParam("Text columns"){
+					Value = new int[0],
+					Values = textCols,
+					Help = "Specify here the text columns that should be duplicated."
 				});
 		}
 	}
