@@ -268,7 +268,7 @@ namespace PerseusApi.Utils{
 			}
 		}
 
-		private static bool GetHasAddtlMatrices(StreamReader reader, IList<int> expressionColIndices, char separator){
+		private static bool GetHasAddtlMatrices(TextReader reader, IList<int> expressionColIndices, char separator){
 			if (expressionColIndices.Count == 0){
 				return false;
 			}
@@ -545,24 +545,6 @@ namespace PerseusApi.Utils{
 			return result;
 		}
 
-		public static int GetRowCount(StreamReader reader, StreamReader auxReader, int[] mainColIndices,
-			List<Tuple<Relation[], int[], bool>> filters, char separator){
-			reader.BaseStream.Seek(0, SeekOrigin.Begin);
-			reader.ReadLine();
-			int count = 0;
-			bool hasAddtlMatrices = auxReader != null && GetHasAddtlMatrices(auxReader, mainColIndices, separator);
-			string line;
-			while ((line = reader.ReadLine()) != null){
-				while (TabSep.IsCommentLine(line, commentPrefix, commentPrefixExceptions)){
-					line = reader.ReadLine();
-				}
-				if (IsValidLine(line, separator, filters, hasAddtlMatrices)){
-					count++;
-				}
-			}
-			return count;
-		}
-
 		private static bool IsValidLine(string line, char separator, List<Tuple<Relation[], int[], bool>> filters,
 			out string[] split, bool hasAddtlMatrices){
 			if (filters == null || filters.Count == 0){
@@ -613,6 +595,24 @@ namespace PerseusApi.Utils{
 				}
 			}
 			return result;
+		}
+
+		public static int GetRowCount(StreamReader reader, StreamReader auxReader, int[] mainColIndices,
+			List<Tuple<Relation[], int[], bool>> filters, char separator){
+			reader.BaseStream.Seek(0, SeekOrigin.Begin);
+			reader.ReadLine();
+			int count = 0;
+			bool hasAddtlMatrices = auxReader != null && GetHasAddtlMatrices(auxReader, mainColIndices, separator);
+			string line;
+			while ((line = reader.ReadLine()) != null){
+				while (TabSep.IsCommentLine(line, commentPrefix, commentPrefixExceptions)){
+					line = reader.ReadLine();
+				}
+				if (IsValidLine(line, separator, filters, hasAddtlMatrices)){
+					count++;
+				}
+			}
+			return count;
 		}
 
 		public static void AddFilter(List<Tuple<Relation[], int[], bool>> filters, Parameters p, int[] inds,
