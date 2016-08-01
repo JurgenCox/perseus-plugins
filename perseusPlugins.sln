@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerseusPluginLib", "Perseus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginProteomicRuler", "PluginProteomicRuler\PluginProteomicRuler.csproj", "{3E9E7070-52B1-42BE-842B-464B106FD667}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerseusPluginLibTest", "PerseusPluginLibTest\PerseusPluginLibTest.csproj", "{98BDAA44-8796-499F-ACCC-22D340D469CB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerseusPluginLib.Test", "PerseusPluginLib\PerseusPluginLib.Test\PerseusPluginLib.Test.csproj", "{98BDAA44-8796-499F-ACCC-22D340D469CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
