@@ -60,6 +60,11 @@ namespace PerseusApi.Generic{
 		int MultiNumericRowCount { get; }
 		List<string> MultiNumericRowNames { get; set; }
 		List<string> MultiNumericRowDescriptions { get; set; }
+
+        /// <summary>
+        /// extract the specified columns in-place
+        /// </summary>
+        /// <param name="indices">columns to keep</param>
 		void ExtractColumns(int[] indices);
 
 		void SetAnnotationRows(List<string> stringRowNames, List<string> stringRowDescriptions, List<string[]> stringRows,
