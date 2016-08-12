@@ -25,8 +25,7 @@ namespace PerseusPluginLib.Basic{
 			return 1;
 		}
 
-		public string Url
-			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Basic:AddNoise";
+		public string Url => "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Basic:AddNoise";
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
@@ -44,7 +43,7 @@ namespace PerseusPluginLib.Basic{
 			}
 			foreach (int j in mainInds){
 				for (int i = 0; i < mdata.RowCount; i++){
-					mdata.Values.Set(i, j, mdata.Values.Get(i, j)+(float) rand.NextGaussian(0, std));
+					mdata.Values.Set(i, j, mdata.Values.Get(i, j) + (float) rand.NextGaussian(0, std));
 				}
 			}
 			foreach (int j in numInds){
@@ -56,12 +55,10 @@ namespace PerseusPluginLib.Basic{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new DoubleParam("Standard deviation", 0.1){Help = "Standard deviation of the noise distribution."},
+				new Parameters(new DoubleParam("Standard deviation", 0.1){Help = "Standard deviation of the noise distribution."},
 					new MultiChoiceParam("Columns", ArrayUtils.ConsecutiveInts(mdata.ColumnCount)){
 						Values = ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames)
-					}
-				});
+					});
 		}
 	}
 }

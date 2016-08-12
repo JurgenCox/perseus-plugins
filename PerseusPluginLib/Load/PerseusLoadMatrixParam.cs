@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Xml;
-using System.Xml.Serialization;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using BaseLibS.Util;
@@ -13,12 +11,12 @@ namespace PerseusPluginLib.Load{
 		[NonSerialized] private PerseusLoadMatrixControl control;
 		public IList<Parameters[]> FilterParameterValues { get; set; }
 
-        /// <summary>
-        /// for xml serialization only
-        /// </summary>
-	    private PerseusLoadMatrixParam() : this("") { }
+		/// <summary>
+		/// for xml serialization only
+		/// </summary>
+		private PerseusLoadMatrixParam() : this(""){}
 
-	    public PerseusLoadMatrixParam(string name) : base(name){
+		public PerseusLoadMatrixParam(string name) : base(name){
 			Value = new string[8];
 			Default = new string[8];
 			for (int i = 0; i < 8; i++){
