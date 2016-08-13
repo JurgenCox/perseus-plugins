@@ -47,22 +47,18 @@ namespace PerseusPluginLib.Filter{
 					});
 			}
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceWithSubParams("Column"){
-						Values = mdata.CategoryColumnNames,
-						SubParams = subParams,
-						Help = "The categorical column that the filtering should be based on.",
-						ParamNameWidth = 50,
-						TotalWidth = 731
-					},
-					new SingleChoiceParam("Mode"){
-						Values = new[]{"Remove matching rows", "Keep matching rows"},
-						Help =
-							"If 'Remove matching rows' is selected, rows having the values specified above will be removed while " +
-							"all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen."
-					},
-					PerseusPluginUtils.GetFilterModeParam(true)
-				});
+				new Parameters(new SingleChoiceWithSubParams("Column"){
+					Values = mdata.CategoryColumnNames,
+					SubParams = subParams,
+					Help = "The categorical column that the filtering should be based on.",
+					ParamNameWidth = 50,
+					TotalWidth = 731
+				}, new SingleChoiceParam("Mode"){
+					Values = new[]{"Remove matching rows", "Keep matching rows"},
+					Help =
+						"If 'Remove matching rows' is selected, rows having the values specified above will be removed while " +
+						"all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen."
+				}, PerseusPluginUtils.GetFilterModeParam(true));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
