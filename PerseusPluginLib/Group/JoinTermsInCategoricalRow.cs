@@ -42,16 +42,13 @@ namespace PerseusPluginLib.Group{
 					});
 			}
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceWithSubParams("Row"){
-						Values = mdata.CategoryRowNames,
-						SubParams = subParams,
-						Help = "The categorical row that the filtering should be based on.",
-						ParamNameWidth = 50,
-						TotalWidth = 731
-					},
-					new StringParam("New term")
-				});
+				new Parameters(new SingleChoiceWithSubParams("Row"){
+					Values = mdata.CategoryRowNames,
+					SubParams = subParams,
+					Help = "The categorical row that the filtering should be based on.",
+					ParamNameWidth = 50,
+					TotalWidth = 731
+				}, new StringParam("New term"));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
