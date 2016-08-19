@@ -24,8 +24,7 @@ namespace PerseusPluginLib.Export{
 			return 1;
 		}
 
-		public string Url
-			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixExport:TabSeparatedExport";
+		public string Url => "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixExport:TabSeparatedExport";
 
 		public void Export(Parameters parameters, IMatrixData data, ProcessInfo processInfo){
 			string filename = parameters.GetParam<string>("File name").Value;
@@ -126,7 +125,8 @@ namespace PerseusPluginLib.Export{
 					}
 					writer.WriteLine("#!{C:" + data.CategoryRowNames[i] + "}" + StringUtils.Concat("\t", words));
 				}
-				for (int j = 0; j < data.RowCount; j++){
+				int n = data.RowCount;
+				for (int j = 0; j < n; j++){
 					words = new List<string>();
 					for (int i = 0; i < data.ColumnCount; i++){
 						string s1 = "" + data.Values.Get(j, i);
@@ -151,6 +151,7 @@ namespace PerseusPluginLib.Export{
 					}
 					string s = StringUtils.Concat("\t", words);
 					writer.WriteLine(s);
+					processInfo.Progress(100*(j + 1)/n);
 				}
 				writer.Close();
 			} catch (Exception e){
@@ -188,11 +189,8 @@ namespace PerseusPluginLib.Export{
 		}
 
 		public Parameters GetParameters(IMatrixData matrixData, ref string errorString){
-			return
-				new Parameters(new Parameter[]{
-					new FileParam("File name"){Filter = "Tab separated file (*.txt)|*.txt", Save = true},
-					new BoolParam("Write quality and imputed matrices", false)
-				});
+			return new Parameters(new FileParam("File name"){Filter = "Tab separated file (*.txt)|*.txt", Save = true},
+				new BoolParam("Write quality and imputed matrices", false));
 		}
 	}
 }
