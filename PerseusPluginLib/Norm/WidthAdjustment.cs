@@ -39,6 +39,7 @@ namespace PerseusPluginLib.Norm{
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			double[] dm = new double[mdata.ColumnCount];
 			double[] dp = new double[mdata.ColumnCount];
+			double[] med = new double[mdata.ColumnCount];
 			for (int i = 0; i < mdata.ColumnCount; i++){
 				List<float> v = new List<float>();
 				foreach (double f in mdata.Values.GetColumn(i)){
@@ -53,15 +54,17 @@ namespace PerseusPluginLib.Norm{
 				}
 				dm[i] = q[1] - q[0];
 				dp[i] = q[2] - q[1];
+				med[i] = q[1];
 			}
 			double adm = ArrayUtils.Median(dm);
 			double adp = ArrayUtils.Median(dp);
 			for (int i = 0; i < mdata.ColumnCount; i++){
 				for (int j = 0; j < mdata.RowCount; j++){
-					if (mdata.Values.Get(j, i) < 0){
-						mdata.Values.Set(j, i, (float) (mdata.Values.Get(j, i)*adm/dm[i]));
+					double x = mdata.Values.Get(j, i);
+					if (x < 0){
+						mdata.Values.Set(j, i, (float) (x*adm/dm[i]));
 					} else{
-						mdata.Values.Set(j, i, (float) (mdata.Values.Get(j, i)*adp/dp[i]));
+						mdata.Values.Set(j, i, (float) (x*adp/dp[i]));
 					}
 				}
 			}
