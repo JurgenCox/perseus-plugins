@@ -43,16 +43,22 @@ namespace PerseusPluginLib.Impute{
 			double shift = param.GetParam<double>("Down shift").Value;
 			bool separateColumns = param.GetParam<int>("Mode").Value == 1;
 			int[] cols = param.GetParam<int[]>("Columns").Value;
+			if (cols.Length == 0){
+				return;
+			}
 			if (separateColumns){
 				ReplaceMissingsByGaussianByColumn(width, shift, mdata, cols);
 			} else{
-				ReplaceMissingsByGaussianWholeMatrix(width, shift, mdata, cols);
+				string err = ReplaceMissingsByGaussianWholeMatrix(width, shift, mdata, cols);
+				if (err != null){
+					processInfo.ErrString = err;
+				}
 			}
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
+				new Parameters(
 					new DoubleParam("Width", 0.3){
 						Help =
 							"The width of the gaussian distibution relative to the standard deviation of measured values. A value of 0.5 " +
@@ -65,21 +71,24 @@ namespace PerseusPluginLib.Impute{
 							" standard deviation of the valid data."
 					},
 					new SingleChoiceParam("Mode", 1){Values = new[]{"Total matrix", "Separately for each column"}},
-					new MultiChoiceParam("Columns", ArrayUtils.ConsecutiveInts(mdata.ColumnCount)){Values = mdata.ColumnNames}
-				});
+					new MultiChoiceParam("Columns", ArrayUtils.ConsecutiveInts(mdata.ColumnCount)){
+						Values = ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames)
+					});
 		}
 
 		public static void ReplaceMissingsByGaussianByColumn(double width, double shift, IMatrixData data, int[] colInds){
-			List<int> valid = new List<int>();
+			List<int> invalidMain = new List<int>();
 			Random2 r = new Random2();
 			foreach (int colInd in colInds){
 				bool success = ReplaceMissingsByGaussianForOneColumn(width, shift, data, colInd, r);
-				if (success){
-					valid.Add(colInd);
+				if (!success){
+					if (colInd < data.ColumnCount){
+						invalidMain.Add(colInd);
+					}
 				}
 			}
-			if (valid.Count != data.ColumnCount){
-				data.ExtractColumns(valid.ToArray());
+			if (invalidMain.Count > 0){
+				data.ExtractColumns(ArrayUtils.Complement(invalidMain, data.ColumnCount));
 			}
 		}
 
@@ -87,7 +96,7 @@ namespace PerseusPluginLib.Impute{
 			Random2 r){
 			List<float> allValues = new List<float>();
 			for (int i = 0; i < data.RowCount; i++){
-				float x = data.Values.Get(i, colInd);
+				float x = GetValue(data, i, colInd);
 				if (!float.IsNaN(x) && !float.IsInfinity(x)){
 					allValues.Add(x);
 				}
@@ -100,19 +109,32 @@ namespace PerseusPluginLib.Impute{
 			double m = mean - shift*stddev;
 			double s = stddev*width;
 			for (int i = 0; i < data.RowCount; i++){
-				if (float.IsNaN(data.Values.Get(i, colInd)) || float.IsInfinity(data.Values.Get(i, colInd))){
-					data.Values.Set(i, colInd, (float) r.NextGaussian(m, s));
-					data.IsImputed[i, colInd] = true;
+				float x = GetValue(data, i, colInd);
+				if (float.IsNaN(x) || float.IsInfinity(x)){
+					if (colInd < data.ColumnCount){
+						data.Values.Set(i, colInd, (float) r.NextGaussian(m, s));
+						data.IsImputed[i, colInd] = true;
+					} else{
+						data.NumericColumns[colInd - data.ColumnCount][i] = r.NextGaussian(m, s);
+					}
 				}
 			}
 			return true;
 		}
 
-		public static void ReplaceMissingsByGaussianWholeMatrix(double width, double shift, IMatrixData data, int[] colInds){
+		private static float GetValue(IMatrixData data, int i, int colInd){
+			if (colInd < data.ColumnCount){
+				return data.Values.Get(i, colInd);
+			}
+			colInd -= data.ColumnCount;
+			return (float) data.NumericColumns[colInd][i];
+		}
+
+		public static string ReplaceMissingsByGaussianWholeMatrix(double width, double shift, IMatrixData data, int[] colInds){
 			List<float> allValues = new List<float>();
 			for (int i = 0; i < data.RowCount; i++){
 				foreach (int t in colInds){
-					float x = data.Values.Get(i, t);
+					float x = GetValue(data, i, t);
 					if (!float.IsNaN(x) && !float.IsInfinity(x)){
 						allValues.Add(x);
 					}
@@ -120,17 +142,26 @@ namespace PerseusPluginLib.Impute{
 			}
 			double stddev;
 			double mean = ArrayUtils.MeanAndStddev(allValues.ToArray(), out stddev);
+			if (double.IsNaN(mean) || double.IsInfinity(mean) || double.IsNaN(stddev) || double.IsInfinity(stddev)){
+				return "Imputation failed since mean and standard deviation could not be calculated.";
+			}
 			double m = mean - shift*stddev;
 			double s = stddev*width;
 			Random2 r = new Random2();
 			for (int i = 0; i < data.RowCount; i++){
-				foreach (int t in colInds){
-					if (float.IsNaN(data.Values.Get(i, t)) || float.IsInfinity(data.Values.Get(i, t))){
-						data.Values.Set(i, t, (float) r.NextGaussian(m, s));
-						data.IsImputed[i, t] = true;
+				foreach (int colInd in colInds){
+					float x = GetValue(data, i, colInd);
+					if (float.IsNaN(x) || float.IsInfinity(x)){
+						if (colInd < data.ColumnCount){
+							data.Values.Set(i, colInd, (float) r.NextGaussian(m, s));
+							data.IsImputed[i, colInd] = true;
+						} else{
+							data.NumericColumns[colInd - data.ColumnCount][i] = r.NextGaussian(m, s);
+						}
 					}
 				}
 			}
+			return null;
 		}
 	}
 }

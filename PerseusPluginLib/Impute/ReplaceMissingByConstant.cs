@@ -46,12 +46,10 @@ namespace PerseusPluginLib.Impute{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new DoubleParam("Value", 0){Help = "The value that is going to be filled in for missing values."},
+				new Parameters(new DoubleParam("Value", 0){Help = "The value that is going to be filled in for missing values."},
 					new MultiChoiceParam("Columns", ArrayUtils.ConsecutiveInts(mdata.ColumnCount)){
 						Values = ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames)
-					}
-				});
+					});
 		}
 
 		private static void ReplaceMissingsByVal(float value, IMatrixData data, IEnumerable<int> mainInds,
