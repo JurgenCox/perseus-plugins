@@ -80,6 +80,7 @@
     <Compile Include="Generic\IProcessing.cs" />
     <Compile Include="Generic\IToMatrix.cs" />
     <Compile Include="Generic\IUpload.cs" />
+    <Compile Include="Generic\IVisualization.cs" />
     <Compile Include="Matrix\IMatrixMultiAnalysis.cs" />
     <Compile Include="Matrix\IMatrixMultiProcessing.cs" />
     <Compile Include="Matrix\IMatrixActivity.cs" />
