@@ -6,7 +6,15 @@ namespace PerseusApi.Generic{
 	/// Generic data structure holding the data that flows through the network. 
 	/// For example, this could be <code>IMatrixData</code>.
 	/// </summary>
-	public interface IData : INamedItem, IDisposable, ICloneable{
+	public interface IData : IDisposable, ICloneable{
+		/// <summary>
+		/// This is the name that e.g. appears in drop-down menus.
+		/// </summary>
+		string Name { get; set; }
+		/// <summary>
+		/// The context help that will appear in tool tips etc. 
+		/// </summary>
+		string Description { get; set; }
 		/// <summary>
 		/// A name that can be displayed as an alternative to <code>Name</code>.
 		/// </summary>
