@@ -1,5 +1,4 @@
 ﻿using System;
-using BaseLibS.Api;
 
 namespace PerseusApi.Generic{
 	/// <summary>
