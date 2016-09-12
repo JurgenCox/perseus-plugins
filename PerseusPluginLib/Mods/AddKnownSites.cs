@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
-using BaseLibS.Parse;
+using BaseLibS.Parse.Misc;
 using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
@@ -13,24 +11,11 @@ using PerseusApi.Matrix;
 
 namespace PerseusPluginLib.Mods{
 	public class AddKnownSites : IMatrixProcessing{
-		internal static readonly Dictionary<string, string> fileMap = CreateFileMap();
-
-		private static Dictionary<string, string> CreateFileMap(){
-			string folder = FileUtils.GetConfigPath() + "\\PSP\\";
-			return new Dictionary<string, string>{
-				{"Acetylation", folder + "Acetylation_site_dataset"},
-				{"Methylation", folder + "Methylation_site_dataset"},
-				{"O-GlcNAc", folder + "O-GlcNAc_site_dataset"},
-				{"O-GalNAc", folder + "O-GalNAc_site_dataset"},
-				{"Phosphorylation", folder + "Phosphorylation_site_dataset"},
-				{"Sumoylation", folder + "Sumoylation_site_dataset"},
-				{"Ubiquitination", folder + "Ubiquitination_site_dataset"}
-			};
-		}
-
 		public bool HasButton => false;
+
 		public string Url
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Modifications:AddKnownSites";
+
 		public Bitmap2 DisplayImage => null;
 		public string Description => "Sites that are known in PhosphoSitePlus are indicated.";
 		public string HelpOutput => "";
@@ -63,10 +48,10 @@ namespace PerseusPluginLib.Mods{
 					break;
 				}
 			}
-			string[] choice = fileMap.Keys.ToArray();
+			string[] choice = PhosphoSitePlusParser.GetAllMods();
 			int ind = ArrayUtils.IndexOf(choice, "Phosphorylation");
 			return
-				new Parameters(new Parameter[]{
+				new Parameters(
 					new SingleChoiceParam("Modification"){
 						Value = ind,
 						Values = choice,
@@ -81,27 +66,23 @@ namespace PerseusPluginLib.Mods{
 						Value = colSeqInd,
 						Help = "Specify here the column that contains the sequence windows around the site.",
 						Values = colChoice
-					}
-				});
+					});
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			string mod = param.GetParam<int>("Modification").StringValue;
-			string file = fileMap[mod];
-			if (!File.Exists(file)){
-				if (File.Exists(file + ".gz")){
-					file = file + ".gz";
-				} else{
-					processInfo.ErrString = "File " + file + " does not exist.";
-					return;
-				}
+			string filename = PhosphoSitePlusParser.GetFilenameForMod(mod);
+			if (filename == null){
+				processInfo.ErrString = "File does not exist.";
+				return;
 			}
-			string[] seqWins = TabSep.GetColumn("SITE_+/-7_AA", file, 3, '\t');
-			string[] accs = TabSep.GetColumn("ACC_ID", file, 3, '\t');
-			string[] pubmedLtp = TabSep.GetColumn("LT_LIT", file, 3, '\t');
-			string[] pubmedMs2 = TabSep.GetColumn("MS_LIT", file, 3, '\t');
-			string[] cstMs2 = TabSep.GetColumn("MS_CST", file, 3, '\t');
+			string[] seqWins;
+			string[] accs;
+			string[] pubmedLtp;
+			string[] pubmedMs2;
+			string[] cstMs2;
+			PhosphoSitePlusParser.ParseKnownMods(filename, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2);
 			string[] up = mdata.StringColumns[param.GetParam<int>("Uniprot column").Value];
 			string[][] uprot = new string[up.Length][];
 			for (int i = 0; i < up.Length; i++){
@@ -159,6 +140,8 @@ namespace PerseusPluginLib.Mods{
 			mdata.AddCategoryColumn("Known site", "", newCatCol);
 			mdata.AddCategoryColumn("Origin", "", originCol);
 		}
+
+		public static void ParseKnownSites(string filename){}
 
 		public static bool Contains(IEnumerable<string> wins, string x){
 			foreach (string win in wins){

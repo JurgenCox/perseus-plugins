@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
-using BaseLibS.Parse;
-using BaseLibS.Util;
+using BaseLibS.Parse.Misc;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
@@ -13,8 +11,10 @@ namespace PerseusPluginLib.Mods{
 	public class AddRegulatorySites : IMatrixProcessing{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
+
 		public string Description
 			=> "PSP information on regulatory sites is added based on UniProt identifiers and sequence windows.";
+
 		public string HelpOutput => "";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
@@ -24,6 +24,7 @@ namespace PerseusPluginLib.Mods{
 		public float DisplayRank => 15;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
+
 		public string Url
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Modifications:AddRegulatorySites";
 
@@ -48,7 +49,7 @@ namespace PerseusPluginLib.Mods{
 				}
 			}
 			return
-				new Parameters(new Parameter[]{
+				new Parameters(
 					new SingleChoiceParam("Uniprot column"){
 						Value = colInd,
 						Help = "Specify here the column that contains Uniprot identifiers.",
@@ -58,29 +59,25 @@ namespace PerseusPluginLib.Mods{
 						Value = colSeqInd,
 						Help = "Specify here the column that contains the sequence windows around the site.",
 						Values = colChoice
-					}
-				});
+					});
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string folder = FileUtils.GetConfigPath() + "\\PSP\\";
-			string file = folder + "Regulatory_sites";
-			if (!File.Exists(file)){
-				if (File.Exists(file + ".gz")){
-					file = file + ".gz";
-				} else{
-					processInfo.ErrString = "File " + file + " does not exist.";
-					return;
-				}
+			string filename = PhosphoSitePlusParser.GetRegulatorySitesFile();
+			if (filename == null){
+				processInfo.ErrString = "File  does not exist.";
+				return;
 			}
-			string[] seqWins = TabSep.GetColumn("SITE_+/-7_AA", file, 3, '\t');
-			string[] accs = TabSep.GetColumn("ACC_ID", file, 3, '\t');
-			string[] function = TabSep.GetColumn("ON_FUNCTION", file, 3, '\t');
-			string[] process = TabSep.GetColumn("ON_PROCESS", file, 3, '\t');
-			string[] protInteract = TabSep.GetColumn("ON_PROT_INTERACT", file, 3, '\t');
-			string[] otherInteract = TabSep.GetColumn("ON_OTHER_INTERACT", file, 3, '\t');
-			string[] notes = TabSep.GetColumn("NOTES", file, 3, '\t');
+			string[] seqWins;
+			string[] accs;
+			string[] function;
+			string[] process;
+			string[] protInteract;
+			string[] otherInteract;
+			string[] notes;
+			PhosphoSitePlusParser.ParseRegulatorySites(filename, out seqWins, out accs, out function, out process,
+				out protInteract, out otherInteract, out notes);
 			string[] up = mdata.StringColumns[param.GetParam<int>("Uniprot column").Value];
 			string[][] uprot = new string[up.Length][];
 			for (int i = 0; i < up.Length; i++){

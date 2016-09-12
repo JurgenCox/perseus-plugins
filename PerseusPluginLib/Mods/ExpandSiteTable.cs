@@ -12,10 +12,12 @@ namespace PerseusPluginLib.Mods{
 		private const int maxInd = 3;
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
+
 		public string Description
 			=>
-				"The '_1', '_2' and '_3' versions of MaxQuant output table columns are rearranged in the matrix to become a single column each."
-			;
+				"The '_1', '_2' and '_3' versions of MaxQuant output table columns are rearranged in the matrix " +
+				"to become a single column each.";
+
 		public string HelpOutput => "";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
@@ -25,6 +27,7 @@ namespace PerseusPluginLib.Mods{
 		public float DisplayRank => -5;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
+
 		public string Url
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Modifications:ExpandSiteTable";
 

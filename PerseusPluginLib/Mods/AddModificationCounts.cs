@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
-using BaseLibS.Parse;
+using BaseLibS.Parse.Misc;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
@@ -14,10 +12,15 @@ namespace PerseusPluginLib.Mods{
 	public class AddModificationCounts : IMatrixProcessing{
 		public bool HasButton => false;
 
-		public string Url => "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Modifications:AddModificationCounts";
+		public string Url
+			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Modifications:AddModificationCounts";
+
 		public Bitmap2 DisplayImage => null;
 		public string Description => "Count how many modifcations are known in PSP for the specified modification type(s).";
-		public string HelpOutput => "A numerical column is added containing the number of modifications for the given protein.";
+
+		public string HelpOutput
+			=> "A numerical column is added containing the number of modifications for the given protein.";
+
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string Name => "Add modification counts";
@@ -33,7 +36,8 @@ namespace PerseusPluginLib.Mods{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-				string[] mods = param.GetParam<int[]>("Modifications").StringValue.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+			string[] mods = param.GetParam<int[]>("Modifications").StringValue.Split(new[]{';'},
+				StringSplitOptions.RemoveEmptyEntries);
 			string[] up = mdata.StringColumns[param.GetParam<int>("Uniprot column").Value];
 			string[][] uprot = new string[up.Length][];
 			for (int i = 0; i < up.Length; i++){
@@ -42,17 +46,17 @@ namespace PerseusPluginLib.Mods{
 			double[][] c = new double[mods.Length][];
 			for (int index = 0; index < mods.Length; index++){
 				string mod = mods[index];
-				string file = AddKnownSites.fileMap[mod];
-				if (!File.Exists(file)) {
-					if (File.Exists(file + ".gz")){
-						file = file + ".gz";
-					} else{
-						processInfo.ErrString = "File " + file + " does not exist.";
-						return;
-					}
+				string filename = PhosphoSitePlusParser.GetFilenameForMod(mod);
+				if (filename == null){
+					processInfo.ErrString = "File does not exist.";
+					return;
 				}
-				string[] accs = TabSep.GetColumn("ACC_ID", file, 3, '\t');
-				string[] seqWins = TabSep.GetColumn("SITE_+/-7_AA", file, 3, '\t');
+				string[] seqWins;
+				string[] accs;
+				string[] pubmedLtp;
+				string[] pubmedMs2;
+				string[] cstMs2;
+				PhosphoSitePlusParser.ParseKnownMods(filename, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2);
 				for (int i = 0; i < seqWins.Length; i++){
 					seqWins[i] = seqWins[i].ToUpper();
 				}
@@ -114,16 +118,15 @@ namespace PerseusPluginLib.Mods{
 					break;
 				}
 			}
-			string[] choice = AddKnownSites.fileMap.Keys.ToArray();
+			string[] choice = PhosphoSitePlusParser.GetAllMods();
 			return
-				new Parameters(new Parameter[]{
+				new Parameters(
 					new MultiChoiceParam("Modifications"){Value = ArrayUtils.ConsecutiveInts(choice.Length), Values = choice},
 					new SingleChoiceParam("Uniprot column"){
 						Value = colInd,
 						Help = "Specify here the column that contains Uniprot identifiers.",
 						Values = colChoice
-					}
-				});
+					});
 		}
 	}
 }

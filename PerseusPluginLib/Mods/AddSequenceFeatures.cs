@@ -24,6 +24,7 @@ namespace PerseusPluginLib.Mods{
 		public int NumSupplTables => 0;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
+
 		public string Url
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Modifications:AddSequenceFeatures";
 
@@ -39,12 +40,9 @@ namespace PerseusPluginLib.Mods{
 					positionsIndex = i;
 				}
 			}
-			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Proteins"){Values = choice, Value = proteinsIndex},
-					new SingleChoiceParam("Positions within proteins"){Values = choice, Value = positionsIndex},
-					new BoolParam("Add status column"){Value = false}
-				});
+			return new Parameters(new SingleChoiceParam("Proteins"){Values = choice, Value = proteinsIndex},
+				new SingleChoiceParam("Positions within proteins"){Values = choice, Value = positionsIndex},
+				new BoolParam("Add status column"){Value = false});
 		}
 
 		public int GetMaxThreads(Parameters parameters){

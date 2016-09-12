@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
-using BaseLibS.Parse;
+using BaseLibS.Parse.Misc;
 using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
@@ -14,10 +13,12 @@ namespace PerseusPluginLib.Mods{
 	public class KinaseSubstrateRelations : IMatrixProcessing{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
+
 		public string Description
 			=>
 				"Kinase-substrate relations are read from PSP files and attached as annotation based on " +
 				"UniProt identifiers and sequence windows.";
+
 		public string HelpOutput => "";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
@@ -27,6 +28,7 @@ namespace PerseusPluginLib.Mods{
 		public float DisplayRank => 6;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
+
 		public string Url
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Modifications:KinaseSubstrateRelations";
 
@@ -36,20 +38,16 @@ namespace PerseusPluginLib.Mods{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string folder = FileUtils.GetConfigPath() + "\\PSP\\";
-			string file = folder + "Kinase_Substrate_Dataset";
-			if (!File.Exists(file)){
-				if (File.Exists(file + ".gz")){
-					file = file + ".gz";
-				} else{
-					processInfo.ErrString = "File " + file + " does not exist.";
-					return;
-				}
+			string filename = PhosphoSitePlusParser.GetKinaseSubstrateFile();
+			if (filename == null){
+				processInfo.ErrString = "File does not exist.";
+				return;
 			}
-			string[] seqWins = TabSep.GetColumn("SITE_+/-7_AA", file, 3, '\t');
-			string[] subAccs = TabSep.GetColumn("SUB_ACC_ID", file, 3, '\t');
-			string[] kinases = TabSep.GetColumn("KINASE", file, 3, '\t');
-			string[] kinAccs = TabSep.GetColumn("KIN_ACC_ID", file, 3, '\t');
+			string[] seqWins;
+			string[] subAccs;
+			string[] kinases;
+			string[] kinAccs;
+			PhosphoSitePlusParser.ParseKinaseSubstrate(filename, out seqWins, out subAccs, out kinases, out kinAccs);
 			string[] up = mdata.StringColumns[param.GetParam<int>("Uniprot column").Value];
 			string[][] uprot = new string[up.Length][];
 			for (int i = 0; i < up.Length; i++){
@@ -60,13 +58,10 @@ namespace PerseusPluginLib.Mods{
 				new Dictionary<string, List<Tuple<string, string, string>>>();
 			for (int i = 0; i < seqWins.Length; i++){
 				string subAcc = subAccs[i];
-				string seqWin = seqWins[i];
-				string kinase = kinases[i];
-				string kinAcc = kinAccs[i];
 				if (!substrateProperties.ContainsKey(subAcc)){
 					substrateProperties.Add(subAcc, new List<Tuple<string, string, string>>());
 				}
-				substrateProperties[subAcc].Add(new Tuple<string, string, string>(seqWin, kinase, kinAcc));
+				substrateProperties[subAcc].Add(new Tuple<string, string, string>(seqWins[i], kinases[i], kinAccs[i]));
 			}
 			string[] kinaseNameColumn = new string[uprot.Length];
 			string[] kinaseUniprotColumn = new string[uprot.Length];
@@ -112,7 +107,7 @@ namespace PerseusPluginLib.Mods{
 				}
 			}
 			return
-				new Parameters(new Parameter[]{
+				new Parameters(
 					new SingleChoiceParam("Uniprot column"){
 						Values = colChoice,
 						Value = colInd,
@@ -122,8 +117,7 @@ namespace PerseusPluginLib.Mods{
 						Values = colChoice,
 						Value = colSeqInd,
 						Help = "Specify here the column that contains the sequence windows around the site."
-					}
-				});
+					});
 		}
 	}
 }
