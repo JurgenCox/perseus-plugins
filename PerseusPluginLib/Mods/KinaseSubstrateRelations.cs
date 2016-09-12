@@ -38,16 +38,16 @@ namespace PerseusPluginLib.Mods{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string filename = PhosphoSitePlusParser.GetKinaseSubstrateFile();
-			if (filename == null){
-				processInfo.ErrString = "File does not exist.";
-				return;
-			}
 			string[] seqWins;
 			string[] subAccs;
 			string[] kinases;
 			string[] kinAccs;
-			PhosphoSitePlusParser.ParseKinaseSubstrate(filename, out seqWins, out subAccs, out kinases, out kinAccs);
+			string[] species;
+			PhosphoSitePlusParser.ParseKinaseSubstrate(out seqWins, out subAccs, out kinases, out kinAccs, out species);
+			if (seqWins == null){
+				processInfo.ErrString = "File does not exist.";
+				return;
+			}
 			string[] up = mdata.StringColumns[param.GetParam<int>("Uniprot column").Value];
 			string[][] uprot = new string[up.Length][];
 			for (int i = 0; i < up.Length; i++){

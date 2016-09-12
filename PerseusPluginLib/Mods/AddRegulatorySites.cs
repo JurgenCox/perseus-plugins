@@ -64,11 +64,6 @@ namespace PerseusPluginLib.Mods{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string filename = PhosphoSitePlusParser.GetRegulatorySitesFile();
-			if (filename == null){
-				processInfo.ErrString = "File  does not exist.";
-				return;
-			}
 			string[] seqWins;
 			string[] accs;
 			string[] function;
@@ -76,8 +71,12 @@ namespace PerseusPluginLib.Mods{
 			string[] protInteract;
 			string[] otherInteract;
 			string[] notes;
-			PhosphoSitePlusParser.ParseRegulatorySites(filename, out seqWins, out accs, out function, out process,
-				out protInteract, out otherInteract, out notes);
+			PhosphoSitePlusParser.ParseRegulatorySites(out seqWins, out accs, out function, out process, out protInteract,
+				out otherInteract, out notes);
+			if (seqWins == null){
+				processInfo.ErrString = "File  does not exist.";
+				return;
+			}
 			string[] up = mdata.StringColumns[param.GetParam<int>("Uniprot column").Value];
 			string[][] uprot = new string[up.Length][];
 			for (int i = 0; i < up.Length; i++){

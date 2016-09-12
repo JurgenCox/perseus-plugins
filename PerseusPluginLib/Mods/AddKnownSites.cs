@@ -72,17 +72,16 @@ namespace PerseusPluginLib.Mods{
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			string mod = param.GetParam<int>("Modification").StringValue;
-			string filename = PhosphoSitePlusParser.GetFilenameForMod(mod);
-			if (filename == null){
-				processInfo.ErrString = "File does not exist.";
-				return;
-			}
 			string[] seqWins;
 			string[] accs;
 			string[] pubmedLtp;
 			string[] pubmedMs2;
 			string[] cstMs2;
-			PhosphoSitePlusParser.ParseKnownMods(filename, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2);
+			PhosphoSitePlusParser.ParseKnownMod(mod, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2);
+			if (seqWins == null){
+				processInfo.ErrString = "File does not exist.";
+				return;
+			}
 			string[] up = mdata.StringColumns[param.GetParam<int>("Uniprot column").Value];
 			string[][] uprot = new string[up.Length][];
 			for (int i = 0; i < up.Length; i++){
