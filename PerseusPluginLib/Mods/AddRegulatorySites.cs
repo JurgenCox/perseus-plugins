@@ -71,8 +71,9 @@ namespace PerseusPluginLib.Mods{
 			string[] protInteract;
 			string[] otherInteract;
 			string[] notes;
+			string[] species;
 			PhosphoSitePlusParser.ParseRegulatorySites(out seqWins, out accs, out function, out process, out protInteract,
-				out otherInteract, out notes);
+				out otherInteract, out notes, out species);
 			if (seqWins == null){
 				processInfo.ErrString = "File  does not exist.";
 				return;

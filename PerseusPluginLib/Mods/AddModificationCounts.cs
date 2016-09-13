@@ -56,7 +56,8 @@ namespace PerseusPluginLib.Mods{
 				string[] pubmedLtp;
 				string[] pubmedMs2;
 				string[] cstMs2;
-				PhosphoSitePlusParser.ParseKnownMods(filename, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2);
+				string[] species;
+				PhosphoSitePlusParser.ParseKnownMods(filename, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2, out species);
 				for (int i = 0; i < seqWins.Length; i++){
 					seqWins[i] = seqWins[i].ToUpper();
 				}

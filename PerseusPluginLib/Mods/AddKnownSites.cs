@@ -77,7 +77,8 @@ namespace PerseusPluginLib.Mods{
 			string[] pubmedLtp;
 			string[] pubmedMs2;
 			string[] cstMs2;
-			PhosphoSitePlusParser.ParseKnownMod(mod, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2);
+			string[] species;
+			PhosphoSitePlusParser.ParseKnownMod(mod, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2, out species);
 			if (seqWins == null){
 				processInfo.ErrString = "File does not exist.";
 				return;
