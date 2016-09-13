@@ -141,8 +141,9 @@ namespace PerseusPluginLib.Join{
 			return result;
 		}
 
-		private static IMatrixData GetResult(IDataWithAnnotationRows mdata1, IDataWithAnnotationRows mdata2,
-			Parameters parameters, IList<int[]> indexMap){
+		private static IMatrixData GetResult(IMatrixData mdata1, IMatrixData mdata2,
+			Parameters parameters, IList<int[]> indexMap)
+		{
 			IMatrixData result = (IMatrixData) mdata1.Clone();
 			SetAnnotationRows(result, mdata1, mdata2);
 			bool indicator = parameters.GetParam<bool>("Indicator").Value;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 namespace PerseusApi.Generic{
-	public interface IDataWithAnnotationRows : IData{
+	public interface IDataWithAnnotationRows {
 		void CopyAnnotationRowsFrom(IDataWithAnnotationRows other);
 		void CopyAnnotationRowsFromColumns(IDataWithAnnotationColumns other);
 		int ColumnCount { get; }
