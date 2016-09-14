@@ -91,7 +91,7 @@ namespace PerseusApi.Generic{
 
         /// <summary>
         /// Gets all multi-numeric columns in the table.
-        /// Might not be feasible for large tables, use <see cref="MulitNumericColumnAt"/> instead
+        /// Might not be feasible for large tables, use <see cref="MultiNumericColumnAt"/> instead
         /// </summary>
 		List<double[][]> MultiNumericColumns { get; set; }
 
@@ -101,7 +101,7 @@ namespace PerseusApi.Generic{
         /// <param name="column"></param>
         /// <param name="row"></param>
         /// <returns></returns>
-	    double[] MulitNumericColumnAt(int column, int row);
+	    double[] MultiNumericColumnAt(int column, int row);
 
 		int MultiNumericColumnCount { get; }
 		List<string> MultiNumericColumnNames { get; set; }
