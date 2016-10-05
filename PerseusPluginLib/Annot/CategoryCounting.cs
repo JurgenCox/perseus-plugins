@@ -35,11 +35,9 @@ namespace PerseusPluginLib.Annot{
 			List<string> choice = mdata.CategoryColumnNames;
 			int[] selection = ArrayUtils.ConsecutiveInts(choice.Count);
 			string[] sel = ArrayUtils.Concat(mdata.CategoryColumnNames.ToArray(), "<None>");
-			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Categories"){Values = choice, Value = selection}, new IntParam("Min. count", 1),
-					new SingleChoiceParam("Selection"){Values = sel, Value = sel.Length - 1}, new StringParam("Value", "+")
-				});
+			return new Parameters(new MultiChoiceParam("Categories"){Values = choice, Value = selection},
+				new IntParam("Min. count", 1), new SingleChoiceParam("Selection"){Values = sel, Value = sel.Length - 1},
+				new StringParam("Value", "+"));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,

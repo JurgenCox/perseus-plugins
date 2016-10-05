@@ -16,13 +16,16 @@ namespace PerseusPluginLib.Annot{
 		Sum,
 		StandardDeviation
 	}
+
 	public class AverageCategories : IMatrixProcessing{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
+
 		public string Description
 			=>
 				"Rows that have a common term in one of the selected categorical columns are avereged. " +
 				"Several different summarization methods can be selected.";
+
 		public string HelpOutput => "";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
@@ -32,6 +35,7 @@ namespace PerseusPluginLib.Annot{
 		public float DisplayRank => 2;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
+
 		public string Url
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Annotcolumns:AverageCategories";
 
@@ -146,12 +150,9 @@ namespace PerseusPluginLib.Annot{
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			List<string> choice = mdata.CategoryColumnNames;
 			int[] selection = ArrayUtils.ConsecutiveInts(choice.Count);
-			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Categories", selection){Values = choice},
-					new SingleChoiceParam("Average type"){Values = new[]{"median", "mean", "sum", "standard deviation"}},
-					new IntParam("Min. size", 3)
-				});
+			return new Parameters(new MultiChoiceParam("Categories", selection){Values = choice},
+				new SingleChoiceParam("Average type"){Values = new[]{"median", "mean", "sum", "standard deviation"}},
+				new IntParam("Min. size", 3));
 		}
 
 		private static float Calc(IList<double> vals, SummaryType type){

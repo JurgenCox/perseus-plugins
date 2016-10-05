@@ -32,27 +32,22 @@ namespace PerseusPluginLib.Group{
 			;
 
 		public string Description
-			=>
-				"Main columns are averaged over groups. This requires that at least one categorical annotation row is defined."
-			;
+			=> "Main columns are averaged over groups. This requires that at least one categorical annotation row is defined.";
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			if (mdata.CategoryRowCount == 0){
 				errorString = "No grouping is loaded.";
 				return null;
 			}
-			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Grouping"){Values = mdata.CategoryRowNames},
-					new SingleChoiceParam("Average type"){
-						Values = new[]{"Median", "Mean", "Sum", "Geometric mean"},
-						Help = "Select wether median or mean should be used for the averaging."
-					},
-					new IntParam("Min. valid values per group", 1), new BoolParam("Keep original data", false),
-					new SingleChoiceParam("Add variation"){
-						Values = new[]{"<None>", "Standard deviation", "Error of mean"},
-						Help = "Specify here if a measure of group-wise variation should be added as numerical columns."
-					}
+			return new Parameters(new SingleChoiceParam("Grouping"){Values = mdata.CategoryRowNames},
+				new SingleChoiceParam("Average type"){
+					Values = new[]{"Median", "Mean", "Sum", "Geometric mean"},
+					Help = "Select wether median or mean should be used for the averaging."
+				},
+				new IntParam("Min. valid values per group", 1), new BoolParam("Keep original data", false),
+				new SingleChoiceParam("Add variation"){
+					Values = new[]{"<None>", "Standard deviation", "Error of mean"},
+					Help = "Specify here if a measure of group-wise variation should be added as numerical columns."
 				});
 		}
 
