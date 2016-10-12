@@ -1,6 +1,6 @@
 ﻿using BaseLibS.Num;
 using BaseLibS.Util;
-using PerseusApi.Matrix;
+using PerseusApi.Generic;
 
 namespace PerseusPluginLib.Utils{
 	public class RowNameInfo : INameInfo{
@@ -10,9 +10,9 @@ namespace PerseusPluginLib.Utils{
 		public int NameColumnIndex { get; set; }
 		public int Name2ColumnIndex { get; set; }
 		public int DescriptionColumnIndex { get; set; }
-		private readonly IMatrixData mdata;
+		private readonly IDataWithAnnotationColumns mdata;
 
-		public RowNameInfo(IMatrixData mdata){
+		public RowNameInfo(IDataWithAnnotationColumns mdata){
 			this.mdata = mdata;
 		}
 
