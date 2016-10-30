@@ -17,6 +17,6 @@
                 <Button Width="20" Height="20" ToolTip="Keep selected rows" x:Name="KeepSelectedRowsButton" Click="KeepSelectedRowsButton_OnClick"></Button>
             </ToolBar>
         </ToolBarTray>
-        <wpf:TableView Grid.Row="1" x:Name="TableView"></wpf:TableView>
+        <wpf:TableViewWpf Grid.Row="1" x:Name="TableView"></wpf:TableViewWpf>
     </Grid>
 </UserControl>
