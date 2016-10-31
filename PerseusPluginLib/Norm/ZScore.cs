@@ -7,11 +7,12 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Norm{
 	public class ZScore : IMatrixProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "zscoreButton.Image.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("zscoreButton.Image.png");
 		public string Name => "Z-score";
 		public string Heading => "Normalization";
 		public bool IsActive => true;
@@ -41,16 +42,13 @@ namespace PerseusPluginLib.Norm{
 					}
 				});
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceWithSubParams("Matrix access"){
-						Values = new[]{"Rows", "Columns"},
-						ParamNameWidth = 136,
-						TotalWidth = 731,
-						SubParams = new[]{rowParams, new Parameters()},
-						Help = "Specifies if the z-scoring is performed on the rows or the columns of the matrix."
-					},
-					new BoolParam("Use median"), new BoolParam("Report mean and std. dev.")
-				});
+				new Parameters(new SingleChoiceWithSubParams("Matrix access"){
+					Values = new[]{"Rows", "Columns"},
+					ParamNameWidth = 136,
+					TotalWidth = 731,
+					SubParams = new[]{rowParams, new Parameters()},
+					Help = "Specifies if the z-scoring is performed on the rows or the columns of the matrix."
+				}, new BoolParam("Use median"), new BoolParam("Report mean and std. dev."));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,

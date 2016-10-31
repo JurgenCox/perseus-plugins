@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
+using BaseLibS.Graph;
+using BaseLibS.Graph.Image;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using PerseusApi.Matrix;
@@ -448,6 +452,17 @@ namespace PerseusPluginLib.Utils{
 				result[o[i]] = new[]{"+"};
 			}
 			return result;
+		}
+
+		public static Bitmap2 GetImage(string file){
+			Assembly thisExe = Assembly.GetExecutingAssembly();
+			Stream file1 = thisExe.GetManifestResourceStream("PerseusPluginLib.img." + file);
+			if (file1 == null){
+				return null;
+			}
+			Bitmap2 bm = Image2.ReadImage(file1);
+			file1.Close();
+			return bm;
 		}
 	}
 }

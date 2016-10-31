@@ -10,11 +10,12 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Group{
 	public class CreateCategoricalAnnotRow : IMatrixProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "groupButton.Image.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("groupButton.Image.png");
 
 		public string Description
 			=>

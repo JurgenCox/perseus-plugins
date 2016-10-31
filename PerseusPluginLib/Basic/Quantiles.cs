@@ -5,11 +5,12 @@ using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Basic{
 	public class Quantiles : IMatrixProcessing{
 		public bool HasButton => false;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "quantiles.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("quantiles.png");
 		public string Name => "Quantiles";
 		public string Heading => "Basic";
 		public bool IsActive => true;

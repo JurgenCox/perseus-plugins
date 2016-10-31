@@ -6,6 +6,7 @@ using BaseLibS.Graph;
 using BaseLibS.Num;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Manual{
 	/// <summary>
@@ -20,8 +21,8 @@ namespace PerseusPluginLib.Manual{
 			this.mdata = mdata;
 			this.createNewMatrix = createNewMatrix;
 			TableView.TableModel = new MatrixDataTable(mdata);
-			RemoveSelectedRowsButton.Content = new Image { Source = WpfUtils.LoadBitmap(Bitmap2.GetImage("PerseusPluginLib.img.", "hand.png")) };
-			KeepSelectedRowsButton.Content = new Image { Source = WpfUtils.LoadBitmap(Bitmap2.GetImage("PerseusPluginLib.img.", "hand.png")) };
+			RemoveSelectedRowsButton.Content = new Image { Source = WpfUtils.LoadBitmap(PerseusPluginUtils.GetImage("hand.png")) };
+			KeepSelectedRowsButton.Content = new Image { Source = WpfUtils.LoadBitmap(PerseusPluginUtils.GetImage("hand.png")) };
 		}
 
 		private void RemoveSelectedRowsButton_OnClick(object sender, RoutedEventArgs e){

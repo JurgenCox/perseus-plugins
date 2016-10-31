@@ -8,11 +8,12 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Load{
 	public class UnstructuredTxtUpload : IMatrixUpload{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "raw.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("raw.png");
 		public string Name => "Raw upload";
 		public bool IsActive => true;
 		public float DisplayRank => 10;

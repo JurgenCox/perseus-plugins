@@ -10,11 +10,12 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Annot{
 	public class AddAnnotationToMatrix : IMatrixProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "network.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("network.png");
 
 		public string Description
 			=>

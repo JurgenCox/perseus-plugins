@@ -6,11 +6,12 @@ using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Join{
 	public class MatchingColumnsByName : IMatrixMultiProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "combineButton.Image.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("combineButton.Image.png");
 		public string Name => "Matching columns by name";
 		public bool IsActive => true;
 		public float DisplayRank => -4;

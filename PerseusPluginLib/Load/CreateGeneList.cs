@@ -7,11 +7,12 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Load{
 	public class CreateGeneList : IMatrixUpload{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "list.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("list.png");
 		public string Description => "Start with a list of all protein-coding genes from an organism.";
 		public string Name => "Create gene list";
 		public bool IsActive => true;

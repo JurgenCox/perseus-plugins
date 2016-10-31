@@ -11,7 +11,7 @@ using PerseusPluginLib.Utils;
 namespace PerseusPluginLib.Group{
 	public class AverageGroups : IMatrixProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "average.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("average.png");
 		public string HelpOutput => "Averaged main matrix containing as many columns as there were groups defined.";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;

@@ -8,12 +8,13 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Load{
 	public class BinaryUpload : IMatrixUpload{
 		private const string hexAlphabet = "0123456789ABCDEF";
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "binary.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("binary.png");
 		public string Name => "Binary upload";
 		public bool IsActive => true;
 		public float DisplayRank => 12;

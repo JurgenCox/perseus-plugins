@@ -7,11 +7,12 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Join{
 	public class MatchingRowsByName : IMatrixMultiProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "combineButton.Image.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("combineButton.Image.png");
 		public string Name => "Matching rows by name";
 		public bool IsActive => true;
 		public float DisplayRank => -5;

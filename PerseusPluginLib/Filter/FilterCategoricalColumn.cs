@@ -9,7 +9,7 @@ using PerseusPluginLib.Utils;
 namespace PerseusPluginLib.Filter{
 	public class FilterCategoricalColumn : IMatrixProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "filter2.png");
+		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("filter2.png");
 
 		public string Description
 			=> "Those rows are kept or removed that have the specified value in the selected categorical column.";
