@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusPluginLib.Properties;
 
 namespace PerseusPluginLib.Basic{
 	public class DensityEstimationProcessing : IMatrixProcessing{
@@ -14,7 +12,7 @@ namespace PerseusPluginLib.Basic{
 		public float DisplayRank => -3;
 		public bool IsActive => true;
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => GraphUtils.ToBitmap2(Resources.density_Image);
+		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "density.Image.png");
 		public string Heading => "Basic";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;

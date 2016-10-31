@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusPluginLib.Properties;
 
 namespace PerseusPluginLib.Impute{
 	public class ReplaceMissingFromGaussian : IMatrixProcessing{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => GraphUtils.ToBitmap2(Resources.histo);
+		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "histo.png");
 		public string HelpOutput => "";
 		public int NumSupplTables => 0;
 		public string[] HelpSupplTables => new string[0];

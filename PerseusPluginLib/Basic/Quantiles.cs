@@ -1,17 +1,15 @@
 using System.Collections.Generic;
-using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusPluginLib.Properties;
 
 namespace PerseusPluginLib.Basic{
 	public class Quantiles : IMatrixProcessing{
 		public bool HasButton => false;
-		public Bitmap2 DisplayImage => GraphUtils.ToBitmap2(Resources.quantiles);
+		public Bitmap2 DisplayImage => Bitmap2.GetImage("PerseusPluginLib.img.", "quantiles.png");
 		public string Name => "Quantiles";
 		public string Heading => "Basic";
 		public bool IsActive => true;

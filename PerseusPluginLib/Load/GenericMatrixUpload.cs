@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Param;
 using BaseLibS.Parse;
@@ -15,7 +14,7 @@ using PerseusApi.Utils;
 namespace PerseusPluginLib.Load{
 	public class GenericMatrixUpload : IMatrixUpload{
 		public bool HasButton => true;
-		public Bitmap2 DisplayImage => GraphUtils.ToBitmap2(BaseLib.Properties.Resources.upload64);
+		public Bitmap2 DisplayImage => Bitmap2.GetImage("upload64.png");
 		public string Name => "Generic matrix upload";
 		public bool IsActive => true;
 		public float DisplayRank => 0;

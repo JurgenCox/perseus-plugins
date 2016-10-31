@@ -254,6 +254,28 @@
   <ItemGroup>
     <None Include="Resources\network.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="img\average.png" />
+    <EmbeddedResource Include="img\binary.png" />
+    <EmbeddedResource Include="img\combineButton.Image.png" />
+    <EmbeddedResource Include="img\density.Image.png" />
+    <EmbeddedResource Include="img\filter2.png" />
+    <EmbeddedResource Include="img\groupButton.Image.png" />
+    <EmbeddedResource Include="img\hand.png" />
+    <EmbeddedResource Include="img\histo.png" />
+    <EmbeddedResource Include="img\impute.png" />
+    <EmbeddedResource Include="img\list.png" />
+    <EmbeddedResource Include="img\logButton.Image.png" />
+    <EmbeddedResource Include="img\missingsButton.Image.png" />
+    <EmbeddedResource Include="img\network.png" />
+    <EmbeddedResource Include="img\quantiles.png" />
+    <EmbeddedResource Include="img\raw.png" />
+    <EmbeddedResource Include="img\Save-icon.png" />
+    <EmbeddedResource Include="img\saveGeneric.png" />
+    <EmbeddedResource Include="img\trendline.Image.png" />
+    <EmbeddedResource Include="img\uploadGeneric.png" />
+    <EmbeddedResource Include="img\zscoreButton.Image.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

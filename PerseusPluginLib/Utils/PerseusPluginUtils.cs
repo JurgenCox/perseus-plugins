@@ -130,14 +130,10 @@ namespace PerseusPluginLib.Utils{
 						{new DoubleParam("Maximum", 0){Help = "Value defining which entry is counted as a valid value."}}),
 						new Parameters(new Parameter[]
 						{new DoubleParam("Maximum", 0){Help = "Value defining which entry is counted as a valid value."}}),
-						new Parameters(new Parameter[]{
-							new DoubleParam("Minimum", 0){Help = "Value defining which entry is counted as a valid value."},
-							new DoubleParam("Maximum", 0){Help = "Value defining which entry is counted as a valid value."}
-						}),
-						new Parameters(new Parameter[]{
-							new DoubleParam("Minimum", 0){Help = "Value defining which entry is counted as a valid value."},
-							new DoubleParam("Maximum", 0){Help = "Value defining which entry is counted as a valid value."}
-						})
+						new Parameters(new DoubleParam("Minimum", 0){Help = "Value defining which entry is counted as a valid value."},
+							new DoubleParam("Maximum", 0){Help = "Value defining which entry is counted as a valid value."}),
+						new Parameters(new DoubleParam("Minimum", 0){Help = "Value defining which entry is counted as a valid value."},
+							new DoubleParam("Maximum", 0){Help = "Value defining which entry is counted as a valid value."})
 					},
 				ParamNameWidth = 50,
 				TotalWidth = 731
