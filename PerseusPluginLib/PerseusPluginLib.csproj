@@ -55,7 +55,9 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -76,6 +78,12 @@
     <Compile Include="Join\ReplaceStrings.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
     <Compile Include="Load\CreateRandomMatrix.cs" />
+    <Compile Include="Load\PerseusLoadMatrixControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Load\PerseusLoadMatrixControl.Designer.cs">
+      <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Manual\SelectRowsManuallyControl1.xaml.cs">
       <DependentUpon>SelectRowsManuallyControl1.xaml</DependentUpon>
     </Compile>
@@ -116,9 +124,6 @@
     <Compile Include="Load\BinaryUpload.cs" />
     <Compile Include="Load\GenericMatrixUpload.cs" />
     <Compile Include="Load\PerseusLoadMatrixParam.cs" />
-    <Compile Include="Load\PerseusLoadMatrixControl.xaml.cs">
-      <DependentUpon>PerseusLoadMatrixControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Load\UnstructuredTxtUpload.cs" />
     <Compile Include="Manual\MatrixDataTable.cs" />
     <Compile Include="Manual\SelectRowsManually.cs" />
@@ -169,6 +174,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Load\PerseusLoadMatrixControl.resx">
+      <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -224,10 +232,6 @@
     <None Include="Resources\average.png" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Load\PerseusLoadMatrixControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Manual\SelectRowsManuallyControl1.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

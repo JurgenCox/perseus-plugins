@@ -121,7 +121,7 @@ namespace PerseusPluginLib.Load{
 			mdata.AddStringColumn("Name", "Name", names);
 			string[][] grouping = new string[ncols][];
 			for (int i = 0; i < ncols; i++){
-				int ig = (i*ngroups)/ncols + 1;
+				int ig = i*ngroups/ncols + 1;
 				grouping[i] = new[]{"Group" + ig};
 			}
 			mdata.AddCategoryRow("Grouping", "Grouping", grouping);
@@ -142,7 +142,7 @@ namespace PerseusPluginLib.Load{
 				new BoolWithSubParams("Set seed"){
 					Default = false,
 					Help = "For a fixed seed the generated 'random' matrix will always be identical",
-					SubParamsTrue = new Parameters(new Parameter[]{new IntParam("Seed", 0),})
+					SubParamsTrue = new Parameters(new Parameter[]{new IntParam("Seed", 0)})
 				});
 		}
 	}
