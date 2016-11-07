@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PluginProteomicRuler")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Absolute protein quantification PMID 25225357")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Max-Planck-Institute of Biochemistry")]
 [assembly: AssemblyProduct("PluginProteomicRuler")]

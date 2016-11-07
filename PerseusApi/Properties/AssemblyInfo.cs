@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("PerseusApi")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("API for Perseus plugin development")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Max-Planck-Institute of Biochemistry")]
 [assembly: AssemblyProduct("PerseusApi")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
