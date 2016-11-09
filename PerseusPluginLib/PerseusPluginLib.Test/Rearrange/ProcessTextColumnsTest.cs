@@ -3,7 +3,7 @@ using BaseLibS.Param;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
-using PerseusLib;
+using PerseusLibS;
 using PerseusPluginLib.Rearrange;
 
 namespace PerseusPluginLib.Test.Rearrange{
