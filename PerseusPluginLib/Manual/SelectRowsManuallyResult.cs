@@ -12,7 +12,7 @@ namespace PerseusPluginLib.Manual{
 		}
 
 		public object CreateUiElement(Action<string> updateStatusLabel, Action<IData> newData){
-			return new SelectRowsManuallyControl1(mdata, newData);
+			return new SelectRowsManuallyControl(mdata, newData);
 		}
 
 		public string Heading => "Select rows manually";

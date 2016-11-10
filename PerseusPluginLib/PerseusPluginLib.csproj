@@ -52,16 +52,10 @@
     <Reference Include="NumPluginSvm">
       <HintPath>..\DLLs\NumPluginSvm.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annot\AddAnnotationToMatrix.cs" />
@@ -89,9 +83,6 @@
     </Compile>
     <Compile Include="Manual\SelectRowsManuallyControl.Designer.cs">
       <DependentUpon>SelectRowsManuallyControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Manual\SelectRowsManuallyControl1.xaml.cs">
-      <DependentUpon>SelectRowsManuallyControl1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Mods\AddKnownSites.cs" />
     <Compile Include="Mods\AddModificationCounts.cs" />
@@ -239,12 +230,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\average.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Manual\SelectRowsManuallyControl1.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\raw.png" />
