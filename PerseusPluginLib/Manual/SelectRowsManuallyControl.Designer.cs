@@ -32,7 +32,7 @@
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
 			this.removeSelectedRowsButton = new System.Windows.Forms.ToolStripButton();
 			this.keepSelectedRowsButton = new System.Windows.Forms.ToolStripButton();
-			this.tableView1 = new BaseLib.Wpf.TableView();
+			this.tableView1 = new BaseLib.Forms.Table.TableView();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -95,6 +95,6 @@
 		private System.Windows.Forms.ToolStrip toolStrip1;
 		private System.Windows.Forms.ToolStripButton removeSelectedRowsButton;
 		private System.Windows.Forms.ToolStripButton keepSelectedRowsButton;
-		private BaseLib.Wpf.TableView tableView1;
+		private BaseLib.Forms.Table.TableView tableView1;
 	}
 }

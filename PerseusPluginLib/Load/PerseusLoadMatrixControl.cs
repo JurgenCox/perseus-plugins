@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using BaseLib.Wpf;
+using BaseLib.Forms;
 using BaseLibS.Param;
 using BaseLibS.Parse;
 using BaseLibS.Util;
@@ -101,9 +101,9 @@ namespace PerseusPluginLib.Load{
 			}
 			multiListSelectorControl1.Init(colNames);
 			if (colTypes != null){
-				WpfUtils.SelectExact(colNames, colTypes, multiListSelectorControl1);
+				FormUtils.SelectExact(colNames, colTypes, multiListSelectorControl1);
 			} else{
-				WpfUtils.SelectHeuristic(colNames, multiListSelectorControl1);
+				FormUtils.SelectHeuristic(colNames, multiListSelectorControl1);
 			}
 		}
 
