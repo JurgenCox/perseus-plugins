@@ -45,8 +45,13 @@ namespace PerseusPluginLib.Annot{
 			List<string> colChoice = mdata.StringColumnNames;
 			string[] baseNames;
 			string[] files;
-			string[][] annots = PerseusUtils.GetAvailableAnnots(out baseNames, out files);
-			int selFile = 0;
+		    List<string> badFiles;
+			string[][] annots = PerseusUtils.GetAvailableAnnots(out baseNames, out files, out badFiles);
+		    if (badFiles.Any())
+		    {
+                errorString = $"Could not load annotations from file(s): {string.Join(", ", badFiles)}";
+            }
+            int selFile = 0;
 			bool isMainAnnot = false;
 			for (int i = 0; i < files.Length; i++){
 				if (files[i].ToLower().Contains("perseusannot")){

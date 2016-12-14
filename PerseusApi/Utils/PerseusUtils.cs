@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using BaseLibS.Parse;
@@ -369,18 +370,63 @@ namespace PerseusApi.Utils{
 
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files){
 			AnnotType[][] types;
-			return GetAvailableAnnots(out baseNames, out types, out files);
+		    List<string> badFiles;
+			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
+		}
+        /// <summary>
+        /// Read-in all available annotations.
+        /// </summary>
+        /// <param name="baseNames"></param>
+        /// <param name="files"></param>
+        /// <param name="badFiles">all files which couldn't be read</param>
+        /// <returns></returns>
+		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles ){
+			AnnotType[][] types;
+			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
+		}
+		public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files) {
+		    List<string> badFiles;
+			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
 		}
 
-		public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files){
-			files = GetAnnotFiles();
-			baseNames = new string[files.Length];
-			types = new AnnotType[files.Length][];
-			string[][] names = new string[files.Length][];
-			for (int i = 0; i < names.Length; i++){
-				names[i] = GetAvailableAnnots(files[i], out baseNames[i], out types[i]);
-			}
-			return names;
+	    /// <summary>
+	    /// Read-in all available annotations.
+	    /// </summary>
+	    /// <param name="baseNames"></param>
+	    /// <param name="types"></param>
+	    /// <param name="files"></param>
+	    /// <param name="badFiles">all files which couldn't be read</param>
+	    /// <returns></returns>
+	    public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files, out List<string> badFiles ){
+			var _files = GetAnnotFiles().ToList();
+            badFiles = new List<string>();
+		    var _baseNames = new List<string>();
+		    var _types = new List<AnnotType[]>();
+		    var names = new List<string[]>();
+		    foreach (var file in _files)
+		    {
+		        try
+		        {
+		            string baseName;
+		            AnnotType[] type;
+		            var name = GetAvailableAnnots(file, out baseName, out type);
+                    names.Add(name);
+                    _baseNames.Add(baseName);
+                    _types.Add(type);
+                }
+                catch (Exception exception)
+                {
+                    badFiles.Add(file);
+		        }
+	        }
+		    foreach (var badFile in badFiles)
+		    {
+		        _files.Remove(badFile);
+		    }
+		    files = _files.ToArray();
+		    baseNames = _baseNames.ToArray();
+		    types = _types.ToArray();
+			return names.ToArray();
 		}
 
 		private static string[] GetAvailableAnnots(string file, out string baseName, out AnnotType[] types){
