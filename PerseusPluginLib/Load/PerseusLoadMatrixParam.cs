@@ -5,6 +5,13 @@ using BaseLibS.Param;
 using BaseLibS.Util;
 
 namespace PerseusPluginLib.Load{
+    /// <summary>
+    /// Parameter value format: 8 item string array
+    /// [0] file name: string
+    /// [1] column names: string
+    /// [2-6] main, num, cat, text, multi-numeric: integers separated by ';'
+    /// [7] shorten column names: bool
+    /// </summary>
 	[Serializable]
 	public class PerseusLoadMatrixParam : Parameter<string[]>{
 		public string Filter { get; set; }
@@ -27,8 +34,8 @@ namespace PerseusPluginLib.Load{
 		}
 
 		public override string StringValue{
-			get { return StringUtils.Concat(";", Value); }
-			set { Value = value.Split(';'); }
+			get { return StringUtils.Concat("\n", Value); }
+			set { Value = value.Split('\n'); }
 		}
 
 		public override bool IsDropTarget => true;
