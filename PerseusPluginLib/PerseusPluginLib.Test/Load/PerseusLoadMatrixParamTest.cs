@@ -11,7 +11,7 @@ namespace PerseusPluginLib.Test.Load
         {
             var param = new PerseusLoadMatrixParam("test") { Value = new []{"fileName", "a;b 1;c;d;e;f", "1;3", "4", "2", "5", "", "true"} };
             Assert.AreEqual("fileName", param.Filename);
-            CollectionAssert.AreEquivalent(new [] {"a", "b", "c", "d", "e", "f"}, param.Items);
+            CollectionAssert.AreEquivalent(new [] {"a", "b 1", "c", "d", "e", "f"}, param.Items);
             CollectionAssert.AreEquivalent(new [] {1, 3}, param.MainColumnIndices);
             CollectionAssert.AreEquivalent(new [] {4}, param.NumericalColumnIndices);
             CollectionAssert.AreEquivalent(new [] {2}, param.CategoryColumnIndices);
