@@ -24,8 +24,7 @@ namespace PerseusPluginLib.Test.Load
             var param2 = new PerseusLoadMatrixParam("test") { Value = new []{"fileName", "a;b 1;c;d;e;f", "1;3", "4", "2", "5", "", "true"} };
             var stringValue = param2.StringValue;
 
-            var param = new PerseusLoadMatrixParam("test");
-            param.StringValue = stringValue;
+            var param = new PerseusLoadMatrixParam("test") {StringValue = stringValue};
             Assert.AreEqual("fileName", param.Filename);
             CollectionAssert.AreEquivalent(new [] {"a", "b 1", "c", "d", "e", "f"}, param.Items);
             CollectionAssert.AreEquivalent(new [] {1, 3}, param.MainColumnIndices);

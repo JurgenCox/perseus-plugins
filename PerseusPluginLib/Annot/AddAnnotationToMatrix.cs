@@ -316,29 +316,28 @@ namespace PerseusPluginLib.Annot{
 			numCols = nc.ToArray();
 		}
 
-		private static Dictionary<string, string[]> ReadMapping(ICollection<string> allIds, string file, IList<int> selection){
-			for (int i = 0; i < selection.Count; i++){
-				selection[i]++;
-			}
-			StreamReader reader = FileUtils.GetReader(file);
-			reader.ReadLine();
-			reader.ReadLine();
-			string line;
+		public static Dictionary<string, string[]> ReadMapping(ICollection<string> allIds, string file, IList<int> selection){
 			Dictionary<string, string[]> result = new Dictionary<string, string[]>();
-			while ((line = reader.ReadLine()) != null){
-				string[] q = line.Split('\t');
-				string w = q[0];
-				string[] ids = w.Length > 0 ? w.Split(';') : new string[0];
-				string[] value = ArrayUtils.SubArray(q, selection);
-				foreach (string id in ids){
-					if (!allIds.Contains(id)){
-						continue;
-					}
-					if (!result.ContainsKey(id)){
-						result.Add(id, value);
-					}
-				}
-			}
+		    using (var reader = FileUtils.GetReader(file))
+		    {
+                reader.ReadLine();
+                reader.ReadLine();
+                string line;
+                while ((line = reader.ReadLine()) != null){
+                    string[] q = line.Split('\t');
+                    string w = q[0];
+                    string[] ids = w.Length > 0 ? w.Split(';') : new string[0];
+                    string[] value = ArrayUtils.SubArray(q, selection.Select(i => i+1).ToArray());
+                    foreach (string id in ids){
+                        if (!allIds.Contains(id)){
+                            continue;
+                        }
+                        if (!result.ContainsKey(id)){
+                            result.Add(id, value);
+                        }
+                    }
+                }
+		    }
 			return result;
 		}
 

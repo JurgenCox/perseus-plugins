@@ -57,11 +57,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Annot\AddAnnotationToMatrixTest.cs" />
+    <Compile Include="PerseusApi\PerseusUtilsTest.cs" />
+    <Compile Include="BaseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rearrange\ProcessTextColumnsTest.cs" />
     <Compile Include="Rearrange\RenameColumnsRegexpTest.cs" />
     <Compile Include="Load\PerseusLoadMatrixParamTest.cs" />
-    <Compile Include="SerializationTest.cs" />
+    <Compile Include="Serialization\SerializationTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\PerseusApi\PerseusApi.csproj">
@@ -77,6 +80,15 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="conf\annotations\chromosome.100.txt.gz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="conf\annotations\mainAnnot.homo_sapiens.100.txt.gz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="conf\annotations\transfacAnnot.100.txt.gz">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

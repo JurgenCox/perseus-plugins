@@ -368,65 +368,79 @@ namespace PerseusApi.Utils{
 			return w;
 		}
 
+        /// <summary>
+        /// Search the annotation folder for annotations.
+        /// </summary>
+        /// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example Uniprot, ENSG</param>
+        /// <param name="files"></param>
+        /// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files){
 			AnnotType[][] types;
 		    List<string> badFiles;
 			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
 		}
-        /// <summary>
-        /// Read-in all available annotations.
-        /// </summary>
-        /// <param name="baseNames"></param>
-        /// <param name="files"></param>
-        /// <param name="badFiles">all files which couldn't be read</param>
-        /// <returns></returns>
-		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles ){
+
+	    /// <summary>
+	    /// Search the annotation folder for annotations.
+	    /// </summary>
+	    /// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example Uniprot, ENSG</param>
+	    /// <param name="files"></param>
+	    /// <param name="badFiles">List of files which could not be processed</param>
+	    /// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
+	    public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles ){
 			AnnotType[][] types;
-			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
-		}
-		public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files) {
-		    List<string> badFiles;
 			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
 		}
 
 	    /// <summary>
-	    /// Read-in all available annotations.
+	    /// Search the annotation folder for annotations.
 	    /// </summary>
-	    /// <param name="baseNames"></param>
-	    /// <param name="types"></param>
+	    /// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example Uniprot, ENSG</param>
+	    /// <param name="types"><see cref="AnnotType"/></param>
 	    /// <param name="files"></param>
-	    /// <param name="badFiles">all files which couldn't be read</param>
-	    /// <returns></returns>
+	    /// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
+	    public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files) {
+		    List<string> badFiles;
+			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
+		}
+        /// <summary>
+        /// Search the annotation folder for annotations.
+        /// </summary>
+        /// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example Uniprot, ENSG</param>
+	    /// <param name="types"><see cref="AnnotType"/></param>
+        /// <param name="files"></param>
+	    /// <param name="badFiles">List of files which could not be processed</param>
+        /// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 	    public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files, out List<string> badFiles ){
-			var _files = GetAnnotFiles().ToList();
+			var filesList = GetAnnotFiles().ToList();
             badFiles = new List<string>();
-		    var _baseNames = new List<string>();
-		    var _types = new List<AnnotType[]>();
-		    var names = new List<string[]>();
-		    foreach (var file in _files)
+		    var baseNamesList = new List<string>();
+		    var typesList = new List<AnnotType[]>();
+		    var annotationNames = new List<string[]>();
+		    foreach (var file in filesList)
 		    {
 		        try
 		        {
 		            string baseName;
 		            AnnotType[] type;
 		            var name = GetAvailableAnnots(file, out baseName, out type);
-                    names.Add(name);
-                    _baseNames.Add(baseName);
-                    _types.Add(type);
+                    annotationNames.Add(name);
+                    baseNamesList.Add(baseName);
+                    typesList.Add(type);
                 }
-                catch (Exception exception)
+                catch (Exception)
                 {
                     badFiles.Add(file);
 		        }
 	        }
 		    foreach (var badFile in badFiles)
 		    {
-		        _files.Remove(badFile);
+		        filesList.Remove(badFile);
 		    }
-		    files = _files.ToArray();
-		    baseNames = _baseNames.ToArray();
-		    types = _types.ToArray();
-			return names.ToArray();
+		    files = filesList.ToArray();
+		    baseNames = baseNamesList.ToArray();
+		    types = typesList.ToArray();
+			return annotationNames.ToArray();
 		}
 
 		private static string[] GetAvailableAnnots(string file, out string baseName, out AnnotType[] types){

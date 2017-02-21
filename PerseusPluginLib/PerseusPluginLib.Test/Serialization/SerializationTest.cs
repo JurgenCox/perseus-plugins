@@ -1,10 +1,9 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Xml.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PerseusPluginLib.Load;
 
-namespace PerseusPluginLib.Test
+namespace PerseusPluginLib.Test.Serialization
 {
     [TestClass]
     public class SerializationTest
