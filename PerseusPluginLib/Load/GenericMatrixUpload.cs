@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using BaseLibS.Graph;
+﻿using BaseLibS.Graph;
 using BaseLibS.Param;
-using BaseLibS.Parse;
-using BaseLibS.Util;
-using Calc;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
@@ -53,7 +47,9 @@ namespace PerseusPluginLib.Load{
 				processInfo.ErrString = "Please specify a filename";
 				return;
 			}
-		    PerseusUtils.ReadMatrixFromFile(mdata, processInfo, filename, par.MainColumnIndices, par.NumericalColumnIndices, par.CategoryColumnIndices, par.TextColumnIndices, par.MultiNumericalColumnIndices, par.MainFilterParameters, par.NumericalFilterParameters, par.ShortenExpressionColumnNames);
-        }
+			PerseusUtils.ReadMatrixFromFile(mdata, processInfo, filename, par.MainColumnIndices, par.NumericalColumnIndices,
+				par.CategoryColumnIndices, par.TextColumnIndices, par.MultiNumericalColumnIndices, par.MainFilterParameters,
+				par.NumericalFilterParameters, par.ShortenExpressionColumnNames);
+		}
 	}
 }
