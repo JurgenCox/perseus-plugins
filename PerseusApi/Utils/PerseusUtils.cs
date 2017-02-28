@@ -690,6 +690,42 @@ namespace PerseusApi.Utils{
 		}
 
 	    /// <summary>
+	    /// Write data table to file with tab separation.
+	    /// </summary>
+	    /// <param name="data"></param>
+	    /// <param name="filename"></param>
+	    public static void WriteDataWithAnnotationColumns(IDataWithAnnotationColumns data, string filename)
+	    {
+	        using (var writer = new StreamWriter(filename))
+	        {
+	            WriteDataWithAnnotationColumns(data, writer);
+	        }
+	    }
+
+        /// <summary>
+        /// Write data table to stream with tab separation.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="writer"></param>
+	    public static void WriteDataWithAnnotationColumns(IDataWithAnnotationColumns data, StreamWriter writer)
+	    {
+            var columnNames = ColumnNames(data);
+            writer.WriteLine(StringUtils.Concat("\t", columnNames));
+            if (HasAnyDescription(data))
+            {
+                var columnDescriptions = ColumnDescriptions(data);
+                writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
+            }
+            var columnTypes = ColumnTypes(data);
+            writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", columnTypes));
+            var dataRows = DataAnnotationRows(data);
+            foreach (var row in dataRows)
+            {
+                writer.WriteLine(row);
+            }
+	    }
+
+	    /// <summary>
 	    /// Write matrix to stream with tab separation.
 	    /// </summary>
 	    /// <param name="data"></param>
@@ -752,13 +788,21 @@ namespace PerseusApi.Utils{
 	                }
 	                words.Add(s1);
 	            }
-	            var row = words.Concat(DataAnnotationRows(data, j));
+	            var row = words.Concat(DataAnnotationRow(data, j));
 	            rows.Add(StringUtils.Concat("\t", row));
 	        }
 	        return rows;
 	    }
 
-	    private static IEnumerable<string> DataAnnotationRows(IMatrixData data, int j)
+	    private static IEnumerable<string> DataAnnotationRows(IDataWithAnnotationColumns data)
+	    {
+	        for (int i = 0; i < data.RowCount; i++)
+	        {
+	            yield return StringUtils.Concat("\t", DataAnnotationRow(data, i));
+	        }
+	    }
+
+	    private static IEnumerable<string> DataAnnotationRow(IDataWithAnnotationColumns data, int j)
 	    {
             var words = new List<string>();
 	        for (int i = 0; i < data.CategoryColumnCount; i++)
