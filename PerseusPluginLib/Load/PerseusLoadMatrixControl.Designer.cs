@@ -32,8 +32,8 @@
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.selectButton = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.multiListSelectorControl1 = new BaseLib.Forms.MultiListSelectorControl();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
@@ -92,6 +92,15 @@
             this.selectButton.Text = "Select";
             this.selectButton.UseVisualStyleBackColor = true;
             // 
+            // multiListSelectorControl1
+            // 
+            this.multiListSelectorControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.multiListSelectorControl1.Location = new System.Drawing.Point(0, 27);
+            this.multiListSelectorControl1.Margin = new System.Windows.Forms.Padding(0);
+            this.multiListSelectorControl1.Name = "multiListSelectorControl1";
+            this.multiListSelectorControl1.Size = new System.Drawing.Size(594, 603);
+            this.multiListSelectorControl1.TabIndex = 1;
+            // 
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
@@ -103,15 +112,6 @@
             this.checkBox1.TabIndex = 2;
             this.checkBox1.Text = "Shorten main column names";
             this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // multiListSelectorControl1
-            // 
-            this.multiListSelectorControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.multiListSelectorControl1.Location = new System.Drawing.Point(0, 27);
-            this.multiListSelectorControl1.Margin = new System.Windows.Forms.Padding(0);
-            this.multiListSelectorControl1.Name = "multiListSelectorControl1";
-            this.multiListSelectorControl1.Size = new System.Drawing.Size(594, 603);
-            this.multiListSelectorControl1.TabIndex = 1;
             // 
             // PerseusLoadMatrixControl
             // 

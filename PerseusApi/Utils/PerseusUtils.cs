@@ -690,171 +690,254 @@ namespace PerseusApi.Utils{
 		}
 
 	    /// <summary>
-	    /// Write matrix to file with tab separation
+	    /// Write matrix to stream with tab separation.
 	    /// </summary>
 	    /// <param name="data"></param>
-	    /// <param name="filename"></param>
-	    /// <param name="addtlMatrices">if true numbers are converted to triples <code>value;imputed;quality</code></param>
-	    public static void WriteMatrixToFile(IMatrixData data, string filename, bool addtlMatrices=false)
+	    /// <param name="writer"></param>
+	    /// <param name="addtlMatrices"></param>
+	    public static void WriteMatrix(IMatrixData data, StreamWriter writer, bool addtlMatrices = false)
+	    {
+            var columnNames = ColumnNames(data);
+            writer.WriteLine(StringUtils.Concat("\t", columnNames));
+            if (HasAnyDescription(data))
+            {
+                var columnDescriptions = ColumnDescriptions(data);
+                writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
+            }
+            var columnTypes = ColumnTypes(data);
+            writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", columnTypes));
+            var numAnnotRows = NumericalAnnotationRows(data);
+            foreach (var row in numAnnotRows)
+            {
+                writer.WriteLine(row);
+            }
+            var catAnnotRows = CategoricalAnnotationRows(data);
+            foreach (var row in catAnnotRows)
+            {
+                writer.WriteLine(row);
+            }
+            var dataRows = DataRows(data, addtlMatrices);
+            foreach (var row in dataRows)
+            {
+                writer.WriteLine(row);
+            }
+        }
+
+        /// <summary>
+        /// Write matrix to file with tab separation
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="filename"></param>
+        /// <param name="addtlMatrices">if true numbers are converted to triples <code>value;imputed;quality</code></param>
+        public static void WriteMatrixToFile(IMatrixData data, string filename, bool addtlMatrices=false)
 	    {
 	        using (var writer = new StreamWriter(filename))
 	        {
-	            List<string> words = new List<string>();
-	            for (int i = 0; i < data.ColumnCount; i++)
-	            {
-	                words.Add(data.ColumnNames[i]);
-	            }
-	            for (int i = 0; i < data.CategoryColumnCount; i++)
-	            {
-	                words.Add(data.CategoryColumnNames[i]);
-	            }
-	            for (int i = 0; i < data.NumericColumnCount; i++)
-	            {
-	                words.Add(data.NumericColumnNames[i]);
-	            }
-	            for (int i = 0; i < data.StringColumnCount; i++)
-	            {
-	                words.Add(data.StringColumnNames[i]);
-	            }
-	            for (int i = 0; i < data.MultiNumericColumnCount; i++)
-	            {
-	                words.Add(data.MultiNumericColumnNames[i]);
-	            }
-	            writer.WriteLine(StringUtils.Concat("\t", words));
-	            if (HasAnyDescription(data))
-	            {
-	                words = new List<string>();
-	                for (int i = 0; i < data.ColumnCount; i++)
-	                {
-	                    words.Add(data.ColumnDescriptions[i] ?? "");
-	                }
-	                for (int i = 0; i < data.CategoryColumnCount; i++)
-	                {
-	                    words.Add(data.CategoryColumnDescriptions[i] ?? "");
-	                }
-	                for (int i = 0; i < data.NumericColumnCount; i++)
-	                {
-	                    words.Add(data.NumericColumnDescriptions[i] ?? "");
-	                }
-	                for (int i = 0; i < data.StringColumnCount; i++)
-	                {
-	                    words.Add(data.StringColumnDescriptions[i] ?? "");
-	                }
-	                for (int i = 0; i < data.MultiNumericColumnCount; i++)
-	                {
-	                    words.Add(data.MultiNumericColumnDescriptions[i] ?? "");
-	                }
-	                writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", words));
-	            }
-	            words = new List<string>();
-	            for (int i = 0; i < data.ColumnCount; i++)
-	            {
-	                words.Add("E");
-	            }
-	            for (int i = 0; i < data.CategoryColumnCount; i++)
-	            {
-	                words.Add("C");
-	            }
-	            for (int i = 0; i < data.NumericColumnCount; i++)
-	            {
-	                words.Add("N");
-	            }
-	            for (int i = 0; i < data.StringColumnCount; i++)
-	            {
-	                words.Add("T");
-	            }
-	            for (int i = 0; i < data.MultiNumericColumnCount; i++)
-	            {
-	                words.Add("M");
-	            }
-	            writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", words));
-	            for (int i = 0; i < data.NumericRowCount; i++)
-	            {
-	                words = new List<string>();
-	                for (int j = 0; j < data.ColumnCount; j++)
-	                {
-	                    words.Add("" + data.NumericRows[i][j]);
-	                }
-	                for (int j = 0; j < data.CategoryColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                for (int j = 0; j < data.NumericColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                for (int j = 0; j < data.StringColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                for (int j = 0; j < data.MultiNumericColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                writer.WriteLine("#!{N:" + data.NumericRowNames[i] + "}" + StringUtils.Concat("\t", words));
-	            }
-	            for (int i = 0; i < data.CategoryRowCount; i++)
-	            {
-	                words = new List<string>();
-	                for (int j = 0; j < data.ColumnCount; j++)
-	                {
-	                    string[] s = data.GetCategoryRowAt(i)[j];
-	                    words.Add(s.Length == 0 ? "" : StringUtils.Concat(";", s));
-	                }
-	                for (int j = 0; j < data.CategoryColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                for (int j = 0; j < data.NumericColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                for (int j = 0; j < data.StringColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                for (int j = 0; j < data.MultiNumericColumnCount; j++)
-	                {
-	                    words.Add("");
-	                }
-	                writer.WriteLine("#!{C:" + data.CategoryRowNames[i] + "}" + StringUtils.Concat("\t", words));
-	            }
-	            for (int j = 0; j < data.RowCount; j++)
-	            {
-	                words = new List<string>();
-	                for (int i = 0; i < data.ColumnCount; i++)
-	                {
-	                    string s1 = "" + data.Values.Get(j, i);
-	                    if (addtlMatrices)
-	                    {
-	                        s1 += ";" + data.IsImputed[j, i] + ";" + data.Quality.Get(j, i);
-	                    }
-	                    words.Add(s1);
-	                }
-	                for (int i = 0; i < data.CategoryColumnCount; i++)
-	                {
-	                    string[] q = data.GetCategoryColumnEntryAt(i, j) ?? new string[0];
-	                    words.Add((q.Length > 0 ? StringUtils.Concat(";", q) : ""));
-	                }
-	                for (int i = 0; i < data.NumericColumnCount; i++)
-	                {
-	                    words.Add("" + data.NumericColumns[i][j]);
-	                }
-	                for (int i = 0; i < data.StringColumnCount; i++)
-	                {
-	                    words.Add(data.StringColumns[i][j]);
-	                }
-	                for (int i = 0; i < data.MultiNumericColumnCount; i++)
-	                {
-	                    double[] q = data.MultiNumericColumns[i][j];
-	                    words.Add((q.Length > 0 ? StringUtils.Concat(";", q) : ""));
-	                }
-	                string s = StringUtils.Concat("\t", words);
-	                writer.WriteLine(s);
-	            }
+                WriteMatrix(data, writer, addtlMatrices);
 	        }
 	    }
 
+	    private static IEnumerable<string> DataRows(IMatrixData data, bool addtlMatrices)
+	    {
+	        var rows = new List<string>();
+	        for (int j = 0; j < data.RowCount; j++)
+	        {
+	            var words = new List<string>();
+	            for (int i = 0; i < data.ColumnCount; i++)
+	            {
+	                string s1 = "" + data.Values.Get(j, i);
+	                if (addtlMatrices)
+	                {
+	                    s1 += ";" + data.IsImputed[j, i] + ";" + data.Quality.Get(j, i);
+	                }
+	                words.Add(s1);
+	            }
+	            var row = words.Concat(DataAnnotationRows(data, j));
+	            rows.Add(StringUtils.Concat("\t", row));
+	        }
+	        return rows;
+	    }
+
+	    private static IEnumerable<string> DataAnnotationRows(IMatrixData data, int j)
+	    {
+            var words = new List<string>();
+	        for (int i = 0; i < data.CategoryColumnCount; i++)
+	        {
+	            string[] q = data.GetCategoryColumnEntryAt(i, j) ?? new string[0];
+	            words.Add((q.Length > 0 ? StringUtils.Concat(";", q) : ""));
+	        }
+	        for (int i = 0; i < data.NumericColumnCount; i++)
+	        {
+	            words.Add("" + data.NumericColumns[i][j]);
+	        }
+	        for (int i = 0; i < data.StringColumnCount; i++)
+	        {
+	            words.Add(data.StringColumns[i][j]);
+	        }
+	        for (int i = 0; i < data.MultiNumericColumnCount; i++)
+	        {
+	            double[] q = data.MultiNumericColumns[i][j];
+	            words.Add((q.Length > 0 ? StringUtils.Concat(";", q) : ""));
+	        }
+	        return words;
+	    }
+
+	    private static IEnumerable<string> CategoricalAnnotationRows(IDataWithAnnotationRows data)
+	    {
+            var rows = new List<string>();
+	        for (int i = 0; i < data.CategoryRowCount; i++)
+	        {
+	            var words = new List<string>();
+	            for (int j = 0; j < data.ColumnCount; j++)
+	            {
+	                string[] s = data.GetCategoryRowAt(i)[j];
+	                words.Add(s.Length == 0 ? "" : StringUtils.Concat(";", s));
+	            }
+                var row = words.Concat(AnnotationRowPadding((IDataWithAnnotationColumns) data));
+	            rows.Add("#!{C:" + data.CategoryRowNames[i] + "}" + StringUtils.Concat("\t", row));
+	        }
+	        return rows;
+	    }
+
+	    private static IEnumerable<string> NumericalAnnotationRows(IDataWithAnnotationRows data)
+	    {
+	        var rows = new List<string>();
+	        for (int i = 0; i < data.NumericRowCount; i++)
+	        {
+	            var words = new List<string>();
+	            for (int j = 0; j < data.ColumnCount; j++)
+	            {
+	                words.Add("" + data.NumericRows[i][j]);
+	            }
+                var row = words.Concat(AnnotationRowPadding((IDataWithAnnotationColumns) data));
+                rows.Add("#!{N:" + data.NumericRowNames[i] + "}" + StringUtils.Concat("\t", row));
+	        }
+	        return rows;
+	    }
+
+	    private static IEnumerable<string> AnnotationRowPadding(IDataWithAnnotationColumns data)
+	    {
+            var words = new List<string>();
+	        for (int j = 0; j < data.CategoryColumnCount; j++)
+	        {
+	            words.Add("");
+	        }
+	        for (int j = 0; j < data.NumericColumnCount; j++)
+	        {
+	            words.Add("");
+	        }
+	        for (int j = 0; j < data.StringColumnCount; j++)
+	        {
+	            words.Add("");
+	        }
+	        for (int j = 0; j < data.MultiNumericColumnCount; j++)
+	        {
+	            words.Add("");
+	        }
+	        return words;
+	    }
+
+	    private static IEnumerable<string> ColumnTypes(IMatrixData data)
+	    {
+	        var words = new List<string>();
+	        for (int i = 0; i < data.ColumnCount; i++)
+	        {
+	            words.Add("E");
+	        }
+	        return words.Concat(ColumnTypes((IDataWithAnnotationColumns) data));
+	    }
+
+	    private static IEnumerable<string> ColumnTypes(IDataWithAnnotationColumns data)
+	    {
+	        var words = new List<string>();
+	        for (int i = 0; i < data.CategoryColumnCount; i++)
+	        {
+	            words.Add("C");
+	        }
+	        for (int i = 0; i < data.NumericColumnCount; i++)
+	        {
+	            words.Add("N");
+	        }
+	        for (int i = 0; i < data.StringColumnCount; i++)
+	        {
+	            words.Add("T");
+	        }
+	        for (int i = 0; i < data.MultiNumericColumnCount; i++)
+	        {
+	            words.Add("M");
+	        }
+	        return words;
+	    }
+
+	    private static IEnumerable<string> ColumnDescriptions(IMatrixData data)
+	    {
+	        var words = new List<string>();
+	        for (int i = 0; i < data.ColumnCount; i++)
+	        {
+	            words.Add(data.ColumnDescriptions[i] ?? "");
+	        }
+            return words.Concat(ColumnDescriptions((IDataWithAnnotationColumns) data));
+	    }
+
+	    private static IEnumerable<string> ColumnDescriptions(IDataWithAnnotationColumns data)
+	    {
+	        var words = new List<string>();
+	        for (int i = 0; i < data.CategoryColumnCount; i++)
+	        {
+	            words.Add(data.CategoryColumnDescriptions[i] ?? "");
+	        }
+	        for (int i = 0; i < data.NumericColumnCount; i++)
+	        {
+	            words.Add(data.NumericColumnDescriptions[i] ?? "");
+	        }
+	        for (int i = 0; i < data.StringColumnCount; i++)
+	        {
+	            words.Add(data.StringColumnDescriptions[i] ?? "");
+	        }
+	        for (int i = 0; i < data.MultiNumericColumnCount; i++)
+	        {
+	            words.Add(data.MultiNumericColumnDescriptions[i] ?? "");
+	        }
+	        return words;
+	    }
+
+	    private static IEnumerable<string> ColumnNames(IMatrixData data)
+	    {
+            var words = new List<string>();
+            for (int i = 0; i < data.ColumnCount; i++)
+	        {
+	            words.Add(data.ColumnNames[i]);
+	        }
+	        return words.Concat(ColumnNames((IDataWithAnnotationColumns) data));
+	    }
+
+	    private static IEnumerable<string> ColumnNames(IDataWithAnnotationColumns data)
+	    {
+            var words = new List<string>();
+	        for (int i = 0; i < data.CategoryColumnCount; i++)
+	        {
+	            words.Add(data.CategoryColumnNames[i]);
+	        }
+	        for (int i = 0; i < data.NumericColumnCount; i++)
+	        {
+	            words.Add(data.NumericColumnNames[i]);
+	        }
+	        for (int i = 0; i < data.StringColumnCount; i++)
+	        {
+	            words.Add(data.StringColumnNames[i]);
+	        }
+	        for (int i = 0; i < data.MultiNumericColumnCount; i++)
+	        {
+	            words.Add(data.MultiNumericColumnNames[i]);
+	        }
+	        return words;
+	    }
+
+        /// <summary>
+        /// True if any column description is set.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
 	    public static bool HasAnyDescription(IMatrixData data)
 	    {
 	        for (int i = 0; i < data.ColumnCount; i++)
@@ -864,6 +947,11 @@ namespace PerseusApi.Utils{
 	                return true;
 	            }
 	        }
+	        return HasAnyDescription((IDataWithAnnotationColumns) data);
+	    }
+
+	    private static bool HasAnyDescription(IDataWithAnnotationColumns data)
+	    {
 	        for (int i = 0; i < data.CategoryColumnCount; i++)
 	        {
 	            if (data.CategoryColumnDescriptions[i] != null && data.CategoryColumnDescriptions[i].Length > 0)
@@ -894,27 +982,35 @@ namespace PerseusApi.Utils{
 	        }
 	        return false;
 	    }
-        public static void ReadMatrixFromFile(IMatrixData mdata, ProcessInfo processInfo, string filename, char separator)
-        {
+
+	    public static void ReadMatrix(IMatrixData mdata, ProcessInfo processInfo, Func<StreamReader> getReader, string name, char separator)
+	    {
             var annotationRows = new Dictionary<string, string[]>();
-            var colNames = TabSep.GetColumnNames(filename, commentPrefix,
-                commentPrefixExceptions, annotationRows, separator);
+	        string[] colNames;
+            using (var reader = getReader()) {
+                colNames = TabSep.GetColumnNames(reader, 0, commentPrefix, commentPrefixExceptions, annotationRows, separator);
+            }
             var typeRow = annotationRows["Type"];
             int[] eInds, nInds, cInds, tInds, mInds;
             ColumnIndices(typeRow, out eInds, out nInds, out cInds, out tInds, out mInds);
             var filters = new List<Tuple<Relation[], int[], bool>>();
 	        int nrows;
-	        using(StreamReader reader = FileUtils.GetReader(filename))
-	        using (StreamReader auxReader = FileUtils.GetReader(filename))
+	        using(var reader = getReader())
+	        using (var auxReader = getReader())
 	        {
 	            nrows = GetRowCount(reader, auxReader, eInds, filters, separator);
 	        }
-	        using (StreamReader reader = FileUtils.GetReader(filename))
-	        using (StreamReader auxReader = FileUtils.GetReader(filename))
+	        using (var reader = getReader())
+	        using (var auxReader = getReader())
 	        {
 	            LoadMatrixData(annotationRows, eInds, cInds, nInds, tInds, mInds, processInfo, colNames, mdata, reader,
-	                auxReader, nrows, filename, separator, false, filters);
+	                auxReader, nrows, name, separator, false, filters);
 	        }
+	    }
+
+	    public static void ReadMatrixFromFile(IMatrixData mdata, ProcessInfo processInfo, string filename, char separator)
+        {
+            ReadMatrix(mdata, processInfo, () => FileUtils.GetReader(filename), filename, separator);
         }
 
 	    private static void ColumnIndices(string[] typeRow, out int[] eInds, out int[] nInds, out int[] cInds, out int[] tInds, out int[] mInds)
