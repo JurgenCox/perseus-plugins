@@ -19,7 +19,7 @@ namespace PerseusPluginLib.Load{
 			selectButton.Click += SelectButton_OnClick;
 			multiListSelectorControl1.Init(items, new[]{"Main", "Numerical", "Categorical", "Text", "Multi-numerical"},
 				new Func<string[], Parameters>[]{
-					s => new Parameters(PerseusUtils.GetNumFilterParams(s)), s => new Parameters(PerseusUtils.GetNumFilterParams(s)),
+					null, null, //s => new Parameters(PerseusUtils.GetNumFilterParams(s)),
 					null, null, null
 				});
 			if (!string.IsNullOrEmpty(filename)){
