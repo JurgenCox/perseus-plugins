@@ -53,13 +53,13 @@ namespace PerseusPluginLib.Manual{
 			AddAnnotationRow(row, "Type", "Type of the column.");
 		}
 
-		public override object[] GetRowData(int row){
+		public override object[] GetRowData(long row){
 			List<object> rowData = new List<object>();
 			for (int i = 0; i < mdata.ColumnCount; i++){
-				rowData.Add(NumUtils.RoundSignificantDigits(mdata.Values.Get(row, i), 6));
+				rowData.Add(NumUtils.RoundSignificantDigits(mdata.Values.Get((int) row, i), 6));
 			}
 			for (int i = 0; i < mdata.CategoryColumnCount; i++){
-				rowData.Add(StringUtils.Concat(";", mdata.GetCategoryColumnEntryAt(i,row) ?? new string[0]));
+				rowData.Add(StringUtils.Concat(";", mdata.GetCategoryColumnEntryAt(i, (int) row) ?? new string[0]));
 			}
 			for (int i = 0; i < mdata.NumericColumnCount; i++){
 				rowData.Add(NumUtils.RoundSignificantDigits(mdata.NumericColumns[i][row], 6));
