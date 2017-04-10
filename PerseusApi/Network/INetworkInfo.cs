@@ -21,15 +21,12 @@ namespace PerseusApi.Network{
         /// <summary>
         /// Maps the node from the <see cref="Graph"/> to the corresponding row in the <see cref="NodeTable"/>.
         /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-	    int NodeIndex(INode node);
+	    IDictionary<INode, int> NodeIndex { get; }
         /// <summary>
         /// Maps the edge from the <see cref="Graph"/> to the corresponding row in the <see cref="EdgeTable"/>.
         /// </summary>
-        /// <param name="edge"></param>
-        /// <returns></returns>
-	    int EdgeIndex(IEdge edge);
+	    IDictionary<IEdge, int> EdgeIndex { get; }
+
         /// <summary>
         /// Node-link graph
         /// </summary>
@@ -40,7 +37,7 @@ namespace PerseusApi.Network{
         string Name { get; set; }
         
         /// <summary>
-        /// Contais arbitrary meta-data for the networkS
+        /// Contais arbitrary meta-data for the networks.
         /// </summary>
         Dictionary<string, object> MetaData { get; set; }
 	}
