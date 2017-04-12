@@ -35,13 +35,13 @@ namespace PerseusPluginLib.Filter{
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			int colInd = param.GetParam<int>("Column").Value;
 			string searchString = param.GetParam<string>("Search string").Value;
-			if (string.IsNullOrEmpty(searchString)){
-				processInfo.ErrString = "Please provide a search string";
-				return;
-			}
 			bool remove = param.GetParam<int>("Mode").Value == 0;
 			bool matchCase = param.GetParam<bool>("Match case").Value;
 			bool matchWholeWord = param.GetParam<bool>("Match whole word").Value;
+			if (matchWholeWord && string.IsNullOrEmpty(searchString)){
+				processInfo.ErrString = "Please provide a search string, or set 'Match whole word' to match empty entries.";
+				return;
+			}
 			string[] vals = mdata.StringColumns[colInd];
 			List<int> valids = new List<int>();
 			for (int i = 0; i < vals.Length; i++){
@@ -80,22 +80,28 @@ namespace PerseusPluginLib.Filter{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Column"){
-						Values = mdata.StringColumnNames,
-						Help = "The text column that the filtering should be based on."
-					},
-					new StringParam("Search string"){Help = "String that is searched in the specified column."},
-					new BoolParam("Match case"), new BoolParam("Match whole word"){Value = true},
-					new SingleChoiceParam("Mode"){
-						Values = new[]{"Remove matching rows", "Keep matching rows"},
-						Help =
-							"If 'Remove matching rows' is selected, rows matching the criteria will be removed while " +
-							"all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen.",
-						Value = 0
-					},
-					PerseusPluginUtils.GetFilterModeParam(true)
-				});
+				new Parameters(
+                    new SingleChoiceParam("Column")
+                    {
+                        Values = mdata.StringColumnNames,
+                        Help = "The text column that the filtering should be based on."
+                    },
+                    new StringParam("Search string")
+                    {
+                        Help = "String that is searched in the specified column.",
+                        Value = ""
+                    },
+                    new BoolParam("Match case"), new BoolParam("Match whole word") { Value = true },
+                    new SingleChoiceParam("Mode")
+                    {
+                        Values = new[] { "Remove matching rows", "Keep matching rows" },
+                        Help =
+                            "If 'Remove matching rows' is selected, rows matching the criteria will be removed while " +
+                            "all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen.",
+                        Value = 0
+                    },
+                    PerseusPluginUtils.GetFilterModeParam(true)
+                );
 		}
 	}
 }
