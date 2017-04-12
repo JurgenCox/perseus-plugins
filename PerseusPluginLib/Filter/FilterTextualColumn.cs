@@ -38,7 +38,7 @@ namespace PerseusPluginLib.Filter{
 			bool remove = param.GetParam<int>("Mode").Value == 0;
 			bool matchCase = param.GetParam<bool>("Match case").Value;
 			bool matchWholeWord = param.GetParam<bool>("Match whole word").Value;
-			if (matchWholeWord && string.IsNullOrEmpty(searchString)){
+			if (!matchWholeWord && string.IsNullOrEmpty(searchString)){
 				processInfo.ErrString = "Please provide a search string, or set 'Match whole word' to match empty entries.";
 				return;
 			}
@@ -56,10 +56,10 @@ namespace PerseusPluginLib.Filter{
 		}
 
 		private static bool Matches(string text, string searchString, bool matchCase, bool matchWholeWord){
-			if (text == null && text.Length == 0){
+			if (text == null){
 				return false;
 			}
-			string[] words = text.Length == 0 ? new string[0] : text.Split(';');
+			string[] words = text.Split(';');
 			foreach (string word in words){
 				if (MatchesWord(word, searchString, matchCase, matchWholeWord)){
 					return true;
