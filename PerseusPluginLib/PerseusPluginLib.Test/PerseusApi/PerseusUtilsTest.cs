@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
-using PerseusLibS;
+using PerseusFactory = PerseusApi.Utils.PerseusFactory;
 
 namespace PerseusPluginLib.Test.PerseusApi
 {
@@ -29,7 +29,7 @@ namespace PerseusPluginLib.Test.PerseusApi
         public void WriteMatrixTest()
         {
             // main data
-            var mdata = PerseusFactory.CreateNewMatrixData(new float[,] { { 1, 2, 3 }, { 3, 4, 5 } }, new List<string> { "col1", "col2", "col3" });
+            var mdata = PerseusFactory.CreateMatrixData(new float[,] { { 1, 2, 3 }, { 3, 4, 5 } }, new List<string> { "col1", "col2", "col3" });
             // annotation rows
             mdata.AddCategoryRow("catrow", "this is catrow", new[] { new[] { "cat1" }, new[] { "cat1", "cat2" }, new[] { "cat2" } });
             mdata.AddNumericRow("numrow", "this is numrow", new[] { -1.0, 1, 2 });
@@ -49,7 +49,7 @@ namespace PerseusPluginLib.Test.PerseusApi
                 mdataStr = Encoding.UTF8.GetString(memstream.ToArray());
             }
 
-            IMatrixData mdata2 = PerseusFactory.CreateNewMatrixData();
+            IMatrixData mdata2 = PerseusFactory.CreateMatrixData();
             PerseusUtils.ReadMatrix(mdata2, new ProcessInfo(new Settings(), status => { }, progress => { }, 1, i => { }), () =>
             {
                 var tmpStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(mdataStr)));
@@ -91,7 +91,7 @@ namespace PerseusPluginLib.Test.PerseusApi
                 mdataStr = Encoding.UTF8.GetString(memstream.ToArray());
             }
 
-            IMatrixData _mdata2 = PerseusFactory.CreateNewMatrixData();
+            IMatrixData _mdata2 = PerseusFactory.CreateMatrixData();
             PerseusUtils.ReadMatrix(_mdata2, new ProcessInfo(new Settings(), status => { }, progress => { }, 1, i => { }), () =>
             {
                 var tmpStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(mdataStr)));
