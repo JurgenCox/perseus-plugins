@@ -7,7 +7,7 @@ namespace PerseusApi.Utils
 	/// <summary>
 	/// Factory class that provides static methods for creating instances of data items used in Perseus
 	/// </summary>
-	public class PerseusFactory
+	public class PerseusFactory2
 	{
 		/// <summary>
 		/// Creates an empty default implementation of IMatrixData
