@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="RIDER_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$/../..">
+      <sourceFolder url="file://$MODULE_DIR$/../../PerseusApi" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../PerseusPluginLib" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../PluginProteomicRuler" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PerseusApi/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PerseusApi/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PerseusPluginLib/PerseusPluginLib.Test/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PerseusPluginLib/PerseusPluginLib.Test/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PerseusPluginLib/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PerseusPluginLib/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PluginProteomicRuler/bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../../PluginProteomicRuler/obj" />
+      <excludeFolder url="file://$MODULE_DIR$/../../packages" />
+    </content>
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

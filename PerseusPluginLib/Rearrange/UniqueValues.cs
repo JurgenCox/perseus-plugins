@@ -6,6 +6,7 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Rearrange{
 	public class UniqueValues : IMatrixProcessing{
@@ -14,8 +15,8 @@ namespace PerseusPluginLib.Rearrange{
 
 		public string Description
 			=>
-				"Values in the selected text columns are made unique. The strings are " +
-				"interpreted as separated by semicolons. These semicolon-separated values are made unique.";
+				"Values within each row in the selected text columns are made unique by removing duplicates. The entries are " +
+				"interpreted as separated by semicolons.";
 
 		public string Name => "Unique values";
 		public string Heading => "Rearrange";
@@ -39,20 +40,10 @@ namespace PerseusPluginLib.Rearrange{
 				processInfo.ErrString = "Please select some columns.";
 				return;
 			}
-			foreach (string[] col in stringCols.Select(stringCol => mdata.StringColumns[stringCol])){
-				for (int i = 0; i < col.Length; i++){
-					string q = col[i];
-					if (q.Length == 0){
-						continue;
-					}
-					string[] w = q.Split(';');
-					w = ArrayUtils.UniqueValues(w);
-					col[i] = StringUtils.Concat(";", w);
-				}
-			}
+		    mdata.UniqueValues(stringCols);
 		}
 
-		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
+	    public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
 				new Parameters(new Parameter[]{
 					new MultiChoiceParam("Text columns"){

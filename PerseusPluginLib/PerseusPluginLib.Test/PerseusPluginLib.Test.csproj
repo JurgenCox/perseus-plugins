@@ -65,6 +65,7 @@
     <Compile Include="Rearrange\RenameColumnsRegexpTest.cs" />
     <Compile Include="Load\PerseusLoadMatrixParamTest.cs" />
     <Compile Include="Serialization\SerializationTest.cs" />
+    <Compile Include="Utils\DataWithAnnotationColumnsExtensionsTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\PerseusApi\PerseusApi.csproj">
