@@ -76,7 +76,6 @@ namespace PerseusPluginLib.Test.PerseusApi {
 			mdata.AddNumericColumn("numcol", "", new[] {1.0, 2.0});
 			mdata.AddMultiNumericColumn("multnumcol", "this is multnumcol", new[] {new[] {-2.0, 2.0}, new double[] {}});
 			mdata.AddCategoryColumn("catcol", "", new[] {new[] {"cat1", "cat1.1"}, new[] {"cat2", "cat1"}});
-
 			string mdataStr;
 			using (MemoryStream memstream = new MemoryStream())
 			using (StreamWriter writer = new StreamWriter(memstream)) {
@@ -84,22 +83,18 @@ namespace PerseusPluginLib.Test.PerseusApi {
 				writer.Flush();
 				mdataStr = Encoding.UTF8.GetString(memstream.ToArray());
 			}
-
-			IMatrixData _mdata2 = PerseusFactory.CreateMatrixData();
-			PerseusUtils.ReadMatrix(_mdata2, new ProcessInfo(new Settings(), status => { }, progress => { }, 1, i => { }),
+			IMatrixData mdata3 = PerseusFactory.CreateMatrixData();
+			PerseusUtils.ReadMatrix(mdata3, new ProcessInfo(new Settings(), status => { }, progress => { }, 1, i => { }),
 				() => {
 					StreamReader tmpStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(mdataStr)));
 					return tmpStream;
 				}, "matrix1", '\t');
-			IDataWithAnnotationColumns mdata2 = (IDataWithAnnotationColumns) _mdata2;
-
+			IDataWithAnnotationColumns mdata2 = mdata3;
 			Assert.AreEqual(2, mdata2.RowCount);
-
 			Assert.AreEqual(2, mdata2.StringColumnCount);
 			Assert.AreEqual(1, mdata2.NumericColumnCount);
 			Assert.AreEqual(1, mdata2.CategoryColumnCount);
 			Assert.AreEqual(1, mdata2.MultiNumericColumnCount);
-
 			Assert.AreEqual("hallo", mdata2.StringColumns[mdata2.StringColumnNames.FindIndex(col => col.Equals("strcol2"))][1]);
 		}
 	}

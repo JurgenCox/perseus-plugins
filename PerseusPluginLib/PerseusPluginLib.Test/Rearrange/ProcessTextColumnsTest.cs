@@ -3,7 +3,7 @@ using BaseLibS.Param;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
-using PerseusLibS;
+using PerseusApi.Utils;
 using PerseusPluginLib.Rearrange;
 
 namespace PerseusPluginLib.Test.Rearrange{
@@ -63,7 +63,7 @@ namespace PerseusPluginLib.Test.Rearrange{
 					new StringParam("Regular expression", regexStr), new BoolParam("Keep original columns", false),
 					new BoolParam("Strings separated by semicolons are independent", false)
 				});
-			IMatrixData mdata = PerseusFactory.CreateNewMatrixData();
+			IMatrixData mdata = PerseusFactory.CreateMatrixData();
 			mdata.Clear();
 			mdata.Name = name;
 			mdata.SetAnnotationColumns(stringColumnNames, stringColumnsInit, mdata.CategoryColumnNames, new List<string[][]>(),
