@@ -68,41 +68,30 @@ namespace PluginProteomicRuler{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Total number of peptides"){
-						Values = mdata.NumericColumnNames,
-						Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"peptides"}, false, true, true)[0],
-					},
-					new SingleChoiceParam("Unique + razor peptides"){
-						Values = mdata.NumericColumnNames,
-						Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"razor"}, false, true, true)[0],
-					},
-					new SingleChoiceParam("Sequence length"){
-						Values = mdata.NumericColumnNames,
-						Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"length"}, false, true, true)[0],
-					},
-					new SingleChoiceParam("Number of theoretical peptides"){
-						Values = mdata.NumericColumnNames,
-						Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"theoretical"}, false, true, true)[0],
-					},
-					new DoubleParam("High: min. peptides", 8){
-						Help = "High confidence class: Specify the minimum number of total peptides."
-					},
-					new DoubleParam("High: min. razor fraction", 0.75){
-						Help = "High confidence class: Specify the minimum ratio of unique+razor to total peptides."
-					},
-					new DoubleParam("High: min. theor.pep./100AA", 3){
-						Help = "High confidence class: Specify the minimum number of theoretical peptides per 100 amino acids."
-					},
-					new DoubleParam("Medium: min. peptides", 3){
-						Help = "Medium confidence class: Specify the minimum number of total peptides."
-					},
-					new DoubleParam("Medium: min. razor fraction", 0.5){
-						Help = "Medium confidence class: Specify the minimum ratio of unique+razor to total peptides."
-					},
-					new DoubleParam("Medium: min. theor.pep./100AA", 2){
-						Help = "Medium confidence class: Specify the minimum number of theoretical peptides per 100 amino acids."
-					},
+				new Parameters(new SingleChoiceParam("Total number of peptides"){
+					Values = mdata.NumericColumnNames,
+					Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"peptides"}, false, true, true)[0],
+				}, new SingleChoiceParam("Unique + razor peptides"){
+					Values = mdata.NumericColumnNames,
+					Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"razor"}, false, true, true)[0],
+				}, new SingleChoiceParam("Sequence length"){
+					Values = mdata.NumericColumnNames,
+					Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"length"}, false, true, true)[0],
+				}, new SingleChoiceParam("Number of theoretical peptides"){
+					Values = mdata.NumericColumnNames,
+					Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"theoretical"}, false, true, true)[0],
+				}, new DoubleParam("High: min. peptides", 8){
+					Help = "High confidence class: Specify the minimum number of total peptides."
+				}, new DoubleParam("High: min. razor fraction", 0.75){
+					Help = "High confidence class: Specify the minimum ratio of unique+razor to total peptides."
+				}, new DoubleParam("High: min. theor.pep./100AA", 3){
+					Help = "High confidence class: Specify the minimum number of theoretical peptides per 100 amino acids."
+				}, new DoubleParam("Medium: min. peptides", 3){
+					Help = "Medium confidence class: Specify the minimum number of total peptides."
+				}, new DoubleParam("Medium: min. razor fraction", 0.5){
+					Help = "Medium confidence class: Specify the minimum ratio of unique+razor to total peptides."
+				}, new DoubleParam("Medium: min. theor.pep./100AA", 2){
+					Help = "Medium confidence class: Specify the minimum number of theoretical peptides per 100 amino acids."
 				});
 		}
 	}

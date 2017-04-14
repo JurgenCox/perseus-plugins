@@ -42,10 +42,7 @@ namespace PerseusPluginLib.Norm{
 				}
 			}
 			Parameters rowSubParams =
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Mean", rowMeanInd){Values = mdata.NumericColumnNames},
-					new SingleChoiceParam("Std. dev.", rowDevInd){Values = mdata.NumericColumnNames}
-				});
+				new Parameters(new SingleChoiceParam("Mean", rowMeanInd){Values = mdata.NumericColumnNames}, new SingleChoiceParam("Std. dev.", rowDevInd){Values = mdata.NumericColumnNames});
 			int colMeanInd = 0;
 			int colDevInd = 0;
 			for (int i = 0; i < mdata.NumericRowCount; i++){
@@ -57,10 +54,7 @@ namespace PerseusPluginLib.Norm{
 				}
 			}
 			Parameters columnSubParams =
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Mean", colMeanInd){Values = mdata.NumericRowNames},
-					new SingleChoiceParam("Std. dev.", colDevInd){Values = mdata.NumericRowNames}
-				});
+				new Parameters(new SingleChoiceParam("Mean", colMeanInd){Values = mdata.NumericRowNames}, new SingleChoiceParam("Std. dev.", colDevInd){Values = mdata.NumericRowNames});
 			return
 				new Parameters(new Parameter[]{
 					new SingleChoiceWithSubParams("Matrix access"){

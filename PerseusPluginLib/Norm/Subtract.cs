@@ -92,23 +92,20 @@ namespace PerseusPluginLib.Norm{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString) {
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceWithSubParams("Matrix access"){
-						Values = new[]{"Rows", "Columns"}, ParamNameWidth = 136, TotalWidth = 731,
-						SubParams =
-							new[]{
-								new Parameters(new SingleChoiceParam("Grouping")
+				new Parameters(new SingleChoiceWithSubParams("Matrix access"){
+					Values = new[]{"Rows", "Columns"}, ParamNameWidth = 136, TotalWidth = 731,
+					SubParams =
+						new[]{
+							new Parameters(new SingleChoiceParam("Grouping")
 								{Values = ArrayUtils.Concat(new[]{"<No grouping>"}, mdata.CategoryRowNames)}),
-								new Parameters()
-							},
-						Help = "Specifies if the subtraction is performed on the rows or the columns of the matrix."
-					},
-					new SingleChoiceParam("Subtract what"){
-						Values = new[]{
-							"Mean", "Median", "Most frequent value", "Tukey's biweight"
+							new Parameters()
 						},
-						Value = 1
-					}
+					Help = "Specifies if the subtraction is performed on the rows or the columns of the matrix."
+				}, new SingleChoiceParam("Subtract what"){
+					Values = new[]{
+						"Mean", "Median", "Most frequent value", "Tukey's biweight"
+					},
+					Value = 1
 				});
 		}
 

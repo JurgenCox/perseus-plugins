@@ -120,34 +120,28 @@ namespace PerseusPluginLib.Significance{
 			List<string> choice = mdata.ColumnNames;
 			string[] choice2 = ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames);
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Ratio columns"){
-						Values = choice,
-						Help = "Ratio columns for which the Significance B should be calculated."
-					},
-					new MultiChoiceParam("Intensity columns"){
-						Values = choice2,
-						Repeats = true,
-						Help = "Intensity columns for which the Significance B should be calculated."
-					},
-					new SingleChoiceParam("Side"){
-						Values = new[]{"both", "right", "left"},
-						Help =
-							"'Both' stands for the two-sided test in which the the null hypothesis can be rejected regardless of the direction" +
-							" of the effect. 'Left' and 'right' are the respective one sided tests."
-					},
-					new SingleChoiceParam("Use for truncation"){
-						Values = new[]{"P value", "Benjamini-Hochberg FDR"},
-						Value = 1,
-						Help =
-							"Choose here whether the truncation should be based on the p values or if the Benjamini Hochberg correction for " +
-							"multiple hypothesis testing should be applied."
-					},
-					new DoubleParam("Threshold value", 0.05){
-						Help =
-							"Rows with a test result below this value are reported as significant. Depending on the choice made above this " +
-							"threshold value is applied to the p value or to the Benjamini Hochberg FDR."
-					}
+				new Parameters(new MultiChoiceParam("Ratio columns"){
+					Values = choice,
+					Help = "Ratio columns for which the Significance B should be calculated."
+				}, new MultiChoiceParam("Intensity columns"){
+					Values = choice2,
+					Repeats = true,
+					Help = "Intensity columns for which the Significance B should be calculated."
+				}, new SingleChoiceParam("Side"){
+					Values = new[]{"both", "right", "left"},
+					Help =
+						"'Both' stands for the two-sided test in which the the null hypothesis can be rejected regardless of the direction" +
+						" of the effect. 'Left' and 'right' are the respective one sided tests."
+				}, new SingleChoiceParam("Use for truncation"){
+					Values = new[]{"P value", "Benjamini-Hochberg FDR"},
+					Value = 1,
+					Help =
+						"Choose here whether the truncation should be based on the p values or if the Benjamini Hochberg correction for " +
+						"multiple hypothesis testing should be applied."
+				}, new DoubleParam("Threshold value", 0.05){
+					Help =
+						"Rows with a test result below this value are reported as significant. Depending on the choice made above this " +
+						"threshold value is applied to the p value or to the Benjamini Hochberg FDR."
 				});
 		}
 	}

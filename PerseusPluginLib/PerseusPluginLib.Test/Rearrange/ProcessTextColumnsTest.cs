@@ -58,11 +58,7 @@ namespace PerseusPluginLib.Test.Rearrange{
 			List<string[]> stringColumnsInit = new List<string[]>{stringsInit};
 			List<string[]> stringColumnsExpect = new List<string[]>{stringsExpect};
 			Parameters param =
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Columns", new[]{0}){Values = stringColumnNames},
-					new StringParam("Regular expression", regexStr), new BoolParam("Keep original columns", false),
-					new BoolParam("Strings separated by semicolons are independent", false)
-				});
+				new Parameters(new MultiChoiceParam("Columns", new[]{0}){Values = stringColumnNames}, new StringParam("Regular expression", regexStr), new BoolParam("Keep original columns", false), new BoolParam("Strings separated by semicolons are independent", false));
 			IMatrixData mdata = PerseusFactory.CreateMatrixData();
 			mdata.Clear();
 			mdata.Name = name;

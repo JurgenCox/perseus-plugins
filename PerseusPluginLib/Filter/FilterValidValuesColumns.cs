@@ -61,16 +61,12 @@ namespace PerseusPluginLib.Filter{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new[]{
-					PerseusPluginUtils.GetMinValuesParam(false),
-					new SingleChoiceWithSubParams("Mode"){
-						Values = new[]{"In total"},
-						SubParams ={new Parameters(new Parameter[0])},
-						ParamNameWidth = 50,
-						TotalWidth = 731
-					},
-					PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.GetFilterModeParam(true)
-				});
+				new Parameters(PerseusPluginUtils.GetMinValuesParam(false), new SingleChoiceWithSubParams("Mode"){
+					Values = new[]{"In total"},
+					SubParams ={new Parameters(new Parameter[0])},
+					ParamNameWidth = 50,
+					TotalWidth = 731
+				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.GetFilterModeParam(true));
 		}
 	}
 }

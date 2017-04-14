@@ -56,27 +56,22 @@ namespace PerseusPluginLib.Rearrange{
 			List<string> catRows = mdata.CategoryRowNames;
 			List<string> textRows = mdata.StringRowNames;
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Numerical rows"){
-						Value = ArrayUtils.ConsecutiveInts(numRows.Count),
-						Values = numRows,
-						Help = "Specify here the new order in which the numerical rows should appear."
-					},
-					new MultiChoiceParam("Multi-numerical rows"){
-						Value = ArrayUtils.ConsecutiveInts(multiNumRows.Count),
-						Values = multiNumRows,
-						Help = "Specify here the new order in which the numerical rows should appear."
-					},
-					new MultiChoiceParam("Categorical rows"){
-						Value = ArrayUtils.ConsecutiveInts(catRows.Count),
-						Values = catRows,
-						Help = "Specify here the new order in which the categorical rows should appear."
-					},
-					new MultiChoiceParam("Text rows"){
-						Value = ArrayUtils.ConsecutiveInts(textRows.Count),
-						Values = textRows,
-						Help = "Specify here the new order in which the text rows should appear."
-					}
+				new Parameters(new MultiChoiceParam("Numerical rows"){
+					Value = ArrayUtils.ConsecutiveInts(numRows.Count),
+					Values = numRows,
+					Help = "Specify here the new order in which the numerical rows should appear."
+				}, new MultiChoiceParam("Multi-numerical rows"){
+					Value = ArrayUtils.ConsecutiveInts(multiNumRows.Count),
+					Values = multiNumRows,
+					Help = "Specify here the new order in which the numerical rows should appear."
+				}, new MultiChoiceParam("Categorical rows"){
+					Value = ArrayUtils.ConsecutiveInts(catRows.Count),
+					Values = catRows,
+					Help = "Specify here the new order in which the categorical rows should appear."
+				}, new MultiChoiceParam("Text rows"){
+					Value = ArrayUtils.ConsecutiveInts(textRows.Count),
+					Values = textRows,
+					Help = "Specify here the new order in which the text rows should appear."
 				});
 		}
 	}

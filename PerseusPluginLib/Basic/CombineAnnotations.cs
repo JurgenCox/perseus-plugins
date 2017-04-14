@@ -99,16 +99,11 @@ namespace PerseusPluginLib.Basic{
 			string[] choice = ArrayUtils.Concat(mdata.CategoryColumnNames, mdata.StringColumnNames);
 			int[] selection = new int[0];
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Categories"){
-						Value = selection,
-						Values = choice,
-						Help = "Search these columns for the search terms specified."
-					},
-					new MultiStringParam("Search terms"){Help = "Look for these terms in the selected columns"},
-					new StringParam("Name of new column"),
-					new BoolParam("Inverse"){Help = "If true, those rows are indicated which do not contain any of the search terms."}
-				});
+				new Parameters(new MultiChoiceParam("Categories"){
+					Value = selection,
+					Values = choice,
+					Help = "Search these columns for the search terms specified."
+				}, new MultiStringParam("Search terms"){Help = "Look for these terms in the selected columns"}, new StringParam("Name of new column"), new BoolParam("Inverse"){Help = "If true, those rows are indicated which do not contain any of the search terms."});
 		}
 	}
 }

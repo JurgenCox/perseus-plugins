@@ -43,13 +43,10 @@ namespace PerseusPluginLib.Norm{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Matrix access"){
-						Values = new[]{"Rows", "Columns"},
-						Help = "Specifies if the analysis is performed on the rows or the columns of the matrix."
-					},
-					new DoubleParam("Minimum", 0), new DoubleParam("Maximum", 1)
-				});
+				new Parameters(new SingleChoiceParam("Matrix access"){
+					Values = new[]{"Rows", "Columns"},
+					Help = "Specifies if the analysis is performed on the rows or the columns of the matrix."
+				}, new DoubleParam("Minimum", 0), new DoubleParam("Maximum", 1));
 		}
 
 		public static void MapToInterval1(bool rows, IMatrixData data, double min, double max, int nthreads){

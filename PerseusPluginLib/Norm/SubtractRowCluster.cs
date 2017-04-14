@@ -71,11 +71,8 @@ namespace PerseusPluginLib.Norm{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Indicator column"){Values = mdata.CategoryColumnNames},
-					new StringParam("Value", "+"){
-						Help = "Rows matching this term in the indicator column will be used as control for the normalization."
-					}
+				new Parameters(new SingleChoiceParam("Indicator column"){Values = mdata.CategoryColumnNames}, new StringParam("Value", "+"){
+					Help = "Rows matching this term in the indicator column will be used as control for the normalization."
 				});
 		}
 	}

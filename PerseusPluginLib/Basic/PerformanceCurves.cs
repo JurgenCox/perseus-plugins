@@ -184,31 +184,24 @@ namespace PerseusPluginLib.Basic{
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString) {
 			string[] numChoice = ArrayUtils.Concat(mdata.NumericColumnNames, mdata.ColumnNames);
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Indicated are"){
-					        Values = new[]{"False", "True"},
-                            Help="Specify whether rows containing the 'Indicator' are true or false."
-					    },
-					new SingleChoiceParam("In column"){
-					        Values = mdata.CategoryColumnNames,
-                            Help="The categorical column containing the 'Indicator'."
-					    }, 
-                    new StringParam("Indicator"){
-                            Value = "+",
-                            Help="The string that will be searched in the above specified categorical column to define which rows are right or wrong predicted."
-                        },
-					new MultiChoiceParam("Scores"){
-					        Value = new[]{0}, Values = numChoice,
-                            Help="The expression columns that contain the classification scores by which the rows will be ranked."
-					    },
-					new BoolParam("Large values are good"){
-					        Value = true,
-                            Help="If checked, large score values are considered good, otherwise the lower the score value the better."
-					    },
-					new MultiChoiceParam("Display quantity"){
-					        Values = PerformanceColumnType.AllTypeNames,
-                            Help="The quantities that should be calculated."
-					    }
+				new Parameters(new SingleChoiceParam("Indicated are"){
+					Values = new[]{"False", "True"},
+					Help="Specify whether rows containing the 'Indicator' are true or false."
+				}, new SingleChoiceParam("In column"){
+					Values = mdata.CategoryColumnNames,
+					Help="The categorical column containing the 'Indicator'."
+				}, new StringParam("Indicator"){
+					Value = "+",
+					Help="The string that will be searched in the above specified categorical column to define which rows are right or wrong predicted."
+				}, new MultiChoiceParam("Scores"){
+					Value = new[]{0}, Values = numChoice,
+					Help="The expression columns that contain the classification scores by which the rows will be ranked."
+				}, new BoolParam("Large values are good"){
+					Value = true,
+					Help="If checked, large score values are considered good, otherwise the lower the score value the better."
+				}, new MultiChoiceParam("Display quantity"){
+					Values = PerformanceColumnType.AllTypeNames,
+					Help="The quantities that should be calculated."
 				});
 		}
 

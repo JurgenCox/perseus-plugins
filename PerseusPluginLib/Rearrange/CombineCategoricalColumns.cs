@@ -30,10 +30,7 @@ namespace PerseusPluginLib.Rearrange{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("First column", 0){Values = mdata.CategoryColumnNames},
-					new SingleChoiceParam("Second column", 0){Values = mdata.CategoryColumnNames}
-				});
+				new Parameters(new SingleChoiceParam("First column", 0){Values = mdata.CategoryColumnNames}, new SingleChoiceParam("Second column", 0){Values = mdata.CategoryColumnNames});
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,

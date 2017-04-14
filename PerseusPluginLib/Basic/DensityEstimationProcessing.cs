@@ -218,25 +218,20 @@ namespace PerseusPluginLib.Basic{
 			int[] sel1 = vals.Length > 0 ? new[]{0} : new int[0];
 			int[] sel2 = vals.Length > 1 ? new[]{1} : (vals.Length > 0 ? new[]{0} : new int[0]);
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("x", sel1){
-						Values = vals,
-						Repeats = true,
-						Help =
-							"Colums for the first dimension. Multiple choices can be made leading to the creation of multiple density maps."
-					},
-					new MultiChoiceParam("y", sel2){
-						Values = vals,
-						Repeats = true,
-						Help = "Colums for the second dimension. The number has to be the same as for the 'Column 1' parameter."
-					},
-					new IntParam("Number of points", 300){
-						Help =
-							"This parameter defines the resolution of the density map. It specifies the number of pixels per dimension. Large " +
-							"values may lead to increased computing times."
-					},
-					new SingleChoiceParam("Distribution type"){Values = new[]{"P(x,y)", "P(y|x)", "P(x|y)", "P(x,y)/(P(x)*P(y))"}}
-				});
+				new Parameters(new MultiChoiceParam("x", sel1){
+					Values = vals,
+					Repeats = true,
+					Help =
+						"Colums for the first dimension. Multiple choices can be made leading to the creation of multiple density maps."
+				}, new MultiChoiceParam("y", sel2){
+					Values = vals,
+					Repeats = true,
+					Help = "Colums for the second dimension. The number has to be the same as for the 'Column 1' parameter."
+				}, new IntParam("Number of points", 300){
+					Help =
+						"This parameter defines the resolution of the density map. It specifies the number of pixels per dimension. Large " +
+						"values may lead to increased computing times."
+				}, new SingleChoiceParam("Distribution type"){Values = new[]{"P(x,y)", "P(y|x)", "P(x|y)", "P(x,y)/(P(x)*P(y))"}});
 		}
 	}
 }

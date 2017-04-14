@@ -86,15 +86,12 @@ namespace PerseusPluginLib.Basic{
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			string[] values = ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames);
 			return
-				new Parameters(new Parameter[]{
-					new IntParam("Number of quantiles", 5){
-						Help = "This defines the number of quantiles that each column is going to be divided into."
-					},
-					new MultiChoiceParam("Columns"){
-						Value = ArrayUtils.ConsecutiveInts(mdata.ColumnCount),
-						Values = values,
-						Help = "Please select here the columns that should be transformed into quantiles."
-					}
+				new Parameters(new IntParam("Number of quantiles", 5){
+					Help = "This defines the number of quantiles that each column is going to be divided into."
+				}, new MultiChoiceParam("Columns"){
+					Value = ArrayUtils.ConsecutiveInts(mdata.ColumnCount),
+					Values = values,
+					Help = "Please select here the columns that should be transformed into quantiles."
 				});
 		}
 	}

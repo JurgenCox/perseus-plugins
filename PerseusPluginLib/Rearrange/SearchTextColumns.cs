@@ -63,10 +63,7 @@ namespace PerseusPluginLib.Rearrange{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new StringParam("Find what"), new SingleChoiceParam("Look in"){Values = mdata.StringColumnNames},
-					new BoolParam("Match case"){Value = true}, new BoolParam("Match whole word")
-				});
+				new Parameters(new StringParam("Find what"), new SingleChoiceParam("Look in"){Values = mdata.StringColumnNames}, new BoolParam("Match case"){Value = true}, new BoolParam("Match whole word"));
 		}
 	}
 }

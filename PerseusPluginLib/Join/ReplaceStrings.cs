@@ -41,24 +41,20 @@ namespace PerseusPluginLib.Join{
 			IMatrixData matrixData1 = inputData[0];
 			IMatrixData matrixData2 = inputData[1];
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Column in matrix 1 to be edited"){
-						Values = matrixData1.StringColumnNames,
-						Value = 0,
-						Help =
-							"The column in the first matrix in which strings will be replaced " +
-							"according to the key-value table specified in matrix 2."
-					},
-					new SingleChoiceParam("Keys in matrix 2"){
-						Values = matrixData2.StringColumnNames,
-						Value = 0,
-						Help = "The keys for the replacement table."
-					},
-					new SingleChoiceParam("Values in matrix 2"){
-						Values = matrixData2.StringColumnNames,
-						Value = 1,
-						Help = "The values for the replacement table."
-					}
+				new Parameters(new SingleChoiceParam("Column in matrix 1 to be edited"){
+					Values = matrixData1.StringColumnNames,
+					Value = 0,
+					Help =
+						"The column in the first matrix in which strings will be replaced " +
+						"according to the key-value table specified in matrix 2."
+				}, new SingleChoiceParam("Keys in matrix 2"){
+					Values = matrixData2.StringColumnNames,
+					Value = 0,
+					Help = "The keys for the replacement table."
+				}, new SingleChoiceParam("Values in matrix 2"){
+					Values = matrixData2.StringColumnNames,
+					Value = 1,
+					Help = "The values for the replacement table."
 				});
 		}
 

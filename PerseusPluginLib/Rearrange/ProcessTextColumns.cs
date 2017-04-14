@@ -59,11 +59,7 @@ namespace PerseusPluginLib.Rearrange{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Columns"){Values = mdata.StringColumnNames},
-					new StringParam("Regular expression", "^([^;]+)"), new BoolParam("Keep original columns", false),
-					new BoolParam("Strings separated by semicolons are independent", false)
-				});
+				new Parameters(new MultiChoiceParam("Columns"){Values = mdata.StringColumnNames}, new StringParam("Regular expression", "^([^;]+)"), new BoolParam("Keep original columns", false), new BoolParam("Strings separated by semicolons are independent", false));
 		}
 	}
 }

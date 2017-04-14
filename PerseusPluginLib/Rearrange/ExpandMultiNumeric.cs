@@ -205,17 +205,14 @@ namespace PerseusPluginLib.Rearrange{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Multi-numeric columns"){
-						Values = mdata.MultiNumericColumnNames,
-						Value = new int[0],
-						Help = "Select here the multi-numeric colums that should be expanded."
-					},
-					new MultiChoiceParam("Text columns"){
-						Values = mdata.StringColumnNames,
-						Value = new int[0],
-						Help = "Select here the text colums that should be expanded."
-					}
+				new Parameters(new MultiChoiceParam("Multi-numeric columns"){
+					Values = mdata.MultiNumericColumnNames,
+					Value = new int[0],
+					Help = "Select here the multi-numeric colums that should be expanded."
+				}, new MultiChoiceParam("Text columns"){
+					Values = mdata.StringColumnNames,
+					Value = new int[0],
+					Help = "Select here the text colums that should be expanded."
 				});
 		}
 	}

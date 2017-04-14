@@ -365,99 +365,89 @@ namespace PluginProteomicRuler{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Protein IDs"){
-						Help = "Specify the column containing the UniProt protein IDs",
-						Values = mdata.StringColumnNames,
-						Value = ProteomicRulerUtils.Match(mdata.StringColumnNames.ToArray(), new[]{"majority"}, false, true, true)[0]
-					},
-					new MultiChoiceParam("Intensities"){
-						Help =
-							"Specify the columns that contain the intensities to be used for copy number estimation. " +
-							"If several columns are selected, they will be treated as specified by the 'averaging mode'.",
-						Values = ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames),
-						Value =
-							ProteomicRulerUtils.Match(ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames), new[]{"intensit"},
-								false, true, false)
-					},
-					new BoolWithSubParams("Logarithmized", false){
-						Help = "Specify whether the intensities are logarithmized in the selected columns.",
-						SubParamsFalse = new Parameters(new Parameter[]{}),
-						SubParamsTrue =
-							new Parameters(new Parameter[]
+				new Parameters(new SingleChoiceParam("Protein IDs"){
+					Help = "Specify the column containing the UniProt protein IDs",
+					Values = mdata.StringColumnNames,
+					Value = ProteomicRulerUtils.Match(mdata.StringColumnNames.ToArray(), new[]{"majority"}, false, true, true)[0]
+				}, new MultiChoiceParam("Intensities"){
+					Help =
+						"Specify the columns that contain the intensities to be used for copy number estimation. " +
+						"If several columns are selected, they will be treated as specified by the 'averaging mode'.",
+					Values = ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames),
+					Value =
+						ProteomicRulerUtils.Match(ArrayUtils.Concat(mdata.ColumnNames, mdata.NumericColumnNames), new[]{"intensit"},
+							false, true, false)
+				}, new BoolWithSubParams("Logarithmized", false){
+					Help = "Specify whether the intensities are logarithmized in the selected columns.",
+					SubParamsFalse = new Parameters(new Parameter[]{}),
+					SubParamsTrue =
+						new Parameters(new Parameter[]
 							{new SingleChoiceParam("log base"){Values = new[]{"2", "natural", "10"}, Value = 0}})
-					},
-					new SingleChoiceWithSubParams("Averaging mode", 0){
-						Values =
-							new[]{
-								"All columns separately", "Same normalization for all columns", "Same normalization within groups",
-								"Average all columns"
-							},
-						Help = "Select how multiple columns will be treated",
-						SubParams =
-							new List<Parameters>(){
-								new Parameters(new Parameter[]{}),
-								new Parameters(new Parameter[]{}),
-								new Parameters(new Parameter[]{
-									new SingleChoiceParam("Grouping"){
-										Values = mdata.CategoryRowNames,
-										Value = ProteomicRulerUtils.Match(mdata.CategoryRowNames.ToArray(), new[]{"group"}, false, true, true)[0]
-									}
-								}),
-								new Parameters(new Parameter[]{})
-							}
-					},
-					new SingleChoiceParam("Molecular masses"){
-						Values = mdata.NumericColumnNames,
-						Help = "Select the column containing the molecular masses of the proteins.",
-						Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"mol"}, false, true, true)[0]
-					},
-					new BoolWithSubParams("Detectability correction", false){
-						Help =
-							"Without a correction factor, the algorithm assumes linearity between the signal and the cumulative mass of each protein.\n" +
-							"Optionally select a column containing protein-specific correction factors such as the number of theoretical peptides.",
-						SubParamsFalse = new Parameters(new Parameter[]{}),
-						SubParamsTrue =
+				}, new SingleChoiceWithSubParams("Averaging mode", 0){
+					Values =
+						new[]{
+							"All columns separately", "Same normalization for all columns", "Same normalization within groups",
+							"Average all columns"
+						},
+					Help = "Select how multiple columns will be treated",
+					SubParams =
+						new List<Parameters>(){
+							new Parameters(new Parameter[]{}),
+							new Parameters(new Parameter[]{}),
 							new Parameters(new Parameter[]{
-								new SingleChoiceParam("Correction factor"){
-									Values = mdata.NumericColumnNames,
-									Value =
-										ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"theoretical"}, false, true, true)[0]
+								new SingleChoiceParam("Grouping"){
+									Values = mdata.CategoryRowNames,
+									Value = ProteomicRulerUtils.Match(mdata.CategoryRowNames.ToArray(), new[]{"group"}, false, true, true)[0]
+								}
+							}),
+							new Parameters(new Parameter[]{})
+						}
+				}, new SingleChoiceParam("Molecular masses"){
+					Values = mdata.NumericColumnNames,
+					Help = "Select the column containing the molecular masses of the proteins.",
+					Value = ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"mol"}, false, true, true)[0]
+				}, new BoolWithSubParams("Detectability correction", false){
+					Help =
+						"Without a correction factor, the algorithm assumes linearity between the signal and the cumulative mass of each protein.\n" +
+						"Optionally select a column containing protein-specific correction factors such as the number of theoretical peptides.",
+					SubParamsFalse = new Parameters(new Parameter[]{}),
+					SubParamsTrue =
+						new Parameters(new Parameter[]{
+							new SingleChoiceParam("Correction factor"){
+								Values = mdata.NumericColumnNames,
+								Value =
+									ProteomicRulerUtils.Match(mdata.NumericColumnNames.ToArray(), new[]{"theoretical"}, false, true, true)[0]
+							}
+						})
+				}, new SingleChoiceWithSubParams("Scaling mode", 1){
+					Help = "Select how the values should be scaled to absolute copy numbers.",
+					Values = new[]{"Total protein amount", "Histone proteomic ruler"},
+					SubParams =
+						new List<Parameters>(){
+							new Parameters(new Parameter[]{
+								new DoubleParam("Protein amount per cell [pg]", 200){
+									Help = "Specify the amount of protein per cell in picograms."
+								}
+							}),
+							new Parameters(new Parameter[]{
+								new DoubleParam("Ploidy", 2){
+									Help =
+										"Specify the ploidy of the cell type. This factor is multiplied with the genome size of the (auto-detected) organism to determine the expected amount of DNA and histones per cell."
 								}
 							})
-					},
-					new SingleChoiceWithSubParams("Scaling mode", 1){
-						Help = "Select how the values should be scaled to absolute copy numbers.",
-						Values = new[]{"Total protein amount", "Histone proteomic ruler"},
-						SubParams =
-							new List<Parameters>(){
-								new Parameters(new Parameter[]{
-									new DoubleParam("Protein amount per cell [pg]", 200){
-										Help = "Specify the amount of protein per cell in picograms."
-									}
-								}),
-								new Parameters(new Parameter[]{
-									new DoubleParam("Ploidy", 2){
-										Help =
-											"Specify the ploidy of the cell type. This factor is multiplied with the genome size of the (auto-detected) organism to determine the expected amount of DNA and histones per cell."
-									}
-								})
-							}
-					},
-					new DoubleParam("Total cellular protein concentration [g/l]", 200){
-						Help = "Specify the total protein concentration (typically 200-300 g/l)."
-					},
-					new MultiChoiceParam("Output"){
-						Help = "Select the desired output",
-						Values =
-							new[]{
-								"Copy number per cell", "Concentration [nM]", "Relative abundance (mass/total mass)",
-								"Relative abundance (molecules/total molecules)", "Copy number rank", "Relative copy number rank",
-								"Sample summary row annotations (total protein, total molecules, cell volume, ...)",
-								"Separate sample summary tab (total protein, total molecules, cell volume, ...)"
-							},
-						Value = new[]{0, 1, 7}
-					}
+						}
+				}, new DoubleParam("Total cellular protein concentration [g/l]", 200){
+					Help = "Specify the total protein concentration (typically 200-300 g/l)."
+				}, new MultiChoiceParam("Output"){
+					Help = "Select the desired output",
+					Values =
+						new[]{
+							"Copy number per cell", "Concentration [nM]", "Relative abundance (mass/total mass)",
+							"Relative abundance (molecules/total molecules)", "Copy number rank", "Relative copy number rank",
+							"Sample summary row annotations (total protein, total molecules, cell volume, ...)",
+							"Separate sample summary tab (total protein, total molecules, cell volume, ...)"
+						},
+					Value = new[]{0, 1, 7}
 				});
 		}
 

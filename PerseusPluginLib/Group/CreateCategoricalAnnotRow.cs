@@ -314,7 +314,7 @@ namespace PerseusPluginLib.Group{
 				subparams.Add(new Parameters(new Parameter[]{}));
 			}
 			subparams.Add(new Parameters(new Parameter[]{new StringParam("Regex", "")}));
-			subparams.Add(new Parameters(new Parameter[]{new StringParam("Regex", ""), new StringParam("Replace with", "")}));
+			subparams.Add(new Parameters(new StringParam("Regex", ""), new StringParam("Replace with", "")));
 			return
 				new Parameters(new Parameter[]{
 					new SingleChoiceWithSubParams("Pattern", 0){

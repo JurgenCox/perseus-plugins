@@ -437,12 +437,9 @@ namespace PerseusPluginLib.Rearrange{
 
 		private static Parameters GetSubParams(IList<string> values, IList<string> options){
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Columns"){Values = values, Help = "Select here the column whose type should be changed."},
-					new SingleChoiceParam("Target type", 0){
-						Values = options,
-						Help = "The type that these columns will have in the result table."
-					}
+				new Parameters(new MultiChoiceParam("Columns"){Values = values, Help = "Select here the column whose type should be changed."}, new SingleChoiceParam("Target type", 0){
+					Values = options,
+					Help = "The type that these columns will have in the result table."
 				});
 		}
 

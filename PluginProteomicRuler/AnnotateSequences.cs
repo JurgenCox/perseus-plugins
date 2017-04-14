@@ -274,96 +274,82 @@ namespace PluginProteomicRuler{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new Parameter[]{
-					new SingleChoiceParam("Protein IDs"){
-						Help = "Specify the column containing the protein IDs",
-						Values = mdata.StringColumnNames,
-						Value = ProteomicRulerUtils.Match(mdata.StringColumnNames.ToArray(), new[]{"majority"}, false, true, true)[0],
-					},
-					new FileParam("Fasta file"){
-						Filter = FileUtils.fastaFilter,
-						Help =
-							"Select the fasta file used for the database search of this dataset. The software will assume " +
-							"uniprot-formatted headers for extracting accession IDs and metadata. As fallback position, everything " +
-							"after the > will be taken as ID, but no header metadata can be extracted from non-uniprot headers."
-					},
-					new SingleChoiceWithSubParams("Fasta header annotations"){
-						ParamNameWidth = 120,
-						TotalWidth = 500,
-						Help = "Specify the annotations to be extracted from uniprot fasta headers",
-						Values = new[]{"for all IDs", "for the leading ID"},
-						Value = 0,
-						SubParams =
-							new List<Parameters>(){
-								new Parameters(new Parameter[]{
-									new MultiChoiceParam("Annotations"){
-										Values = new[]{"Entry name", "Gene name", "Protein name (verbose)", "Protein name (consensus)", "Species"},
-										Value = new[]{1, 3},
-									}
-								}),
-								new Parameters(new Parameter[]{
-									new MultiChoiceParam("Annotations"){
-										Values = new[]{"Entry name", "Gene name", "Protein name (verbose)", "Protein name (consensus)", "Species"},
-										Value = new[]{1, 3},
-									}
-								})
-							}
-					},
-					new SingleChoiceWithSubParams("Numeric annotations"){
-						ParamNameWidth = 120,
-						TotalWidth = 500,
-						Help = "Specify the annotations to be mapped as numeric annotations",
-						Values = new[]{"median of all IDs", "for the leading ID"},
-						Value = 0,
-						SubParams =
-							new List<Parameters>(){
-								new Parameters(new Parameter[]{
-									new MultiChoiceParam("Annotations"){
-										Values = new[]{"Sequence length", "Monoisotopic molecular mass", "Average molecular mass"},
-										Value = new[]{0, 2}
-									}
-								}),
-								new Parameters(new Parameter[]{
-									new MultiChoiceParam("Annotations"){
-										Values = new[]{"Sequence length", "Monoisotopic molecular mass", "Average molecular mass"},
-										Value = new[]{0, 2}
-									}
-								})
-							}
-					},
-					new SingleChoiceWithSubParams("Calculate theoretical peptides"){
-						ParamNameWidth = 120,
-						TotalWidth = 500,
-						Help = "Calculate the numbers of theoretical peptides (without miscleavages) by in silico digestion.",
-						Values = new[]{"median of all IDs", "for the leading ID"},
-						Value = 0,
-						SubParams =
-							new List<Parameters>(){
-								new Parameters(new Parameter[]{
-									new MultiChoiceParam("Proteases"){Values = Constants.DefaultProteasesNames(), Value = new[]{0}},
-									new DoubleParam("Min. peptide length", 7), new DoubleParam("Max. peptide length", 30)
-								}),
-								new Parameters(new Parameter[]{
-									new MultiChoiceParam("Proteases"){Values = Constants.DefaultProteasesNames(), Value = new[]{0}},
-									new DoubleParam("Min. peptide length", 7), new DoubleParam("Max. peptide length", 30),
-									new BoolParam("Show sequences", false),
-								})
-							}
-					},
-					new SingleChoiceWithSubParams("Count sequence features"){
-						ParamNameWidth = 180,
-						TotalWidth = 500,
-						Help =
-							"Count the number of matches to a given regular expression in the amino acid sequence (optionally normalized " +
-							"by sequence length).\n\nExamples:\n[KR] tryptic cleavage sites\nN[^P][ST][^P] N-glysosylation motifs",
-						Values = new[]{"median of all IDs", "for the leading ID"},
-						Value = 0,
-						SubParams =
-							new List<Parameters>{
-								new Parameters(new Parameter[]{new StringParam("Regex"), new BoolParam("Normalize by sequence length", true)}),
-								new Parameters(new Parameter[]{new StringParam("Regex"), new BoolParam("Normalize by sequence length", false)})
-							}
-					}
+				new Parameters(new SingleChoiceParam("Protein IDs"){
+					Help = "Specify the column containing the protein IDs",
+					Values = mdata.StringColumnNames,
+					Value = ProteomicRulerUtils.Match(mdata.StringColumnNames.ToArray(), new[]{"majority"}, false, true, true)[0],
+				}, new FileParam("Fasta file"){
+					Filter = FileUtils.fastaFilter,
+					Help =
+						"Select the fasta file used for the database search of this dataset. The software will assume " +
+						"uniprot-formatted headers for extracting accession IDs and metadata. As fallback position, everything " +
+						"after the > will be taken as ID, but no header metadata can be extracted from non-uniprot headers."
+				}, new SingleChoiceWithSubParams("Fasta header annotations"){
+					ParamNameWidth = 120,
+					TotalWidth = 500,
+					Help = "Specify the annotations to be extracted from uniprot fasta headers",
+					Values = new[]{"for all IDs", "for the leading ID"},
+					Value = 0,
+					SubParams =
+						new List<Parameters>(){
+							new Parameters(new Parameter[]{
+								new MultiChoiceParam("Annotations"){
+									Values = new[]{"Entry name", "Gene name", "Protein name (verbose)", "Protein name (consensus)", "Species"},
+									Value = new[]{1, 3},
+								}
+							}),
+							new Parameters(new Parameter[]{
+								new MultiChoiceParam("Annotations"){
+									Values = new[]{"Entry name", "Gene name", "Protein name (verbose)", "Protein name (consensus)", "Species"},
+									Value = new[]{1, 3},
+								}
+							})
+						}
+				}, new SingleChoiceWithSubParams("Numeric annotations"){
+					ParamNameWidth = 120,
+					TotalWidth = 500,
+					Help = "Specify the annotations to be mapped as numeric annotations",
+					Values = new[]{"median of all IDs", "for the leading ID"},
+					Value = 0,
+					SubParams =
+						new List<Parameters>(){
+							new Parameters(new Parameter[]{
+								new MultiChoiceParam("Annotations"){
+									Values = new[]{"Sequence length", "Monoisotopic molecular mass", "Average molecular mass"},
+									Value = new[]{0, 2}
+								}
+							}),
+							new Parameters(new Parameter[]{
+								new MultiChoiceParam("Annotations"){
+									Values = new[]{"Sequence length", "Monoisotopic molecular mass", "Average molecular mass"},
+									Value = new[]{0, 2}
+								}
+							})
+						}
+				}, new SingleChoiceWithSubParams("Calculate theoretical peptides"){
+					ParamNameWidth = 120,
+					TotalWidth = 500,
+					Help = "Calculate the numbers of theoretical peptides (without miscleavages) by in silico digestion.",
+					Values = new[]{"median of all IDs", "for the leading ID"},
+					Value = 0,
+					SubParams =
+						new List<Parameters>(){
+							new Parameters(new MultiChoiceParam("Proteases"){Values = Constants.DefaultProteasesNames(), Value = new[]{0}}, new DoubleParam("Min. peptide length", 7), new DoubleParam("Max. peptide length", 30)),
+							new Parameters(new MultiChoiceParam("Proteases"){Values = Constants.DefaultProteasesNames(), Value = new[]{0}}, new DoubleParam("Min. peptide length", 7), new DoubleParam("Max. peptide length", 30), new BoolParam("Show sequences", false))
+						}
+				}, new SingleChoiceWithSubParams("Count sequence features"){
+					ParamNameWidth = 180,
+					TotalWidth = 500,
+					Help =
+						"Count the number of matches to a given regular expression in the amino acid sequence (optionally normalized " +
+						"by sequence length).\n\nExamples:\n[KR] tryptic cleavage sites\nN[^P][ST][^P] N-glysosylation motifs",
+					Values = new[]{"median of all IDs", "for the leading ID"},
+					Value = 0,
+					SubParams =
+						new List<Parameters>{
+							new Parameters(new StringParam("Regex"), new BoolParam("Normalize by sequence length", true)),
+							new Parameters(new StringParam("Regex"), new BoolParam("Normalize by sequence length", false))
+						}
 				});
 		}
 	}

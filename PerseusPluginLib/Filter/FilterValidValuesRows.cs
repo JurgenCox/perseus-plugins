@@ -117,20 +117,16 @@ namespace PerseusPluginLib.Filter{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
             return
-				new Parameters(new []{
-					PerseusPluginUtils.GetMinValuesParam(true),
-					new SingleChoiceWithSubParams("Mode"){
-						Values = new[]{"In total", "In each group", "In at least one group"},
-						SubParams =new[]{
-							new Parameters(new Parameter[0]),
-							new Parameters(new Parameter[]{new SingleChoiceParam("Grouping"){Values = mdata.CategoryRowNames}}),
-							new Parameters(new Parameter[]{new SingleChoiceParam("Grouping"){Values = mdata.CategoryRowNames}})
-						},
-						ParamNameWidth = 50,
-						TotalWidth = 731
+				new Parameters(PerseusPluginUtils.GetMinValuesParam(true), new SingleChoiceWithSubParams("Mode"){
+					Values = new[]{"In total", "In each group", "In at least one group"},
+					SubParams =new[]{
+						new Parameters(new Parameter[0]),
+						new Parameters(new Parameter[]{new SingleChoiceParam("Grouping"){Values = mdata.CategoryRowNames}}),
+						new Parameters(new Parameter[]{new SingleChoiceParam("Grouping"){Values = mdata.CategoryRowNames}})
 					},
-					PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.GetFilterModeParam(false)
-				});
+					ParamNameWidth = 50,
+					TotalWidth = 731
+				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.GetFilterModeParam(false));
 		}
 	}
 }

@@ -62,32 +62,26 @@ namespace PerseusPluginLib.Rearrange{
 			List<string> catCols = mdata.CategoryColumnNames;
 			List<string> textCols = mdata.StringColumnNames;
 			return
-				new Parameters(new Parameter[]{
-					new MultiChoiceParam("Main columns"){
-						Value = ArrayUtils.ConsecutiveInts(exCols.Count),
-						Values = exCols,
-						Help = "Specify here the new order in which the main columns should appear."
-					},
-					new MultiChoiceParam("Numerical columns"){
-						Value = ArrayUtils.ConsecutiveInts(numCols.Count),
-						Values = numCols,
-						Help = "Specify here the new order in which the numerical columns should appear."
-					},
-					new MultiChoiceParam("Multi-numerical columns"){
-						Value = ArrayUtils.ConsecutiveInts(multiNumCols.Count),
-						Values = multiNumCols,
-						Help = "Specify here the new order in which the numerical columns should appear."
-					},
-					new MultiChoiceParam("Categorical columns"){
-						Value = ArrayUtils.ConsecutiveInts(catCols.Count),
-						Values = catCols,
-						Help = "Specify here the new order in which the categorical columns should appear."
-					},
-					new MultiChoiceParam("Text columns"){
-						Value = ArrayUtils.ConsecutiveInts(textCols.Count),
-						Values = textCols,
-						Help = "Specify here the new order in which the text columns should appear."
-					}
+				new Parameters(new MultiChoiceParam("Main columns"){
+					Value = ArrayUtils.ConsecutiveInts(exCols.Count),
+					Values = exCols,
+					Help = "Specify here the new order in which the main columns should appear."
+				}, new MultiChoiceParam("Numerical columns"){
+					Value = ArrayUtils.ConsecutiveInts(numCols.Count),
+					Values = numCols,
+					Help = "Specify here the new order in which the numerical columns should appear."
+				}, new MultiChoiceParam("Multi-numerical columns"){
+					Value = ArrayUtils.ConsecutiveInts(multiNumCols.Count),
+					Values = multiNumCols,
+					Help = "Specify here the new order in which the numerical columns should appear."
+				}, new MultiChoiceParam("Categorical columns"){
+					Value = ArrayUtils.ConsecutiveInts(catCols.Count),
+					Values = catCols,
+					Help = "Specify here the new order in which the categorical columns should appear."
+				}, new MultiChoiceParam("Text columns"){
+					Value = ArrayUtils.ConsecutiveInts(textCols.Count),
+					Values = textCols,
+					Help = "Specify here the new order in which the text columns should appear."
 				});
 		}
 	}
