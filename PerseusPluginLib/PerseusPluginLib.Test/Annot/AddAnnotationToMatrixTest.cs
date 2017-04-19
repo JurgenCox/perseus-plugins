@@ -9,9 +9,10 @@ namespace PerseusPluginLib.Test.Annot
     public class AddAnnotationToMatrixTest : BaseTest
     {
         [TestMethod]
-        [DeploymentItem("conf", "conf")]
         public void ReadMappingTest()
         {
+            Assert.Inconclusive("Should be moved to integration tests, using conf");
+            //[DeploymentItem("conf", "conf")]
             string[] baseNames, files;
             var annots = PerseusUtils.GetAvailableAnnots(out baseNames, out files);
             var uniprotIndex = baseNames.ToList().FindIndex(name => name.ToLower().Equals("uniprot"));
