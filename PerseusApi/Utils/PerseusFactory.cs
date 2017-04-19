@@ -45,7 +45,7 @@ namespace PerseusApi.Utils {
 		/// Creates an empty default implementation of <see cref="IDocumentData"/>.
 		/// </summary>
 		public static IDocumentData CreateDocumentData() {
-            ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Document.DocumentData");
+            ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.DocumentData");
             return (IDocumentData)o.Unwrap();
 		}
 		/// <summary>
