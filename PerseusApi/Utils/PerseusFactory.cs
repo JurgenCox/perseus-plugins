@@ -17,11 +17,8 @@ namespace PerseusApi.Utils {
 		/// Creates an empty default implementation of <see cref="IMatrixData"/>.
 		/// </summary>
 		public static IMatrixData CreateMatrixData() {
-			try {
-				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Matrix.MatrixData");
-				return (IMatrixData) o.Unwrap();
-			} catch (Exception) {}
-			return null;
+            ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Matrix.MatrixData");
+            return (IMatrixData) o.Unwrap();
 		}
 
 		/// <summary>
@@ -48,31 +45,22 @@ namespace PerseusApi.Utils {
 		/// Creates an empty default implementation of <see cref="IDocumentData"/>.
 		/// </summary>
 		public static IDocumentData CreateDocumentData() {
-			try {
-				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Document.DocumentData");
-				return (IDocumentData)o.Unwrap();
-			} catch (Exception) { }
-			return null;
+            ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Document.DocumentData");
+            return (IDocumentData)o.Unwrap();
 		}
 		/// <summary>
 		/// Creates an empty default implementation of <see cref="INetworkData"/>.
 		/// </summary>
 		public static INetworkData CreateNetworkData() {
-			try {
-				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Network.NetworkData");
-				return (INetworkData)o.Unwrap();
-			} catch (Exception) { }
-			return null;
+            ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Network.NetworkData");
+            return (INetworkData)o.Unwrap();
 		}
 		/// <summary>
 		/// Creates an empty default implementation of <see cref="IDataWithAnnotationColumns"/>.
 		/// </summary>
 		public static IDataWithAnnotationColumns CreateDataWithAnnotationColumns() {
-			try {
-				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.DataWithAnnotationColumns");
-				return (IDataWithAnnotationColumns)o.Unwrap();
-			} catch (Exception) { }
-			return null;
+            ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.DataWithAnnotationColumns");
+            return (IDataWithAnnotationColumns)o.Unwrap();
 		}
 	}
 }
