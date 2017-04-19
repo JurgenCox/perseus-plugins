@@ -1,14 +1,14 @@
 ﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PerseusApi.Utils;
 using PerseusPluginLib.Annot;
 
 namespace PerseusPluginLib.Test.Annot
 {
-    [TestClass]
+    [TestFixture]
     public class AddAnnotationToMatrixTest : BaseTest
     {
-        [TestMethod]
+        [Test]
         public void ReadMappingTest()
         {
             Assert.Inconclusive("Should be moved to integration tests, using conf");

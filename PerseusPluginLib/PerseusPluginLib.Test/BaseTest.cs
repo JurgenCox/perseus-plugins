@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Reflection;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace PerseusPluginLib.Test
 {
     public class BaseTest
     {
-        [TestInitialize]
+        [SetUp]
         public void Initialize()
         {
             Assembly assembly = Assembly.GetAssembly(GetType());

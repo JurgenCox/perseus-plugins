@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BaseLibS.Param;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
@@ -13,12 +14,12 @@ namespace PerseusPluginLib.Test.Rearrange{
 	/// of the mechanics, so that the test methods only have to specify the regex, the 
 	/// input data, and the expected output.
 	/// </summary>
-	[TestClass]
+	[TestFixture]
 	public class ProcessTextColumnsTest{
 		/// <summary>
 		/// The regex "^([^;]+)" should output everything before the first semicolon.
 		/// </summary>
-		[TestMethod] public void TestOnlyToFirstSemicolon(){
+		[Test] public void TestOnlyToFirstSemicolon(){
 			const string regexStr = "^([^;]+)";
 			string[] stringsInit = {"just one item", "first item; second item"};
 			string[] stringsExpect = {"just one item", "first item"};
@@ -28,7 +29,7 @@ namespace PerseusPluginLib.Test.Rearrange{
 		/// <summary>
 		/// The regex "B *= *([^,; ]+)" should output the value given to B.
 		/// </summary>
-		[TestMethod] public void TestAssignmentWithEqualSign(){
+		[Test] public void TestAssignmentWithEqualSign(){
 			const string regexStr = "B *= *([^,; ]+)";
 			string[] stringsInit = new[]{"A = 123, B = 456", "A=123; B=456"};
 			string[] stringsExpect = new[]{"456", "456"};
@@ -38,7 +39,7 @@ namespace PerseusPluginLib.Test.Rearrange{
 		/// <summary>
 		/// The regex "B *= *([^,; ]+)" should output the value given to B.
 		/// </summary>
-		[TestMethod] public void TestSeparatedBySemicolons(){
+		[Test] public void TestSeparatedBySemicolons(){
 			const string regexStr = "B *= *([^,; ]+)";
 			string[] stringsInit = new[]{"A = 123, B = 456", "A=123; B=456", "B=123; B=456"};
 			string[] stringsExpect = new[]{"456", ";456", "123;456"};
@@ -66,9 +67,11 @@ namespace PerseusPluginLib.Test.Rearrange{
 				mdata.NumericColumnNames, mdata.NumericColumns, mdata.MultiNumericColumnNames, mdata.MultiNumericColumns);
 			var ptc = new ProcessTextColumns();
 			ptc.ProcessData(mdata, param, ref supplTables, ref documents, null);
-			const bool ignoreCase = false;
-			for (int rowInd = 0; rowInd < stringColumnsInit[0].Length; rowInd++){
-				Assert.AreEqual(mdata.StringColumns[0][rowInd], stringColumnsExpect[0][rowInd], ignoreCase);
+			for (int rowInd = 0; rowInd < stringColumnsInit[0].Length; rowInd++)
+			{
+			    var expected = mdata.StringColumns[0][rowInd];
+			    var actual = stringColumnsExpect[0][rowInd];
+                StringAssert.AreEqualIgnoringCase(expected, actual);
 			}
 		}
 	}

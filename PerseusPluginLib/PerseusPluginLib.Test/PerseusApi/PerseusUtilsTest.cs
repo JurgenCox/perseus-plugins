@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
-using PerseusFactory = PerseusApi.Utils.PerseusFactory;
 
 namespace PerseusPluginLib.Test.PerseusApi {
-	[TestClass]
+	[TestFixture]
 	public class PerseusUtilsTest : BaseTest {
-		[TestMethod]
+		[Test]
 		public void GetAvailableAnnotsTest() {
             Assert.Inconclusive("Should be moved to integration tests, using conf");
             //[DeploymentItem("conf", "conf")]
@@ -24,7 +24,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 			CollectionAssert.AreEqual(new[] {"Chromosome", "Base pair index", "Orientation"}, annots[0]);
 		}
 
-		[TestMethod]
+		[Test]
 		public void WriteMatrixTest() {
 			// main data
 			IMatrixData mdata = PerseusFactory.CreateMatrixData(new float[,] {{1, 2, 3}, {3, 4, 5}},
@@ -67,7 +67,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 			Assert.AreEqual(1, mdata2.NumericRowCount);
 		}
 
-		[TestMethod]
+		[Test]
 		public void WriteDataWithAnnotationColumnsTest() {
 			// main data
 			IDataWithAnnotationColumns mdata = PerseusFactory.CreateDataWithAnnotationColumns();

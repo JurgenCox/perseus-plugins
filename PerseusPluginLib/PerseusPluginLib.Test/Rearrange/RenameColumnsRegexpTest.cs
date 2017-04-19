@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
 using PerseusPluginLib.Rearrange;
 
 namespace PerseusPluginLib.Test.Rearrange{
-	[TestClass]
+	[TestFixture]
 	public class RenameColumnsRegexpTest{
 		/// <summary>
 		/// Test the wiki example
 		/// </summary>
-		[TestMethod]
+		[Test]
 		public void TestWikiExample(){
 			var colnames = new List<string>(){"column 1", "column 2", "column 3"};
 			Rename(colnames, "column (.*)", "$1");
@@ -22,14 +22,14 @@ namespace PerseusPluginLib.Test.Rearrange{
 		/// <summary>
 		/// Test switching order
 		/// </summary>
-		[TestMethod]
+		[Test]
 		public void TestSwitchOrder(){
 			var colnames = new List<string>(){"column 1", "column 2", "column 3"};
 			Rename(colnames, "(?<first>.*) (?<second>.*)", "${second} ${first}");
 			CollectionAssert.AreEqual(new List<string>{"1 column", "2 column", "3 column"}, colnames);
 		}
 
-		[TestMethod]
+		[Test]
 		public void TestReplacement(){
 			var colnames = new List<string>(){"column 1", "column 2", "column 3"};
 			Rename(colnames, "(column) (.*)", "$1SPACE$2");

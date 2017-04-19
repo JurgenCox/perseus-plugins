@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PerseusApi.Generic;
 using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Test.Utils
 {
-    [TestClass()]
+    [TestFixture]
     public class DataWithAnnotationColumnsExtensionsTest
     {
-        [TestMethod()]
+        [Test]
         public void UniqueValuesTest()
         {
             var moq = new Moq.Mock<IDataWithAnnotationColumns>();

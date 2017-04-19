@@ -1,14 +1,14 @@
 ﻿using System.IO;
 using System.Xml.Serialization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PerseusPluginLib.Load;
 
 namespace PerseusPluginLib.Test.Serialization
 {
-    [TestClass]
+    [TestFixture]
     public class SerializationTest
     {
-        [TestMethod]
+        [Test]
         public void TestLoadMatrixParam()
         {
             var param = new PerseusLoadMatrixParam("test") { Value = new []{"fileName", "1 a;b 1;c;d;e;f", "1;3", "4", "2", "5", "", "true"} };

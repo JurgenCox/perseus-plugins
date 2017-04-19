@@ -1,12 +1,13 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
+using NUnit.Framework.Internal;
 using PerseusPluginLib.Load;
 
 namespace PerseusPluginLib.Test.Load
 {
-    [TestClass]
+    [TestFixture]
     public class PerseusLoadMatrixParamTest
     {
-        [TestMethod]
+        [Test]
         public void TestLoadMatrixParam()
         {
             var param = new PerseusLoadMatrixParam("test") { Value = new []{"fileName", "a;b 1;c;d;e;f", "1;3", "4", "2", "5", "", "true"} };
@@ -18,7 +19,7 @@ namespace PerseusPluginLib.Test.Load
             CollectionAssert.AreEquivalent(new [] {5}, param.TextColumnIndices);
         }
 
-        [TestMethod]
+        [Test]
         public void TestStringValue()
         {
             var param2 = new PerseusLoadMatrixParam("test") { Value = new []{"fileName", "a;b 1;c;d;e;f", "1;3", "4", "2", "5", "", "true"} };
