@@ -18,7 +18,7 @@ namespace PerseusApi.Utils {
 		/// </summary>
 		public static IMatrixData CreateMatrixData() {
 			try {
-				ObjectHandle o = Activator.CreateInstance("MatrixData", "PerseusLibS.Data.Matrix.MatrixData");
+				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Matrix.MatrixData");
 				return (IMatrixData) o.Unwrap();
 			} catch (Exception) {}
 			return null;
@@ -49,7 +49,7 @@ namespace PerseusApi.Utils {
 		/// </summary>
 		public static IDocumentData CreateDocumentData() {
 			try {
-				ObjectHandle o = Activator.CreateInstance("DocumentData", "PerseusLibS.Data.Document.DocumentData");
+				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Document.DocumentData");
 				return (IDocumentData)o.Unwrap();
 			} catch (Exception) { }
 			return null;
@@ -59,7 +59,7 @@ namespace PerseusApi.Utils {
 		/// </summary>
 		public static INetworkData CreateNetworkData() {
 			try {
-				ObjectHandle o = Activator.CreateInstance("NetworkData", "PerseusLibS.Data.Network.NetworkData");
+				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Network.NetworkData");
 				return (INetworkData)o.Unwrap();
 			} catch (Exception) { }
 			return null;
@@ -69,7 +69,7 @@ namespace PerseusApi.Utils {
 		/// </summary>
 		public static IDataWithAnnotationColumns CreateDataWithAnnotationColumns() {
 			try {
-				ObjectHandle o = Activator.CreateInstance("DataWithAnnotationColumns", "PerseusLibS.Data.DataWithAnnotationColumns");
+				ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.DataWithAnnotationColumns");
 				return (IDataWithAnnotationColumns)o.Unwrap();
 			} catch (Exception) { }
 			return null;
