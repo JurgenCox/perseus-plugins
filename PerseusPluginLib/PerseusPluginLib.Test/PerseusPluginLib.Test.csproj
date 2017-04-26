@@ -64,6 +64,7 @@
     <Compile Include="PerseusApi\PerseusUtilsTest.cs" />
     <Compile Include="BaseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rearrange\UniqueRowsTest.cs" />
     <Compile Include="Rearrange\ProcessTextColumnsTest.cs" />
     <Compile Include="Rearrange\RenameColumnsRegexpTest.cs" />
     <Compile Include="Load\PerseusLoadMatrixParamTest.cs" />

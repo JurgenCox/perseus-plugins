@@ -125,6 +125,8 @@
     <Compile Include="Quality\CreateQualityMatrix.cs" />
     <Compile Include="Rearrange\ChangeColumnType.cs" />
     <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
+    <Compile Include="Utils\MatrixDataExtensions.cs" />
+    <Compile Include="Rearrange\UniqueRows.cs" />
     <Compile Include="Utils\DataWithAnnotationColumnsExtensions.cs" />
     <Compile Include="Rearrange\ReorderRemoveAnnotRows.cs" />
     <Compile Include="Rearrange\SearchTextColumns.cs" />

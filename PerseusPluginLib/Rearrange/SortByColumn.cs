@@ -32,12 +32,12 @@ namespace PerseusPluginLib.Rearrange{
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			int ind = param.GetParam<int>("Column").Value;
 			bool descending = param.GetParam<bool>("Descending").Value;
-            if (ind < mdata.ColumnCount)
+            if (ind < mdata.Values.ColumnCount)
             {
                 BaseVector v = mdata.Values.GetColumn(ind);
                 SortByValues(mdata, v.ToArray(), descending);
             }
-            else if (ind < mdata.ColumnCount + mdata.NumericColumnCount)
+            else if (ind < mdata.Values.ColumnCount + mdata.NumericColumnCount)
             {
                 double[] v = mdata.NumericColumns[ind - mdata.ColumnCount];
                 SortByValues(mdata, v, descending);
