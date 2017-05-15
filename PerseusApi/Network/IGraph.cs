@@ -5,13 +5,13 @@ namespace PerseusApi.Network
     /// <summary>
     /// Node-link graph
     /// </summary>
-    public interface IGraph : IEnumerable<INode>
+    public interface IGraph : IReadOnlyCollection<INode>
     {
         #warning This API is experimental and might change frequently
         /// <summary>
         /// Edges
         /// </summary>
-        IEnumerable<IEdge> Edges { get; }
+        IReadOnlyCollection<IEdge> Edges { get; }
 
         /// <summary>
         /// Add node and return reference.
@@ -36,5 +36,30 @@ namespace PerseusApi.Network
         /// Number of edges in the graph
         /// </summary>
         int NumberOfEdges { get; }
+
+        /// <summary>
+        /// Remove the nodes from the graph. Removes dangling edges.
+        /// </summary>
+        /// <param name="nodes"></param>
+        void RemoveNodes(params INode[] nodes);
+        
+        /// <summary>
+        /// Remove the nodes from the graph. Removes dangling edges.
+        /// </summary>
+        /// <param name="nodes"></param>
+        void RemoveNodes(IEnumerable<INode> nodes);
+
+        /// <summary>
+        /// Remove edges from the graph.
+        /// </summary>
+        /// <param name="edges"></param>
+        void RemoveEdges(params IEdge[] edges);
+
+        /// <summary>
+        /// Remove edges from the graph.
+        /// </summary>
+        /// <param name="edges"></param>
+        /// <param name="orphans">Orphaned nodes without any remaining edges.</param>
+        void RemoveEdges(IEnumerable<IEdge> edges, out HashSet<INode> orphans);
     }
 }
