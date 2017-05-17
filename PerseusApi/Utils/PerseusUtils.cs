@@ -1323,11 +1323,11 @@ namespace PerseusApi.Utils
             }
             var typeRow = annotationRows["Type"];
             ColumnIndices(typeRow, out eInds, out nInds, out cInds, out tInds, out mInds);
-            filters = new List<Tuple<Relation[], int[], bool>>();
             using (var reader = getReader())
             {
                 hasAdditionalMatrices = GetHasAddtlMatrices(reader, eInds, separator);
             }
+            filters = new List<Tuple<Relation[], int[], bool>>();
             using (var reader = getReader())
             {
                 nrows = GetRowCount(reader, filters, separator, hasAdditionalMatrices);
