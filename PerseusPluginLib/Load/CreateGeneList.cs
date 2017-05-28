@@ -61,7 +61,7 @@ namespace PerseusPluginLib.Load{
 		private static string[] GetOrganismNames(){
 			string[] files = GetOrganismFiles();
 			for (int i = 0; i < files.Length; i++){
-				files[i] = files[i].Substring(files[i].LastIndexOf('\\') + 1);
+				files[i] = files[i].Substring(files[i].LastIndexOf(Path.DirectorySeparatorChar) + 1);
 				files[i] = files[i].Substring(0, files[i].Length - 4);
 			}
 			return files;
