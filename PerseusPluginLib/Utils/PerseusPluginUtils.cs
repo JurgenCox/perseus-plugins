@@ -295,6 +295,12 @@ namespace PerseusPluginLib.Utils{
 			return y;
 		}
 
+        /// <summary>
+        /// Returns an array of main column indices for each of the group names.
+        /// </summary>
+        /// <param name="groupCol"></param>
+        /// <param name="groupNames"></param>
+        /// <returns></returns>
 		public static int[][] GetMainColIndices(IList<string[]> groupCol, string[] groupNames){
 			int[][] colInds = new int[groupNames.Length][];
 			for (int i = 0; i < colInds.Length; i++){
@@ -303,7 +309,13 @@ namespace PerseusPluginLib.Utils{
 			return colInds;
 		}
 
-		private static int[] GetMainColIndices(IList<string[]> groupCol, string groupName){
+        /// <summary>
+        /// Returns the main column indices for the passed-in group.
+        /// </summary>
+        /// <param name="groupCol"></param>
+        /// <param name="groupName"></param>
+        /// <returns></returns>
+		public static int[] GetMainColIndices(IList<string[]> groupCol, string groupName){
 			List<int> result = new List<int>();
 			for (int i = 0; i < groupCol.Count; i++){
 				string[] w = groupCol[i];
