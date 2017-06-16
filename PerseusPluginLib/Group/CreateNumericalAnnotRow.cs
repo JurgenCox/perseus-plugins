@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -62,10 +63,15 @@ namespace PerseusPluginLib.Group {
 			}
 		}
 
-		private static string ProcessDataReadFromFile(IMatrixData mdata, Parameters param) {
+		private static string ProcessDataReadFromFile(IDataWithAnnotationRows mdata, Parameters param) {
 			Parameter<string> fp = param.GetParam<string>("Input file");
 			string filename = fp.Value;
-			string[] colNames = TabSep.GetColumnNames(filename, '\t');
+			string[] colNames;
+			try {
+				colNames = TabSep.GetColumnNames(filename, '\t');
+			} catch (Exception) {
+				return "Could not open file " + filename + ". It maybe open in another program.";
+			}
 			int nameIndex = GetNameIndex(colNames);
 			if (nameIndex < 0) {
 				return "Error: the file has to contain a column called 'Name'.";
@@ -94,7 +100,7 @@ namespace PerseusPluginLib.Group {
 					if (string.IsNullOrEmpty(group)) {
 						newCol[j] = double.NaN;
 					} else {
-						 double.TryParse(group, out newCol[j]);
+						double.TryParse(group, out newCol[j]);
 					}
 				}
 				mdata.AddNumericRow(groupName, groupName, newCol);
@@ -122,7 +128,6 @@ namespace PerseusPluginLib.Group {
 			}
 			writer.Close();
 		}
-
 
 		private static void ProcessDataRename(IDataWithAnnotationRows mdata, Parameters param) {
 			int groupColInd = param.GetParam<int>("Numerical row").Value;
@@ -200,15 +205,15 @@ namespace PerseusPluginLib.Group {
 		}
 
 		public Parameters GetReadFromFileParameters(IMatrixData mdata) {
-			List<Parameter> par = new List<Parameter>{
-				new FileParam("Input file"){Filter = "Tab separated file (*.txt)|*.txt", Save = false}
+			List<Parameter> par = new List<Parameter> {
+				new FileParam("Input file") {Filter = "Tab separated file (*.txt)|*.txt", Save = false}
 			};
 			return new Parameters(par);
 		}
 
 		public Parameters GetWriteTemplateFileParameters(IMatrixData mdata) {
-			List<Parameter> par = new List<Parameter>{
-				new FileParam("Output file", "NumericalRows.txt"){Filter = "Tab separated file (*.txt)|*.txt", Save = true}
+			List<Parameter> par = new List<Parameter> {
+				new FileParam("Output file", "NumericalRows.txt") {Filter = "Tab separated file (*.txt)|*.txt", Save = true}
 			};
 			return new Parameters(par);
 		}
