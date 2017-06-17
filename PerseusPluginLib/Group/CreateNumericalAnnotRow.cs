@@ -100,7 +100,9 @@ namespace PerseusPluginLib.Group {
 					if (string.IsNullOrEmpty(group)) {
 						newCol[j] = double.NaN;
 					} else {
-						double.TryParse(group, out newCol[j]);
+						if (!double.TryParse(group, out newCol[j])) {
+							newCol[j] = double.NaN;
+						}
 					}
 				}
 				mdata.AddNumericRow(groupName, groupName, newCol);
@@ -119,7 +121,6 @@ namespace PerseusPluginLib.Group {
 
 		private static void ProcessDataWriteTemplateFile(IDataWithAnnotationRows mdata, Parameters param) {
 			Parameter<string> fp = param.GetParam<string>("Output file");
-			//MessageBox.Show(fp.Value);
 			StreamWriter writer = new StreamWriter(fp.Value);
 			writer.WriteLine("Name\tNew numerical column");
 			for (int i = 0; i < mdata.ColumnCount; i++) {
