@@ -11,7 +11,9 @@ namespace PerseusPluginLib.Test.PerseusApi {
 	[TestFixture]
 	public class PerseusUtilsTest : BaseTest {
 		[Test]
-		public void GetAvailableAnnotsTest() {
+		public void GetAvailableAnnotsTest()
+		{
+		    var annotFiles = PerseusUtils.GetAnnotFiles();
             Assert.Inconclusive("Should be moved to integration tests, using conf");
             //[DeploymentItem("conf", "conf")]
 			string[] baseNames;
