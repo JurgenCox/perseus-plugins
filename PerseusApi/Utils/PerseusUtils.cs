@@ -669,9 +669,13 @@ namespace PerseusApi.Utils
             }
         }
 
-        private static string[] GetAnnotFiles()
+        public static string[] GetAnnotFiles()
         {
-            string folder = FileUtils.executablePath + "\\conf\\annotations";
+            string folder = Path.Combine(FileUtils.executablePath, "conf", "annotations");
+            if (!Directory.Exists(folder))
+            {
+                return new string[0];
+            }
             string[] files = Directory.GetFiles(folder);
             List<string> result = new List<string>();
             foreach (string file in files)
