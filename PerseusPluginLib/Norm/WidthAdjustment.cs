@@ -16,7 +16,7 @@ namespace PerseusPluginLib.Norm{
 				"The first, second and third quartile (q1, q2, q3) are calculated from the " +
 				"distribution of all values. The second quartile (which is the median) is subtracted from each value " +
 				"to center the distribution. Then we divide by the width in an asymmetric way. All values that are " +
-				"positive after subtraction of the median are divided by q3 – q2 while all negative values are divided by q2 – q1.";
+				"positive after subtraction of the median are divided by q3 - q2 while all negative values are divided by q2 - q1.";
 
 		public string HelpOutput => "";
 		public string[] HelpSupplTables => new string[0];
