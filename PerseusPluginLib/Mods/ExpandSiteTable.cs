@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -38,10 +39,9 @@ namespace PerseusPluginLib.Mods{
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			List<string> expNames = mdata.ColumnNames;
-			string[] allSuffixes;
-			string[] allPrefixes;
 			string errorString = null;
-			int[,] colInds = SortNumberedNames(expNames, maxInd, ref errorString, out allSuffixes, out allPrefixes);
+			int[,] colInds = SortNumberedNames(expNames, mdata.ColumnDescriptions, maxInd, ref errorString, out string[] allSuffixes,
+                out string[] allPrefixes, out List<string> allDescriptions);
 			if (errorString != null){
 				processInfo.ErrString = errorString;
 				return;
@@ -66,12 +66,20 @@ namespace PerseusPluginLib.Mods{
 			for (int i = 0; i < mdata.CategoryColumnCount + 1; i++){
 				catCols.Add(new string[nrows][]);
 			}
+            List<double[][]> multiNumCols = new List<double[][]>();
+		    for (int i = 0; i < mdata.MultiNumericColumnCount; i++)
+		    {
+		        multiNumCols.Add(new double[nrows][]);
+		    }
 			List<string> expColNames = new List<string>();
+		    List<string> expColDescriptions = new List<string>();
 			foreach (int t in normalIndices){
-				expColNames.Add(expColNames[t]);
+				expColNames.Add(expNames[t]);
+                expColDescriptions.Add(mdata.ColumnDescriptions[t]);
 			}
-			foreach (string t in allPrefixes){
-				expColNames.Add(t);
+			foreach (var t in allPrefixes.Zip(allDescriptions, Tuple.Create)) {
+				expColNames.Add(t.Item1);
+                expColDescriptions.Add(t.Item2);
 			}
 			int count = 0;
 			for (int i = 0; i < allSuffixes.Length; i++){
@@ -97,18 +105,22 @@ namespace PerseusPluginLib.Mods{
 					for (int k = 0; k < mdata.CategoryColumnCount; k++){
 						catCols[k][rowInd] = mdata.GetCategoryColumnEntryAt(k, j);
 					}
+					for (int k = 0; k < mdata.MultiNumericColumnCount; k++){
+						multiNumCols[k][rowInd] = mdata.MultiNumericColumns[k][j];
+					}
 					catCols[mdata.CategoryColumnCount][rowInd] = new[]{allSuffixes[i]};
 					stringCols[stringCols.Count - 1][count - 1] = "UID" + count;
 				}
 			}
 			string[] catColNames = ArrayUtils.Concat(mdata.CategoryColumnNames, new[]{"Multiplicity"});
 			mdata.ColumnNames = expColNames;
+		    mdata.ColumnDescriptions = expColDescriptions;
 			mdata.Values.Set(data);
 			mdata.Quality.Set(quality);
 			mdata.IsImputed.Set(imputed);
 			mdata.SetAnnotationColumns(new List<string>(ArrayUtils.Concat(mdata.StringColumnNames, new[]{"Unique identifier"})),
 				stringCols, new List<string>(catColNames), catCols, ArrayUtils.SubList(mdata.NumericColumnNames, validNumCols),
-				numCols, new List<string>(), new List<double[][]>());
+				numCols, mdata.MultiNumericColumnNames, multiNumCols);
 		}
 
 		public static T[] To1DArray<T>(T[,] m){
@@ -145,21 +157,25 @@ namespace PerseusPluginLib.Mods{
 			return result.ToArray();
 		}
 
-		private static int[,] SortNumberedNames(IList<string> names, int maxIndex, ref string errorString,
-			out string[] allSuffixes, out string[] allPrefixes){
+		private static int[,] SortNumberedNames(IList<string> names, IList<string> descriptions, int maxIndex, ref string errorString,
+			out string[] allSuffixes, out string[] allPrefixes, out List<string> allDescriptions){
 			HashSet<string> allPrefixes1 = new HashSet<string>();
 			List<string> allPrefixesList = new List<string>();
+			allDescriptions = new List<string>();
 			allSuffixes = new string[maxIndex];
 			for (int i = 0; i < maxIndex; i++){
 				allSuffixes[i] = "___" + (i + 1);
 			}
-			foreach (string name in names){
+		    for (int i = 0; i < names.Count; i++)
+		    {
+		        var name = names[i];
 				foreach (string t in allSuffixes){
 					if (name.EndsWith(t)){
 						string prefix = name.Substring(0, name.LastIndexOf(t, StringComparison.Ordinal));
 						if (!allPrefixes1.Contains(prefix)){
 							allPrefixes1.Add(prefix);
 							allPrefixesList.Add(prefix);
+                            allDescriptions.Add(descriptions[i]);
 						}
 					}
 				}
@@ -198,6 +214,10 @@ namespace PerseusPluginLib.Mods{
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
+		    if (mdata.CategoryRowCount > 0 || mdata.NumericRowCount > 0)
+		    {
+		        errorString = "Categorical and numerical rows are not supported. Please remove them from the table.";
+		    }
 			return new Parameters(new Parameter[]{});
 		}
 	}

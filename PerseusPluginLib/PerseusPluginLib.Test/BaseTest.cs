@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using NUnit.Framework;
+using PerseusApi.Generic;
 
 namespace PerseusPluginLib.Test
 {
@@ -18,6 +19,11 @@ namespace PerseusPluginLib.Test
             AppDomain domain = AppDomain.CurrentDomain;
             FieldInfo domainManagerField = domain.GetType().GetField("_domainManager", BindingFlags.Instance | BindingFlags.NonPublic);
             domainManagerField.SetValue(domain, manager);
+        }
+
+        public static ProcessInfo CreateProcessInfo()
+        {
+            return new ProcessInfo(new Settings(), s => { }, i => { }, 1, i => { });
         }
     }
 }
