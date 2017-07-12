@@ -34,20 +34,21 @@ namespace PerseusPluginLib.Rearrange{
 			int[] inds = param.GetParam<int[]>("Columns").Value;
 			bool keepColumns = param.GetParam<bool>("Keep original columns").Value;
 			bool semicolons = param.GetParam<bool>("Strings separated by semicolons are independent").Value;
+		    var replacement = param.GetParam<string>("Replacement string").Value;
 			foreach (int col in inds){
-				ProcessCol(mdata, regex, col, keepColumns, semicolons);
+				ProcessColMatch(mdata, regex, replacement, col, keepColumns, semicolons);
 			}
 		}
 
-		private static void ProcessCol(IDataWithAnnotationColumns mdata, Regex regex, int col, bool keepColumns,
-			bool semicolons){
+		private static void ProcessColMatch(IDataWithAnnotationColumns mdata, Regex regex, string replacement, int col, bool keepColumns, bool semicolons){
 			string[] values = new string[mdata.RowCount];
 			for (int row = 0; row < mdata.RowCount; row++){
 				string fullString = mdata.StringColumns[col][row];
 				string[] inputParts = semicolons ? fullString.Split(';') : new[]{fullString};
-				values[row] = regex.Match(inputParts[0]).Groups[1].ToString();
-				for (int i = 1; i < inputParts.Length; i++){
-					values[row] += ";" + regex.Match(inputParts[i]).Groups[1];
+			    values[row] = RegexMatchOrReplace(inputParts[0]);
+				for (int i = 1; i < inputParts.Length; i++)
+				{
+				    values[row] += ";" + RegexMatchOrReplace(inputParts[i]);
 				}
 			}
 			if (keepColumns){
@@ -55,11 +56,30 @@ namespace PerseusPluginLib.Rearrange{
 			} else{
 				mdata.StringColumns[col] = values;
 			}
+
+		    string RegexMatchOrReplace(string input)
+		    {
+		        if (string.IsNullOrEmpty(replacement))
+		        {
+		            return regex.Match(input).Groups[1].ToString();
+		        }
+		        return regex.Replace(input, replacement);
+		    }
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new MultiChoiceParam("Columns"){Values = mdata.StringColumnNames}, new StringParam("Regular expression", "^([^;]+)"), new BoolParam("Keep original columns", false), new BoolParam("Strings separated by semicolons are independent", false));
-		}
-	}
+                new Parameters(new MultiChoiceParam("Columns")
+                {
+                    Values = mdata.StringColumnNames
+                }, 
+                new StringParam("Regular expression", "^([^;]+)"),
+                new StringParam("Replacement string", "")
+                {
+                    Help = "Replacement string. Leave empty for matching."
+                },
+                new BoolParam("Keep original columns", false),
+                new BoolParam("Strings separated by semicolons are independent", false));
+        }
+    }
 }
