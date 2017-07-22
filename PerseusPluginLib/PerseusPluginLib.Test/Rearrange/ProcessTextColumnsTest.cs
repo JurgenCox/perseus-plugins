@@ -58,14 +58,18 @@ namespace PerseusPluginLib.Test.Rearrange{
 			List<string> stringColumnNames = new List<string>{"Column Name"};
 			List<string[]> stringColumnsInit = new List<string[]>{stringsInit};
 			List<string[]> stringColumnsExpect = new List<string[]>{stringsExpect};
-			Parameters param =
-				new Parameters(new MultiChoiceParam("Columns", new[]{0}){Values = stringColumnNames}, new StringParam("Regular expression", regexStr), new BoolParam("Keep original columns", false), new BoolParam("Strings separated by semicolons are independent", false));
+			var ptc = new ProcessTextColumns();
 			IMatrixData mdata = PerseusFactory.CreateMatrixData();
 			mdata.Clear();
 			mdata.Name = name;
 			mdata.SetAnnotationColumns(stringColumnNames, stringColumnsInit, mdata.CategoryColumnNames, new List<string[][]>(),
 				mdata.NumericColumnNames, mdata.NumericColumns, mdata.MultiNumericColumnNames, mdata.MultiNumericColumns);
-			var ptc = new ProcessTextColumns();
+		    var errorStr = string.Empty;
+		    Parameters param = ptc.GetParameters(mdata, ref errorStr);
+		    param.GetParam<int[]>("Columns").Value = new[] {0};
+		    param.GetParam<string>("Regular expression").Value = regexStr;
+	        param.GetParam<bool>("Keep original columns").Value = false;
+            param.GetParam<bool>("Strings separated by semicolons are independent").Value = false;
 			ptc.ProcessData(mdata, param, ref supplTables, ref documents, null);
 			for (int rowInd = 0; rowInd < stringColumnsInit[0].Length; rowInd++)
 			{
