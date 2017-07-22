@@ -8,7 +8,7 @@ using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusPluginLib.Utils;
 
-namespace PerseusPluginLib.Group{
+namespace PerseusPluginLib.AnnotRows{
 	public class AverageGroups : IMatrixProcessing{
 		public bool HasButton => true;
 		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("average.png");

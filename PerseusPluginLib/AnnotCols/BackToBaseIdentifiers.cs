@@ -10,7 +10,7 @@ using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
 
-namespace PerseusPluginLib.Annot{
+namespace PerseusPluginLib.AnnotCols{
 	public class BackToBaseIdentifiers : IMatrixProcessing{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;

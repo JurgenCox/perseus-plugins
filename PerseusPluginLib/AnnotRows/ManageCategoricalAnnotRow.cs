@@ -12,8 +12,8 @@ using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusPluginLib.Utils;
 
-namespace PerseusPluginLib.Group {
-	public class CreateCategoricalAnnotRow : IMatrixProcessing {
+namespace PerseusPluginLib.AnnotRows {
+	public class ManageCategoricalAnnotRow : IMatrixProcessing {
 		public bool HasButton => true;
 		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("groupButton.Image.png");
 
@@ -70,7 +70,7 @@ namespace PerseusPluginLib.Group {
 			}
 		}
 
-		private static string ProcessDataReadFromFile(IMatrixData mdata, Parameters param) {
+		private static string ProcessDataReadFromFile(IDataWithAnnotationRows mdata, Parameters param) {
 			Parameter<string> fp = param.GetParam<string>("Input file");
 			string filename = fp.Value;
 			string[] colNames;
@@ -191,7 +191,7 @@ namespace PerseusPluginLib.Group {
 			return new Parameters(par);
 		}
 
-		private static void ProcessDataCreate(IMatrixData mdata, Parameters param) {
+		private static void ProcessDataCreate(IDataWithAnnotationRows mdata, Parameters param) {
 			string name = param.GetParam<string>("Row name").Value;
 			string[][] groupCol = new string[mdata.ColumnCount][];
 			for (int i = 0; i < mdata.ColumnCount; i++) {
@@ -202,7 +202,8 @@ namespace PerseusPluginLib.Group {
 			mdata.AddCategoryRow(name, name, groupCol);
 		}
 
-		private static void ProcessDataCreateFromGoupNames(IMatrixData mdata, Parameters param, ProcessInfo processInfo) {
+		private static void ProcessDataCreateFromGoupNames(IDataWithAnnotationRows mdata, Parameters param,
+			ProcessInfo processInfo) {
 			ParameterWithSubParams<int> scwsp = param.GetParamWithSubParams<int>("Pattern");
 			Parameters spar = scwsp.GetSubParameters();
 			string regexString = "";

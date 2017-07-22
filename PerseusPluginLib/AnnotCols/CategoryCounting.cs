@@ -9,7 +9,7 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 
-namespace PerseusPluginLib.Annot{
+namespace PerseusPluginLib.AnnotCols{
 	public class CategoryCounting : IMatrixProcessing{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;

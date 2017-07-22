@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -12,7 +11,7 @@ using PerseusApi.Matrix;
 using PerseusApi.Utils;
 using PerseusPluginLib.Utils;
 
-namespace PerseusPluginLib.Annot{
+namespace PerseusPluginLib.AnnotCols{
 	public class AddAnnotationToMatrix : IMatrixProcessing{
 		public bool HasButton => true;
 		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("network.png");

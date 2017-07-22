@@ -9,8 +9,8 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 
-namespace PerseusPluginLib.Group {
-	public class CreateNumericalAnnotRow : IMatrixProcessing {
+namespace PerseusPluginLib.AnnotRows {
+	public class ManageNumericalAnnotRow : IMatrixProcessing {
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
 

@@ -55,11 +55,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Annot\AddAnnotationToMatrix.cs" />
-    <Compile Include="Annot\AverageCategories.cs" />
-    <Compile Include="Annot\BackToBaseIdentifiers.cs" />
-    <Compile Include="Annot\CategoryCounting.cs" />
-    <Compile Include="Annot\CountingResult.cs" />
+    <Compile Include="AnnotCols\AddAnnotationToMatrix.cs" />
+    <Compile Include="AnnotCols\AverageCategories.cs" />
+    <Compile Include="AnnotCols\BackToBaseIdentifiers.cs" />
+    <Compile Include="AnnotCols\CategoryCounting.cs" />
+    <Compile Include="AnnotCols\CountingResult.cs" />
     <Compile Include="Basic\CloneProcessing.cs" />
     <Compile Include="Basic\CombineAnnotations.cs" />
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />
@@ -108,10 +108,10 @@
     <Compile Include="Filter\FilterRandomRows.cs" />
     <Compile Include="Filter\FilterValidValuesColumns.cs" />
     <Compile Include="Filter\FilterCategoricalRow.cs" />
-    <Compile Include="Group\AverageGroups.cs" />
-    <Compile Include="Group\CreateCategoricalAnnotRow.cs" />
-    <Compile Include="Group\CreateNumericalAnnotRow.cs" />
-    <Compile Include="Group\JoinTermsInCategoricalRow.cs" />
+    <Compile Include="AnnotRows\AverageGroups.cs" />
+    <Compile Include="AnnotRows\ManageCategoricalAnnotRow.cs" />
+    <Compile Include="AnnotRows\ManageNumericalAnnotRow.cs" />
+    <Compile Include="AnnotRows\JoinTermsInCategoricalRow.cs" />
     <Compile Include="Impute\ReplaceImputedByNan.cs" />
     <Compile Include="Impute\ReplaceMissingByConstant.cs" />
     <Compile Include="Impute\ReplaceMissingFromGaussian.cs" />

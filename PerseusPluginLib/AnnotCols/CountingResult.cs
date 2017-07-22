@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using BaseLibS.Num;
 
-namespace PerseusPluginLib.Annot{
+namespace PerseusPluginLib.AnnotCols{
 	public class CountingResult{
 		private IList<string> allCategoryType1 = new List<string>();
 		private IList<string> allCategory1 = new List<string>();

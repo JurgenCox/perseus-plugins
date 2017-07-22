@@ -9,7 +9,7 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 
-namespace PerseusPluginLib.Annot{
+namespace PerseusPluginLib.AnnotCols{
 	internal enum SummaryType{
 		Median,
 		Mean,

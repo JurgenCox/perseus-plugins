@@ -6,7 +6,7 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 
-namespace PerseusPluginLib.Group{
+namespace PerseusPluginLib.AnnotRows{
 	public class JoinTermsInCategoricalRow : IMatrixProcessing{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
