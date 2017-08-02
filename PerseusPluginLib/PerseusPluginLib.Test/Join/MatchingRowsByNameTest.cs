@@ -31,6 +31,8 @@ namespace PerseusPluginLib.Test.Join
             peptides.AddNumericColumn("pep_Intensity", "", new [] {0.0});
             peptides.AddStringColumn("pep_id", "", new []{"35"});
             peptides.AddStringColumn("pep_Protein group IDs", "", new []{"13;21"});
+            peptides.Quality.Init(1, 1);
+            peptides.Quality.Set(0, 0, 1);
             var multiNum = new ExpandMultiNumeric();
             var errorString = string.Empty;
             var parameters2 = multiNum.GetParameters(peptides, ref errorString);
@@ -68,6 +70,8 @@ namespace PerseusPluginLib.Test.Join
         [Test]
         public void TestExpandMultiNumColumn()
         {
+            Assert.AreEqual(1, peptides.Quality.ColumnCount);
+            Assert.AreEqual(2, peptides.Quality.RowCount);
             Assert.AreEqual(1, peptides.IsImputed.ColumnCount);
             Assert.AreEqual(2, peptides.IsImputed.RowCount);
             Assert.AreEqual(2, peptides.RowCount);
