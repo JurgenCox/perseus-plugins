@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annot\AddAnnotationToMatrixTest.cs" />
+    <Compile Include="Join\MatchingRowsByNameTest.cs" />
     <Compile Include="Mods\ExpandSiteTableTest.cs" />
     <Compile Include="PerseusApi\PerseusUtilsTest.cs" />
     <Compile Include="BaseTest.cs" />
