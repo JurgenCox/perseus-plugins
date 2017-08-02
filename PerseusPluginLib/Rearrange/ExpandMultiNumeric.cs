@@ -52,6 +52,7 @@ namespace PerseusPluginLib.Rearrange{
 				return;
 			}
 			int rowCount = GetNewRowCount(mdata, multiNumCols, stringCols);
+			bool[,] impVals = new bool[rowCount, mdata.ColumnCount];
 			float[,] expVals = new float[rowCount, mdata.ColumnCount];
 			List<string[]> stringC = new List<string[]>();
 			for (int i = 0; i < mdata.StringColumnCount; i++){
@@ -82,6 +83,9 @@ namespace PerseusPluginLib.Rearrange{
 				for (int j = 0; j < entryCount; j++){
 					for (int k = 0; k < mdata.ColumnCount; k++){
 						expVals[count + j, k] = mdata.Values.Get(i, k);
+					}
+					for (int k = 0; k < mdata.ColumnCount; k++){
+						impVals[count + j, k] = mdata.IsImputed[i, k];
 					}
 					for (int k = 0; k < mdata.NumericColumnCount; k++){
 						numC[k][count + j] = mdata.NumericColumns[k][i];
@@ -132,6 +136,7 @@ namespace PerseusPluginLib.Rearrange{
 			}
 			mdata.ColumnNames = mdata.ColumnNames;
 			mdata.Values.Set(expVals);
+            mdata.IsImputed.Set(impVals);
 			mdata.SetAnnotationColumns(mdata.StringColumnNames, stringC, mdata.CategoryColumnNames, catC,
 				new List<string>(ArrayUtils.Concat(mdata.NumericColumnNames,
 					ArrayUtils.SubList(mdata.MultiNumericColumnNames, multiNumCols))), numC,
