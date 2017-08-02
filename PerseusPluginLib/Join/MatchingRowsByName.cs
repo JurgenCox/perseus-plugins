@@ -511,8 +511,8 @@ namespace PerseusPluginLib.Join{
 			for (int i = 0; i < data.RowCount; i++){
 				for (int j = 0; j < data.ColumnCount; j++){
 					newVals[i, j] = data.Values.Get(i, j);
-					newQual[i, j] = data.Quality.Get(i, j);
-					newImp[i, j] = data.IsImputed[i, j];
+					newQual[i, j] = data.Quality?.Get(i, j) ?? 0;
+					newImp[i, j] = data.IsImputed?[i, j] ?? false;
 				}
 				for (int j = 0; j < vals.GetLength(1); j++){
 					newVals[i, data.ColumnCount + j] = vals[i, j];
@@ -521,8 +521,8 @@ namespace PerseusPluginLib.Join{
 				}
 			}
 			data.Values.Set(newVals);
-			data.Quality.Set(newQual);
-			data.IsImputed.Set(newImp);
+			data.Quality?.Set(newQual);
+			data.IsImputed?.Set(newImp);
 			data.ColumnNames.AddRange(names);
 			data.ColumnDescriptions.AddRange(names);
 		}
