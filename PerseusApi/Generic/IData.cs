@@ -1,4 +1,5 @@
 ﻿using System;
+using BaseLibS.Graph;
 
 namespace PerseusApi.Generic{
     /// <summary>
@@ -15,6 +16,14 @@ namespace PerseusApi.Generic{
         /// This is the DataType of the object.
         /// </summary>
         DataType DataType { get; }
+        /// <summary>
+        /// Visual representation of the data in the workflow.
+        /// </summary>
+        Bitmap2 WorkflowImage { get; }
+        /// <summary>
+        /// Name of the DataType.
+        /// </summary>
+        string TypeName { get; }
         /// <summary>
         /// This is the name that e.g. appears in drop-down menus.
         /// </summary>
