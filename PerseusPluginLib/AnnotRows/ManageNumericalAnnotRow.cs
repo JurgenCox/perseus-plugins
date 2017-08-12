@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -100,7 +101,7 @@ namespace PerseusPluginLib.AnnotRows {
 					if (string.IsNullOrEmpty(group)) {
 						newCol[j] = double.NaN;
 					} else {
-						if (!double.TryParse(group, out newCol[j])) {
+						if (!double.TryParse(group, NumberStyles.Any, CultureInfo.InvariantCulture, out newCol[j])) {
 							newCol[j] = double.NaN;
 						}
 					}

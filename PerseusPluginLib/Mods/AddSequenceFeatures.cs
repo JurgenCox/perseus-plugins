@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -96,10 +97,10 @@ namespace PerseusPluginLib.Mods{
 							foreach (UniprotFeature uf in mpa.Features[featureType]){
 								int begin;
 								int end;
-								if (!int.TryParse(uf.FeatureBegin, out begin)){
+								if (!int.TryParse(uf.FeatureBegin, NumberStyles.Any, CultureInfo.InvariantCulture, out begin)){
 									begin = int.MaxValue;
 								}
-								if (!int.TryParse(uf.FeatureEnd, out end)){
+								if (!int.TryParse(uf.FeatureEnd, NumberStyles.Any, CultureInfo.InvariantCulture, out end)){
 									end = int.MinValue;
 								}
 								if (Fits(pos, begin, end)){

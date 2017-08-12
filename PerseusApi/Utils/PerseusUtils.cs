@@ -20,7 +20,7 @@ namespace PerseusApi.Utils {
 			int[] catColIndices, int[] numColIndices, int[] textColIndices, int[] multiNumColIndices, ProcessInfo processInfo,
 			IList<string> colNames, IMatrixData mdata, StreamReader reader, StreamReader auxReader, int nrows, string origin,
 			char separator, bool shortenExpressionNames, List<Tuple<Relation[], int[], bool>> filters) {
-			var hasAdditionalMatrices = GetHasAddtlMatrices(auxReader, mainColIndices, separator);
+			bool hasAdditionalMatrices = GetHasAddtlMatrices(auxReader, mainColIndices, separator);
 			LoadMatrixData(annotationRows, mainColIndices, catColIndices, numColIndices, textColIndices, multiNumColIndices,
 				processInfo, colNames, mdata, reader, nrows, origin, separator, shortenExpressionNames, hasAdditionalMatrices,
 				filters);
@@ -74,11 +74,9 @@ namespace PerseusApi.Utils {
 			TextReader reader, int nrows, bool shortenExpressionNames, List<Tuple<Relation[], int[], bool>> filters,
 			bool addtlMatrices) {
 			status("Reading data");
-			float[,] qualityValues;
-			bool[,] isImputedValues;
-			float[,] mainValues;
 			LoadAllData(matrixData, colNames, mainColIndices, catColIndices, numColIndices, textColIndices, multiNumColIndices,
-				reader, separator, nrows, filters, progress, addtlMatrices, out qualityValues, out isImputedValues, out mainValues);
+				reader, separator, nrows, filters, progress, addtlMatrices, out float[,] qualityValues, out bool[,] isImputedValues,
+				out float[,] mainValues);
 			AddColumnDescriptions(colDescriptions, catColIndices, numColIndices, textColIndices, multiNumColIndices, matrixData);
 			AddMainColumnDescriptions(colDescriptions, mainColIndices, matrixData);
 			matrixData.Name = origin;
@@ -103,11 +101,9 @@ namespace PerseusApi.Utils {
 		public static void LoadDataWithAnnotationColumns(IDataWithAnnotationColumns matrixData, IList<string> colNames,
 			IList<int> catColIndices, IList<int> numColIndices, IList<int> textColIndices, IList<int> multiNumColIndices,
 			Action<int> progress, char separator, TextReader reader, int nrows, List<Tuple<Relation[], int[], bool>> filters) {
-			float[,] qualityValues;
-			bool[,] isImputedValues;
-			float[,] mainValues;
 			LoadAllData(matrixData, colNames, new int[0], catColIndices, numColIndices, textColIndices, multiNumColIndices,
-				reader, separator, nrows, filters, progress, false, out qualityValues, out isImputedValues, out mainValues);
+				reader, separator, nrows, filters, progress, false, out float[,] qualityValues, out bool[,] isImputedValues,
+				out float[,] mainValues);
 		}
 
 		private static void LoadAllData(IDataWithAnnotationColumns matrixData, IList<string> colNames,
@@ -115,20 +111,16 @@ namespace PerseusApi.Utils {
 			IList<int> multiNumColIndices, TextReader reader, char separator, int nrows,
 			List<Tuple<Relation[], int[], bool>> filters, Action<int> progress, bool addtlMatrices, out float[,] qualityValues,
 			out bool[,] isImputedValues, out float[,] mainValues) {
-			List<string[][]> categoryAnnotation;
-			List<double[]> numericAnnotation;
-			List<double[][]> multiNumericAnnotation;
-			List<string[]> stringAnnotation;
 			InitializeAnnotationColumns(catColIndices, numColIndices, textColIndices, multiNumColIndices, nrows,
-				out categoryAnnotation, out numericAnnotation, out multiNumericAnnotation, out stringAnnotation);
+				out List<string[][]> categoryAnnotation, out List<double[]> numericAnnotation,
+				out List<double[][]> multiNumericAnnotation, out List<string[]> stringAnnotation);
 			mainValues = InitializeMainValues(mainColIndices, nrows, addtlMatrices, out qualityValues, out isImputedValues);
 			reader.ReadLine();
 			int count = 0;
 			string line;
 			while ((line = reader.ReadLine()) != null) {
 				progress(100 * (count + 1) / nrows);
-				string[] words;
-				if (SkipCommentOrInvalid(separator, filters, addtlMatrices, line, out words)) continue;
+				if (SkipCommentOrInvalid(separator, filters, addtlMatrices, line, out string[] words)) continue;
 				ReadMainColumns(mainColIndices, addtlMatrices, words, mainValues, count, isImputedValues, qualityValues);
 				ReadAnnotationColumns(catColIndices, numColIndices, textColIndices, multiNumColIndices, words, numericAnnotation,
 					count, multiNumericAnnotation, categoryAnnotation, stringAnnotation);
@@ -169,9 +161,8 @@ namespace PerseusApi.Utils {
 
 		private static void AddAnnotationRows(IList<int> mainColIndices, IDataWithAnnotationRows matrixData,
 			IDictionary<string, string[]> annotationRows) {
-			Dictionary<string, string[]> catAnnotatRows;
-			Dictionary<string, string[]> numAnnotatRows;
-			SplitAnnotRows(annotationRows, out catAnnotatRows, out numAnnotatRows);
+			SplitAnnotRows(annotationRows, out Dictionary<string, string[]> catAnnotatRows,
+				out Dictionary<string, string[]> numAnnotatRows);
 			foreach (string key in catAnnotatRows.Keys) {
 				string name = key;
 				string[] svals = ArrayUtils.SubArray(catAnnotatRows[key], mainColIndices);
@@ -197,7 +188,7 @@ namespace PerseusApi.Utils {
 				double[] num = new double[svals.Length];
 				for (int i = 0; i < num.Length; i++) {
 					string s = svals[i].Trim();
-					if (!double.TryParse(s, out num[i])) {
+					if (!double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out num[i])) {
 						num[i] = double.NaN;
 					}
 				}
@@ -213,8 +204,8 @@ namespace PerseusApi.Utils {
 				if (numColIndices[i] >= words.Length) {
 					numericAnnotation[i][count] = double.NaN;
 				} else {
-					double q;
-					bool success = double.TryParse(words[numColIndices[i]].Trim(), out q);
+					bool success = double.TryParse(words[numColIndices[i]].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture,
+						out double q);
 					if (numericAnnotation[i].Length > count) {
 						numericAnnotation[i][count] = success ? q : double.NaN;
 					}
@@ -234,8 +225,7 @@ namespace PerseusApi.Utils {
 					string[] ww = q.Length == 0 ? new string[0] : q.Split(';');
 					multiNumericAnnotation[i][count] = new double[ww.Length];
 					for (int j = 0; j < ww.Length; j++) {
-						double q1;
-						bool success = double.TryParse(ww[j], out q1);
+						bool success = double.TryParse(ww[j], NumberStyles.Any, CultureInfo.InvariantCulture, out double q1);
 						multiNumericAnnotation[i][count][j] = success ? q1 : double.NaN;
 					}
 				}
@@ -289,7 +279,7 @@ namespace PerseusApi.Utils {
 						ParseExp(s, out mainValues[count, i], out isImputedValues[count, i], out qualityValues[count, i]);
 					} else {
 						if (count < mainValues.GetLength(0)) {
-							bool success = float.TryParse(s, out mainValues[count, i]);
+							bool success = float.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out mainValues[count, i]);
 							if (!success) {
 								mainValues[count, i] = float.NaN;
 							}
@@ -351,7 +341,7 @@ namespace PerseusApi.Utils {
 			isImputedValue = false;
 			qualityValue = float.NaN;
 			if (w.Length > 0) {
-				bool success = float.TryParse(w[0], out expressionValue);
+				bool success = float.TryParse(w[0], NumberStyles.Any, CultureInfo.InvariantCulture, out expressionValue);
 				if (!success) {
 					expressionValue = float.NaN;
 				}
@@ -363,7 +353,7 @@ namespace PerseusApi.Utils {
 				}
 			}
 			if (w.Length > 2) {
-				bool success = float.TryParse(w[2], out qualityValue);
+				bool success = float.TryParse(w[2], NumberStyles.Any, CultureInfo.InvariantCulture, out qualityValue);
 				if (!success) {
 					qualityValue = float.NaN;
 				}
@@ -476,9 +466,7 @@ namespace PerseusApi.Utils {
 		/// <param name="files"></param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files) {
-			AnnotType[][] types;
-			List<string> badFiles;
-			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
+			return GetAvailableAnnots(out baseNames, out AnnotType[][] types, out files, out List<string> badFiles);
 		}
 
 		/// <summary>
@@ -489,8 +477,7 @@ namespace PerseusApi.Utils {
 		/// <param name="badFiles">List of files which could not be processed</param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles) {
-			AnnotType[][] types;
-			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
+			return GetAvailableAnnots(out baseNames, out AnnotType[][] types, out files, out badFiles);
 		}
 
 		/// <summary>
@@ -501,8 +488,7 @@ namespace PerseusApi.Utils {
 		/// <param name="files"></param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files) {
-			List<string> badFiles;
-			return GetAvailableAnnots(out baseNames, out types, out files, out badFiles);
+			return GetAvailableAnnots(out baseNames, out types, out files, out List<string> badFiles);
 		}
 
 		/// <summary>
@@ -515,16 +501,14 @@ namespace PerseusApi.Utils {
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files,
 			out List<string> badFiles) {
-			var filesList = GetAnnotFiles().ToList();
+			List<string> filesList = GetAnnotFiles().ToList();
 			badFiles = new List<string>();
-			var baseNamesList = new List<string>();
-			var typesList = new List<AnnotType[]>();
-			var annotationNames = new List<string[]>();
-			foreach (var file in filesList) {
+			List<string> baseNamesList = new List<string>();
+			List<AnnotType[]> typesList = new List<AnnotType[]>();
+			List<string[]> annotationNames = new List<string[]>();
+			foreach (string file in filesList) {
 				try {
-					string baseName;
-					AnnotType[] type;
-					var name = GetAvailableAnnots(file, out baseName, out type);
+					string[] name = GetAvailableAnnots(file, out string baseName, out AnnotType[] type);
 					annotationNames.Add(name);
 					baseNamesList.Add(baseName);
 					typesList.Add(type);
@@ -532,7 +516,7 @@ namespace PerseusApi.Utils {
 					badFiles.Add(file);
 				}
 			}
-			foreach (var badFile in badFiles) {
+			foreach (string badFile in badFiles) {
 				filesList.Remove(badFile);
 			}
 			files = filesList.ToArray();
@@ -657,8 +641,7 @@ namespace PerseusApi.Utils {
 				return null;
 			}
 			and = param.GetParam<int>("Combine through").Value == 0;
-			string[] realVariableNames;
-			colInds = GetColIndsNumFilter(param, out realVariableNames);
+			colInds = GetColIndsNumFilter(param, out string[] realVariableNames);
 			if (colInds == null || colInds.Length == 0) {
 				errString = "Please specify at least one column.";
 				return null;
@@ -683,8 +666,7 @@ namespace PerseusApi.Utils {
 				if (rel.StartsWith(">") || rel.StartsWith("<") || rel.StartsWith("=")) {
 					rel = "x" + rel;
 				}
-				string err1;
-				Relation r = Relation.CreateFromString(rel, realVariableNames, new string[0], out err1);
+				Relation r = Relation.CreateFromString(rel, realVariableNames, new string[0], out string err1);
 				result.Add(r);
 			}
 			return result.ToArray();
@@ -739,13 +721,10 @@ namespace PerseusApi.Utils {
 			for (int i = 0; i < s1.Length; i++) {
 				string s = StringUtils.RemoveWhitespace(s1[i]);
 				if (hasAddtlMatrices) {
-					bool isImputed;
-					float quality;
-					float f;
-					ParseExp(s, out f, out isImputed, out quality);
+					ParseExp(s, out float f, out bool isImputed, out float quality);
 					result[i] = f;
 				} else {
-					bool success = double.TryParse(s, out result[i]);
+					bool success = double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out result[i]);
 					if (!success) {
 						result[i] = double.NaN;
 					}
@@ -779,9 +758,7 @@ namespace PerseusApi.Utils {
 
 		public static void AddFilter(List<Tuple<Relation[], int[], bool>> filters, Parameters p, int[] inds,
 			out string errString) {
-			int[] colInds;
-			bool and;
-			Relation[] relations = GetRelationsNumFilter(p, out errString, out colInds, out and);
+			Relation[] relations = GetRelationsNumFilter(p, out errString, out int[] colInds, out bool and);
 			if (errString != null) {
 				return;
 			}
@@ -797,7 +774,7 @@ namespace PerseusApi.Utils {
 		/// <param name="data"></param>
 		/// <param name="filename"></param>
 		public static void WriteDataWithAnnotationColumns(IDataWithAnnotationColumns data, string filename) {
-			using (var writer = new StreamWriter(filename)) {
+			using (StreamWriter writer = new StreamWriter(filename)) {
 				WriteDataWithAnnotationColumns(data, writer);
 			}
 		}
@@ -808,16 +785,16 @@ namespace PerseusApi.Utils {
 		/// <param name="data"></param>
 		/// <param name="writer"></param>
 		public static void WriteDataWithAnnotationColumns(IDataWithAnnotationColumns data, StreamWriter writer) {
-			var columnNames = ColumnNames(data);
+			IEnumerable<string> columnNames = ColumnNames(data);
 			writer.WriteLine(StringUtils.Concat("\t", columnNames));
 			if (HasAnyDescription(data)) {
-				var columnDescriptions = ColumnDescriptions(data);
+				IEnumerable<string> columnDescriptions = ColumnDescriptions(data);
 				writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
 			}
-			var columnTypes = ColumnTypes(data);
+			IEnumerable<string> columnTypes = ColumnTypes(data);
 			writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", columnTypes));
-			var dataRows = DataAnnotationRows(data);
-			foreach (var row in dataRows) {
+			IEnumerable<string> dataRows = DataAnnotationRows(data);
+			foreach (string row in dataRows) {
 				writer.WriteLine(row);
 			}
 		}
@@ -829,26 +806,23 @@ namespace PerseusApi.Utils {
 		/// <param name="writer"></param>
 		/// <param name="addtlMatrices"></param>
 		public static void WriteMatrix(IMatrixData data, StreamWriter writer, bool addtlMatrices = false) {
-			var columnNames = ColumnNames(data);
+			IEnumerable<string> columnNames = ColumnNames(data);
 			writer.WriteLine(StringUtils.Concat("\t", columnNames));
 			if (HasAnyDescription(data)) {
-				var columnDescriptions = ColumnDescriptions(data);
+				IEnumerable<string> columnDescriptions = ColumnDescriptions(data);
 				writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
 			}
-			var columnTypes = ColumnTypes(data);
+			IEnumerable<string> columnTypes = ColumnTypes(data);
 			writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", columnTypes));
-			var numAnnotRows = NumericalAnnotationRows(data);
-			foreach (var row in numAnnotRows) {
+			IEnumerable<string> numAnnotRows = NumericalAnnotationRows(data);
+			foreach (string row in numAnnotRows) {
 				writer.WriteLine(row);
 			}
-			var catAnnotRows = CategoricalAnnotationRows(data);
-			foreach (var row in catAnnotRows) {
+			IEnumerable<string> catAnnotRows = CategoricalAnnotationRows(data);
+			foreach (string row in catAnnotRows) {
 				writer.WriteLine(row);
 			}
-			var dataRows = DataRows(data, addtlMatrices);
-			foreach (var row in dataRows) {
-				writer.WriteLine(row);
-			}
+			WriteDataRows(data, addtlMatrices, writer);
 		}
 
 		/// <summary>
@@ -858,26 +832,24 @@ namespace PerseusApi.Utils {
 		/// <param name="filename"></param>
 		/// <param name="addtlMatrices">if true numbers are converted to triples <code>value;imputed;quality</code></param>
 		public static void WriteMatrixToFile(IMatrixData data, string filename, bool addtlMatrices = false) {
-			using (var writer = new StreamWriter(filename)) {
+			using (StreamWriter writer = new StreamWriter(filename)) {
 				WriteMatrix(data, writer, addtlMatrices);
 			}
 		}
 
-		private static IEnumerable<string> DataRows(IMatrixData data, bool addtlMatrices) {
-			var rows = new List<string>();
+		private static void WriteDataRows(IMatrixData data, bool addtlMatrices, StreamWriter writer) {
 			for (int j = 0; j < data.RowCount; j++) {
-				var words = new List<string>();
+				List<string> words = new List<string>();
 				for (int i = 0; i < data.ColumnCount; i++) {
-					string s1 = "" + data.Values.Get(j, i);
+					string s1 = data.Values.Get(j, i).ToString(CultureInfo.InvariantCulture);
 					if (addtlMatrices) {
-						s1 += ";" + data.IsImputed[j, i] + ";" + data.Quality.Get(j, i);
+						s1 += ";" + data.IsImputed[j, i] + ";" + data.Quality.Get(j, i).ToString(CultureInfo.InvariantCulture);
 					}
 					words.Add(s1);
 				}
-				var row = words.Concat(DataAnnotationRow(data, j));
-				rows.Add(StringUtils.Concat("\t", row));
+				IEnumerable<string> row = words.Concat(DataAnnotationRow(data, j));
+				writer.WriteLine(StringUtils.Concat("\t", row));
 			}
-			return rows;
 		}
 
 		private static IEnumerable<string> DataAnnotationRows(IDataWithAnnotationColumns data) {
@@ -887,7 +859,7 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> DataAnnotationRow(IDataWithAnnotationColumns data, int j) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int i = 0; i < data.CategoryColumnCount; i++) {
 				string[] q = data.GetCategoryColumnEntryAt(i, j) ?? new string[0];
 				words.Add((q.Length > 0 ? StringUtils.Concat(";", q) : ""));
@@ -906,34 +878,34 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> CategoricalAnnotationRows(IDataWithAnnotationRows data) {
-			var rows = new List<string>();
+			List<string> rows = new List<string>();
 			for (int i = 0; i < data.CategoryRowCount; i++) {
-				var words = new List<string>();
+				List<string> words = new List<string>();
 				for (int j = 0; j < data.ColumnCount; j++) {
 					string[] s = data.GetCategoryRowAt(i)[j];
 					words.Add(s.Length == 0 ? "" : StringUtils.Concat(";", s));
 				}
-				var row = words.Concat(AnnotationRowPadding((IDataWithAnnotationColumns) data));
+				IEnumerable<string> row = words.Concat(AnnotationRowPadding((IDataWithAnnotationColumns) data));
 				rows.Add("#!{C:" + data.CategoryRowNames[i] + "}" + StringUtils.Concat("\t", row));
 			}
 			return rows;
 		}
 
 		private static IEnumerable<string> NumericalAnnotationRows(IDataWithAnnotationRows data) {
-			var rows = new List<string>();
+			List<string> rows = new List<string>();
 			for (int i = 0; i < data.NumericRowCount; i++) {
-				var words = new List<string>();
+				List<string> words = new List<string>();
 				for (int j = 0; j < data.ColumnCount; j++) {
-					words.Add("" + data.NumericRows[i][j]);
+					words.Add(data.NumericRows[i][j].ToString(CultureInfo.InvariantCulture));
 				}
-				var row = words.Concat(AnnotationRowPadding((IDataWithAnnotationColumns) data));
+				IEnumerable<string> row = words.Concat(AnnotationRowPadding((IDataWithAnnotationColumns) data));
 				rows.Add("#!{N:" + data.NumericRowNames[i] + "}" + StringUtils.Concat("\t", row));
 			}
 			return rows;
 		}
 
 		private static IEnumerable<string> AnnotationRowPadding(IDataWithAnnotationColumns data) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int j = 0; j < data.CategoryColumnCount; j++) {
 				words.Add("");
 			}
@@ -950,7 +922,7 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> ColumnTypes(IMatrixData data) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int i = 0; i < data.ColumnCount; i++) {
 				words.Add("E");
 			}
@@ -958,7 +930,7 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> ColumnTypes(IDataWithAnnotationColumns data) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int i = 0; i < data.CategoryColumnCount; i++) {
 				words.Add("C");
 			}
@@ -975,7 +947,7 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> ColumnDescriptions(IMatrixData data) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int i = 0; i < data.ColumnCount; i++) {
 				words.Add(data.ColumnDescriptions[i] ?? "");
 			}
@@ -983,7 +955,7 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> ColumnDescriptions(IDataWithAnnotationColumns data) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int i = 0; i < data.CategoryColumnCount; i++) {
 				words.Add(data.CategoryColumnDescriptions[i] ?? "");
 			}
@@ -1000,7 +972,7 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> ColumnNames(IMatrixData data) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int i = 0; i < data.ColumnCount; i++) {
 				words.Add(data.ColumnNames[i]);
 			}
@@ -1008,7 +980,7 @@ namespace PerseusApi.Utils {
 		}
 
 		private static IEnumerable<string> ColumnNames(IDataWithAnnotationColumns data) {
-			var words = new List<string>();
+			List<string> words = new List<string>();
 			for (int i = 0; i < data.CategoryColumnCount; i++) {
 				words.Add(data.CategoryColumnNames[i]);
 			}
@@ -1064,19 +1036,10 @@ namespace PerseusApi.Utils {
 
 		public static void ReadDataWithAnnotationColumns(IDataWithAnnotationColumns data, ProcessInfo processInfo,
 			Func<StreamReader> getReader, string name, char separator) {
-			Dictionary<string, string[]> annotationRows;
-			string[] colNames;
-			int[] eInds;
-			int[] nInds;
-			int[] cInds;
-			int[] tInds;
-			int[] mInds;
-			List<Tuple<Relation[], int[], bool>> filters;
-			int nrows;
-			bool hasAdditionalMatrices;
-			ReadMatrixInformation(getReader, separator, out annotationRows, out colNames, out eInds, out nInds, out cInds,
-				out tInds, out mInds, out filters, out nrows, out hasAdditionalMatrices);
-			using (var reader = getReader()) {
+			ReadMatrixInformation(getReader, separator, out Dictionary<string, string[]> annotationRows, out string[] colNames,
+				out int[] eInds, out int[] nInds, out int[] cInds, out int[] tInds, out int[] mInds,
+				out List<Tuple<Relation[], int[], bool>> filters, out int nrows, out bool hasAdditionalMatrices);
+			using (StreamReader reader = getReader()) {
 				LoadDataWithAnnotationColumns(data, colNames, cInds, nInds, tInds, mInds, processInfo.Progress, separator, reader,
 					nrows, filters);
 			}
@@ -1084,19 +1047,10 @@ namespace PerseusApi.Utils {
 
 		public static void ReadMatrix(IMatrixData mdata, ProcessInfo processInfo, Func<StreamReader> getReader, string name,
 			char separator) {
-			Dictionary<string, string[]> annotationRows;
-			string[] colNames;
-			int[] eInds;
-			int[] nInds;
-			int[] cInds;
-			int[] tInds;
-			int[] mInds;
-			List<Tuple<Relation[], int[], bool>> filters;
-			int nrows;
-			bool hasAdditionalMatrices;
-			ReadMatrixInformation(getReader, separator, out annotationRows, out colNames, out eInds, out nInds, out cInds,
-				out tInds, out mInds, out filters, out nrows, out hasAdditionalMatrices);
-			using (var reader = getReader()) {
+			ReadMatrixInformation(getReader, separator, out Dictionary<string, string[]> annotationRows, out string[] colNames,
+				out int[] eInds, out int[] nInds, out int[] cInds, out int[] tInds, out int[] mInds,
+				out List<Tuple<Relation[], int[], bool>> filters, out int nrows, out bool hasAdditionalMatrices);
+			using (StreamReader reader = getReader()) {
 				LoadMatrixData(annotationRows, eInds, cInds, nInds, tInds, mInds, processInfo, colNames, mdata, reader, nrows, name,
 					separator, false, hasAdditionalMatrices, filters);
 			}
@@ -1107,16 +1061,16 @@ namespace PerseusApi.Utils {
 			out int[] cInds, out int[] tInds, out int[] mInds, out List<Tuple<Relation[], int[], bool>> filters, out int nrows,
 			out bool hasAdditionalMatrices) {
 			annotationRows = new Dictionary<string, string[]>();
-			using (var reader = getReader()) {
+			using (StreamReader reader = getReader()) {
 				colNames = TabSep.GetColumnNames(reader, 0, commentPrefix, commentPrefixExceptions, annotationRows, separator);
 			}
-			var typeRow = annotationRows["Type"];
+			string[] typeRow = annotationRows["Type"];
 			ColumnIndices(typeRow, out eInds, out nInds, out cInds, out tInds, out mInds);
-			using (var reader = getReader()) {
+			using (StreamReader reader = getReader()) {
 				hasAdditionalMatrices = GetHasAddtlMatrices(reader, eInds, separator);
 			}
 			filters = new List<Tuple<Relation[], int[], bool>>();
-			using (var reader = getReader()) {
+			using (StreamReader reader = getReader()) {
 				nrows = GetRowCount(reader, filters, separator, hasAdditionalMatrices);
 			}
 		}
@@ -1132,11 +1086,11 @@ namespace PerseusApi.Utils {
 
 		private static void ColumnIndices(string[] typeRow, out int[] eInds, out int[] nInds, out int[] cInds,
 			out int[] tInds, out int[] mInds) {
-			var _eInds = new List<int>();
-			var _nInds = new List<int>();
-			var _cInds = new List<int>();
-			var _tInds = new List<int>();
-			var _mInds = new List<int>();
+			List<int> _eInds = new List<int>();
+			List<int> _nInds = new List<int>();
+			List<int> _cInds = new List<int>();
+			List<int> _tInds = new List<int>();
+			List<int> _mInds = new List<int>();
 			for (int i = 0; i < typeRow.Length; i++) {
 				switch (typeRow[i]) {
 					case "E":
@@ -1200,7 +1154,7 @@ namespace PerseusApi.Utils {
 			}
 			int nrows;
 			bool hasAdditionalMatrices;
-			using (var reader = FileUtils.GetReader(filename)) {
+			using (StreamReader reader = FileUtils.GetReader(filename)) {
 				hasAdditionalMatrices = GetHasAddtlMatrices(reader, eInds, separator);
 			}
 			using (StreamReader reader = FileUtils.GetReader(filename)) {
