@@ -2,6 +2,7 @@
 	public enum DataType {
 		Matrix,
 		Document,
+        Network,
 		Unknown
 	}
 }

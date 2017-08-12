@@ -6,6 +6,7 @@ using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusApi.Utils;
 using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Join{
@@ -204,10 +205,8 @@ namespace PerseusPluginLib.Join{
 					}
 				}
 			}
-			IMatrixData result = (IMatrixData) mdata1.CreateNewInstance();
-			result.ColumnNames = new List<string>(expColNames);
+		    IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
 			result.ColumnDescriptions = result.ColumnNames;
-			result.Values.Set(ex);
 			result.NumericColumnNames = new List<string>(numColNames);
 			result.NumericColumnDescriptions = result.NumericColumnNames;
 			result.NumericColumns = numCols;

@@ -9,6 +9,7 @@ using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusApi.Utils;
 
 namespace PluginProteomicRuler{
 	public class CopyNumbers : IMatrixProcessing{
@@ -322,7 +323,7 @@ namespace PluginProteomicRuler{
 			// Summary matrix
 			if (param.GetParamWithSubParams<int>("Averaging mode").Value != 3 && ArrayUtils.Contains(outputColumns, 7)){
 				supplTables = new IMatrixData[1];
-				IMatrixData supplTab = (IMatrixData) mdata.CreateNewInstance();
+			    IMatrixData supplTab = PerseusFactory.CreateMatrixData();
 				supplTab.ColumnNames = new List<string>();
 				supplTab.Values.Init(totalProteinRow.Length, 0);
 				supplTab.SetAnnotationColumns(new List<string>{"Sample", "Input Column"},
