@@ -36,7 +36,7 @@ namespace PerseusPluginLib.Load{
 			int missingPerc = param.GetParam<int>("Percentage of missing values").Value;
 			int ngroups = param.GetParam<int>("Number of groups").Value;
 			ParameterWithSubParams<bool> setSeed = param.GetParamWithSubParams<bool>("Set seed");
-			Random2 randy = setSeed.Value ? new Random2(setSeed.GetSubParameters().GetParam<int>("Seed").Value) : new Random2();
+			Random2 randy = setSeed.Value ? new Random2(setSeed.GetSubParameters().GetParam<int>("Seed").Value) : new Random2(7);
 			ngroups = Math.Min(ngroups, ncols);
 			float[,] m = new float[nrows, ncols];
 			ParameterWithSubParams<int> x = param.GetParamWithSubParams<int>("Mode");

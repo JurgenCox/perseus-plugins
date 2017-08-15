@@ -156,7 +156,7 @@ namespace PerseusPluginLib.Basic{
 
 		private static void RandomizeConstantRegion(int[] o, int startInd, int endInd){
 			int len = endInd - startInd;
-			Random2 r = new Random2();
+			Random2 r = new Random2(7);
 			int[] p = r.NextPermutation(len);
 			int[] permuted = new int[len];
 			for (int i = 0; i < len; i++){

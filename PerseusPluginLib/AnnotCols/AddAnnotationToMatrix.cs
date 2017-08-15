@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -287,7 +288,7 @@ namespace PerseusPluginLib.AnnotCols{
 		private static void AddNumVals(string value, ICollection<double> numVals){
 			string[] q = value.Length > 0 ? value.Split(';') : new string[0];
 			foreach (string s in q){
-				numVals.Add(double.Parse(s));
+				numVals.Add(double.Parse(s, NumberStyles.Any, CultureInfo.InvariantCulture));
 			}
 		}
 

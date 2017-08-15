@@ -38,7 +38,7 @@ namespace PerseusPluginLib.Filter{
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			int nrows = param.GetParam<int>("Number of rows").Value;
 			nrows = Math.Min(nrows, mdata.RowCount);
-			Random2 rand = new Random2();
+			Random2 rand = new Random2(7);
 			int[] rows = ArrayUtils.SubArray(rand.NextPermutation(mdata.RowCount), nrows);
 			PerseusPluginUtils.FilterRows(mdata, param, rows);
 		}

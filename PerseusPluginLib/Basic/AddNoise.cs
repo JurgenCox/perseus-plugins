@@ -29,7 +29,7 @@ namespace PerseusPluginLib.Basic{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			Random2 rand = new Random2();
+			Random2 rand = new Random2(7);
 			double std = param.GetParam<double>("Standard deviation").Value;
 			int[] inds = param.GetParam<int[]>("Columns").Value;
 			List<int> mainInds = new List<int>();

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 using System.Xml.Serialization;
 using BaseLibS.Num;
@@ -89,7 +90,7 @@ namespace PerseusPluginLib.Load{
 			string[] q = x.Length > 0 ? x.Split(';') : new string[0];
 			int[] result = new int[q.Length];
 			for (int i1 = 0; i1 < q.Length; i1++){
-				result[i1] = int.Parse(q[i1]);
+				result[i1] = int.Parse(q[i1], NumberStyles.Any, CultureInfo.InvariantCulture);
 			}
 			return result;
 		}

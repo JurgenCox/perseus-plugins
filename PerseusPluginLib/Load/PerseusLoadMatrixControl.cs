@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using BaseLib.Forms;
@@ -70,7 +71,7 @@ namespace PerseusPluginLib.Load{
 			string[] q = s.Length > 0 ? s.Split(';') : new string[0];
 			int[] result = new int[q.Length];
 			for (int i = 0; i < result.Length; i++){
-				result[i] = int.Parse(q[i]);
+				result[i] = int.Parse(q[i], NumberStyles.Any, CultureInfo.InvariantCulture);
 			}
 			return result;
 		}

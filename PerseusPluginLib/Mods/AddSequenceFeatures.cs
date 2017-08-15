@@ -85,7 +85,7 @@ namespace PerseusPluginLib.Mods{
 				Dictionary<FeatureType, HashSet<string>> othersStatus = new Dictionary<FeatureType, HashSet<string>>();
 				for (int j = 0; j < protIds[i].Length; j++){
 					string protId = protIds[i][j];
-					int pos = int.Parse(posString[j]);
+					int pos = int.Parse(posString[j], NumberStyles.Any, CultureInfo.InvariantCulture);
 					if (map.ContainsKey(protId)){
 						MiniProteinAnnotation mpa = map[protId];
 						for (int k = 0; k < mpa.PfamIds.Length; k++){

@@ -77,7 +77,7 @@ namespace PerseusPluginLib.Impute{
 
 		public static void ReplaceMissingsByGaussianByColumn(double width, double shift, IMatrixData data, int[] colInds){
 			List<int> invalidMain = new List<int>();
-			Random2 r = new Random2();
+			Random2 r = new Random2(7);
 			foreach (int colInd in colInds){
 				bool success = ReplaceMissingsByGaussianForOneColumn(width, shift, data, colInd, r);
 				if (!success){
@@ -146,7 +146,7 @@ namespace PerseusPluginLib.Impute{
 			}
 			double m = mean - shift*stddev;
 			double s = stddev*width;
-			Random2 r = new Random2();
+			Random2 r = new Random2(7);
 			for (int i = 0; i < data.RowCount; i++){
 				foreach (int colInd in colInds){
 					float x = GetValue(data, i, colInd);
