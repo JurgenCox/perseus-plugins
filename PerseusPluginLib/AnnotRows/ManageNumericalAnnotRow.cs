@@ -6,6 +6,7 @@ using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using BaseLibS.Parse;
+using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
@@ -101,7 +102,7 @@ namespace PerseusPluginLib.AnnotRows {
 					if (string.IsNullOrEmpty(group)) {
 						newCol[j] = double.NaN;
 					} else {
-						if (!double.TryParse(group, NumberStyles.Any, CultureInfo.InvariantCulture, out newCol[j])) {
+						if (!Parser.TryDouble(group, out newCol[j])) {
 							newCol[j] = double.NaN;
 						}
 					}

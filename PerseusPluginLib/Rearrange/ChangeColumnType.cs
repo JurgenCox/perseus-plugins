@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -153,7 +152,7 @@ namespace PerseusPluginLib.Rearrange{
 					} else{
 						string x = str[j][i];
 						double d;
-						bool success = double.TryParse(x, NumberStyles.Any, CultureInfo.InvariantCulture, out d);
+						bool success = Parser.TryDouble(x, out d);
 						newNum[j][i] = success ? d : double.NaN;
 					}
 				}
@@ -225,7 +224,7 @@ namespace PerseusPluginLib.Rearrange{
 						newMNum[j][i] = new double[y.Length];
 						for (int k = 0; k < y.Length; k++){
 							double d;
-							bool success = double.TryParse(y[k], NumberStyles.Any, CultureInfo.InvariantCulture, out d);
+							bool success = Parser.TryDouble(y[k], out d);
 							newMNum[j][i][k] = success ? d : double.NaN;
 						}
 					}
@@ -252,7 +251,7 @@ namespace PerseusPluginLib.Rearrange{
 						newNum[j][i] = double.NaN;
 					} else{
 						double x;
-						bool s = double.TryParse(cat[j][i][0], NumberStyles.Any, CultureInfo.InvariantCulture, out x);
+						bool s = Parser.TryDouble(cat[j][i][0], out x);
 						if (s){
 							newNum[j][i] = x;
 						} else{
@@ -370,7 +369,7 @@ namespace PerseusPluginLib.Rearrange{
 				newEx[j] = new float[str[j].Length];
 				for (int i = 0; i < newEx[j].Length; i++){
 					float f;
-					bool success = float.TryParse(str[j][i], NumberStyles.Any, CultureInfo.InvariantCulture, out f);
+					bool success = Parser.TryFloat(str[j][i], out f);
 					newEx[j][i] = success ? f : float.NaN;
 				}
 			}

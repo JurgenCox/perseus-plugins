@@ -188,7 +188,7 @@ namespace PerseusApi.Utils {
 				double[] num = new double[svals.Length];
 				for (int i = 0; i < num.Length; i++) {
 					string s = svals[i].Trim();
-					if (!double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out num[i])) {
+					if (!Parser.TryDouble(s, out num[i])) {
 						num[i] = double.NaN;
 					}
 				}
@@ -204,8 +204,7 @@ namespace PerseusApi.Utils {
 				if (numColIndices[i] >= words.Length) {
 					numericAnnotation[i][count] = double.NaN;
 				} else {
-					bool success = double.TryParse(words[numColIndices[i]].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture,
-						out double q);
+					bool success = Parser.TryDouble(words[numColIndices[i]].Trim(), out double q);
 					if (numericAnnotation[i].Length > count) {
 						numericAnnotation[i][count] = success ? q : double.NaN;
 					}
@@ -225,7 +224,7 @@ namespace PerseusApi.Utils {
 					string[] ww = q.Length == 0 ? new string[0] : q.Split(';');
 					multiNumericAnnotation[i][count] = new double[ww.Length];
 					for (int j = 0; j < ww.Length; j++) {
-						bool success = double.TryParse(ww[j], NumberStyles.Any, CultureInfo.InvariantCulture, out double q1);
+						bool success = Parser.TryDouble(ww[j], out double q1);
 						multiNumericAnnotation[i][count][j] = success ? q1 : double.NaN;
 					}
 				}
@@ -279,7 +278,7 @@ namespace PerseusApi.Utils {
 						ParseExp(s, out mainValues[count, i], out isImputedValues[count, i], out qualityValues[count, i]);
 					} else {
 						if (count < mainValues.GetLength(0)) {
-							bool success = float.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out mainValues[count, i]);
+							bool success = Parser.TryFloat(s, out mainValues[count, i]);
 							if (!success) {
 								mainValues[count, i] = float.NaN;
 							}
@@ -341,7 +340,7 @@ namespace PerseusApi.Utils {
 			isImputedValue = false;
 			qualityValue = float.NaN;
 			if (w.Length > 0) {
-				bool success = float.TryParse(w[0], NumberStyles.Any, CultureInfo.InvariantCulture, out expressionValue);
+				bool success = Parser.TryFloat(w[0], out expressionValue);
 				if (!success) {
 					expressionValue = float.NaN;
 				}
@@ -353,7 +352,7 @@ namespace PerseusApi.Utils {
 				}
 			}
 			if (w.Length > 2) {
-				bool success = float.TryParse(w[2], NumberStyles.Any, CultureInfo.InvariantCulture, out qualityValue);
+				bool success = Parser.TryFloat(w[2], out qualityValue);
 				if (!success) {
 					qualityValue = float.NaN;
 				}
@@ -724,7 +723,7 @@ namespace PerseusApi.Utils {
 					ParseExp(s, out float f, out bool isImputed, out float quality);
 					result[i] = f;
 				} else {
-					bool success = double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out result[i]);
+					bool success = Parser.TryDouble(s, out result[i]);
 					if (!success) {
 						result[i] = double.NaN;
 					}
@@ -837,13 +836,13 @@ namespace PerseusApi.Utils {
 			}
 		}
 
-		private static void WriteDataRows(IMatrixData data, bool addtlMatrices, StreamWriter writer) {
+		private static void WriteDataRows(IMatrixData data, bool addtlMatrices, TextWriter writer) {
 			for (int j = 0; j < data.RowCount; j++) {
 				List<string> words = new List<string>();
 				for (int i = 0; i < data.ColumnCount; i++) {
-					string s1 = data.Values.Get(j, i).ToString(CultureInfo.InvariantCulture);
+					string s1 = Parser.ToString(data.Values.Get(j, i));
 					if (addtlMatrices) {
-						s1 += ";" + data.IsImputed[j, i] + ";" + data.Quality.Get(j, i).ToString(CultureInfo.InvariantCulture);
+						s1 += ";" + data.IsImputed[j, i] + ";" + Parser.ToString(data.Quality.Get(j, i));
 					}
 					words.Add(s1);
 				}
@@ -896,7 +895,7 @@ namespace PerseusApi.Utils {
 			for (int i = 0; i < data.NumericRowCount; i++) {
 				List<string> words = new List<string>();
 				for (int j = 0; j < data.ColumnCount; j++) {
-					words.Add(data.NumericRows[i][j].ToString(CultureInfo.InvariantCulture));
+					words.Add(Parser.ToString(data.NumericRows[i][j]));
 				}
 				IEnumerable<string> row = words.Concat(AnnotationRowPadding((IDataWithAnnotationColumns) data));
 				rows.Add("#!{N:" + data.NumericRowNames[i] + "}" + StringUtils.Concat("\t", row));
