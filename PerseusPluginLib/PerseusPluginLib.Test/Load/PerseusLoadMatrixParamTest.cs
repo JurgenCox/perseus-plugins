@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using NUnit.Framework.Internal;
 using PerseusPluginLib.Load;
 
 namespace PerseusPluginLib.Test.Load

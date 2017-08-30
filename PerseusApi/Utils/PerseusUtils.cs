@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using BaseLibS.Num;
@@ -719,7 +718,7 @@ namespace PerseusApi.Utils {
 			for (int i = 0; i < s1.Length; i++) {
 				string s = StringUtils.RemoveWhitespace(s1[i]);
 				if (hasAddtlMatrices) {
-					ParseExp(s, out float f, out bool isImputed, out float quality);
+					ParseExp(s, out float f, out bool _, out float _);
 					result[i] = f;
 				} else {
 					bool success = Parser.TryDouble(s, out result[i]);

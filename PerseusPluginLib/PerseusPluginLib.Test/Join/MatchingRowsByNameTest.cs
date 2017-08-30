@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BaseLibS.Param;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NUnit.Framework;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
 using PerseusPluginLib.Join;
-using PerseusPluginLib.Mods;
 using PerseusPluginLib.Rearrange;
 using Assert = NUnit.Framework.Assert;
 using CollectionAssert = NUnit.Framework.CollectionAssert;

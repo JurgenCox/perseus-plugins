@@ -21,7 +21,7 @@ namespace PluginProteomicRuler{
 				string line;
 				while ((line = file.ReadLine()) != null){ // valid line
 					if (sequenceCounter%500 == 0){
-						processInfo.Status("Parsing " + path + ", " + (int) ((float) file.BaseStream.Position/file.BaseStream.Length*100) +
+						processInfo.Status("Parsing " + path + ", " + (int) ((double) file.BaseStream.Position/file.BaseStream.Length*100) +
 											"%");
 					}
 					bool lineIsHeader = line.StartsWith(">");

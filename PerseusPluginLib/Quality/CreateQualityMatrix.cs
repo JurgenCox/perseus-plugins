@@ -48,12 +48,12 @@ namespace PerseusPluginLib.Quality{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			float[,] q = new float[mdata.RowCount, mdata.ColumnCount];
+			double[,] q = new double[mdata.RowCount, mdata.ColumnCount];
 			for (int j = 0; j < mdata.ColumnCount; j++){
 				int ind = param.GetParam<int>(mdata.ColumnNames[j]).Value;
 				double[] w = mdata.NumericColumns[ind];
 				for (int i = 0; i < mdata.RowCount; i++){
-					q[i, j] = (float) w[i];
+					q[i, j] = w[i];
 				}
 			}
 			mdata.Quality.Set(q);

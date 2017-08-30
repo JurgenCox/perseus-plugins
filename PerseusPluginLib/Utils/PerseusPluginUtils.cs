@@ -257,25 +257,6 @@ namespace PerseusPluginLib.Utils{
 			return y;
 		}
 
-		public static float[] CollapseNumCol(float[] numCol, int[][] collapse){
-			float[] result = new float[collapse.Length];
-			for (int i = 0; i < collapse.Length; i++){
-				result[i] = CollapseNumCol(numCol, collapse[i]);
-			}
-			return result;
-		}
-
-		private static float CollapseNumCol(IList<float> numCol, IEnumerable<int> collapse){
-			List<float> all = new List<float>();
-			foreach (int x in collapse){
-				if (!float.IsNaN(numCol[x]) && !float.IsInfinity(numCol[x])){
-					all.Add(numCol[x]);
-				}
-			}
-			float y = ArrayUtils.Median(all.ToArray());
-			return y;
-		}
-
 		public static double[] CollapseNumCol(double[] numCol, int[][] collapse){
 			double[] result = new double[collapse.Length];
 			for (int i = 0; i < collapse.Length; i++){

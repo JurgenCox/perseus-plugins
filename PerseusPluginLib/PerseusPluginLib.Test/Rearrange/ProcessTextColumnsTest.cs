@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using BaseLibS.Param;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;

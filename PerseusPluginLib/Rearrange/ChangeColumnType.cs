@@ -380,7 +380,7 @@ namespace PerseusPluginLib.Rearrange{
 				}
 				for (int j = 0; j < newEx.Length; j++){
 					newExp[i, j + mdata.ColumnCount] = newEx[j][i];
-					newQual[i, j + mdata.ColumnCount] = float.NaN;
+					newQual[i, j + mdata.ColumnCount] = double.NaN;
 					newIsImputed[i, j + mdata.ColumnCount] = false;
 				}
 			}

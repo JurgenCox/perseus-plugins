@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
