@@ -13,7 +13,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 		[Test]
 		public void GetAvailableAnnotsTest()
 		{
-		    var annotFiles = PerseusUtils.GetAnnotFiles();
+		    string[] annotFiles = PerseusUtils.GetAnnotFiles();
             Assert.Inconclusive("Should be moved to integration tests, using conf");
             //[DeploymentItem("conf", "conf")]
 			string[] baseNames;

@@ -34,7 +34,7 @@ namespace PerseusPluginLib.Rearrange{
 			int[] inds = param.GetParam<int[]>("Columns").Value;
 			bool keepColumns = param.GetParam<bool>("Keep original columns").Value;
 			bool semicolons = param.GetParam<bool>("Strings separated by semicolons are independent").Value;
-		    var replacement = param.GetParam<string>("Replacement string").Value;
+		    string replacement = param.GetParam<string>("Replacement string").Value;
 			foreach (int col in inds){
 				ProcessColMatch(mdata, regex, replacement, col, keepColumns, semicolons);
 			}

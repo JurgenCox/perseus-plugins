@@ -109,7 +109,7 @@ namespace PerseusPluginLib.Load{
 			writer.WriteStartElement("Value");
 			writer.WriteString(StringValue);
 			writer.WriteEndElement();
-			var serializer = new XmlSerializer(typeof (Parameters[]));
+			XmlSerializer serializer = new XmlSerializer(typeof (Parameters[]));
 			writer.WriteStartElement("MainFilterParameters");
 			serializer.Serialize(writer, MainFilterParameters);
 			writer.WriteEndElement();
@@ -122,7 +122,7 @@ namespace PerseusPluginLib.Load{
 			ReadBasicAttributes(reader);
 			reader.ReadStartElement();
 			StringValue = reader.ReadElementContentAsString("Value", "");
-			var serializer = new XmlSerializer(typeof (Parameters[]));
+			XmlSerializer serializer = new XmlSerializer(typeof (Parameters[]));
 			reader.ReadStartElement("MainFilterParameters");
 			FilterParameterValues[0] = (Parameters[]) serializer.Deserialize(reader);
 			reader.ReadEndElement();

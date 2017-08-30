@@ -26,22 +26,22 @@ namespace PerseusPluginLib.Test.Join
         [SetUp]
         public void TestInitialize()
         {
-            var peptidesValues = new[,] {{9.0f}};
+            float[,] peptidesValues = new[,] {{9.0f}};
             peptides = PerseusFactory.CreateMatrixData(peptidesValues, new List<string> {"pep_MS/MS Count"});
             peptides.AddNumericColumn("pep_Intensity", "", new [] {0.0});
             peptides.AddStringColumn("pep_id", "", new []{"35"});
             peptides.AddStringColumn("pep_Protein group IDs", "", new []{"13;21"});
             peptides.Quality.Init(1, 1);
             peptides.Quality.Set(0, 0, 1);
-            var multiNum = new ExpandMultiNumeric();
-            var errorString = string.Empty;
-            var parameters2 = multiNum.GetParameters(peptides, ref errorString);
+            ExpandMultiNumeric multiNum = new ExpandMultiNumeric();
+            string errorString = string.Empty;
+            Parameters parameters2 = multiNum.GetParameters(peptides, ref errorString);
             parameters2.GetParam<int[]>("Text columns").Value = new[] {1};
             IMatrixData[] suppl = null;
             IDocumentData[] docs = null;
             multiNum.ProcessData(peptides, parameters2, ref suppl, ref docs, CreateProcessInfo());
 
-	        var proteinMainValues = new[,]
+	        float[,] proteinMainValues = new[,]
 	        {
 	            {166250000.0f},
                 {8346000.0f}
@@ -50,7 +50,7 @@ namespace PerseusPluginLib.Test.Join
 	        proteinMain.Name = "protein main";
             proteinMain.AddStringColumn("prot_id", "", new [] {"13", "21"});
             proteinMain.AddStringColumn("prot_gene name", "", new [] {"geneA", "geneB"});
-	        var expandValues = new[,]
+	        float[,] expandValues = new[,]
 	        {
 	            {9.0f},
                 {9.0f}
@@ -62,7 +62,7 @@ namespace PerseusPluginLib.Test.Join
             expand.AddStringColumn("pep_Protein group IDs", "", new []{"13", "21"});
 
 	        matching = new MatchingRowsByName();
-	        var err = string.Empty;
+	        string err = string.Empty;
 	        parameters = matching.GetParameters(new[] {expand, proteinMain}, ref err);
             
         }
@@ -80,13 +80,13 @@ namespace PerseusPluginLib.Test.Join
 	    [Test]
 	    public void TestSmallExample()
 	    {
-	        var matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
+	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
             CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());
 	        matchColParam1.Value = 1;
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
 	        IDocumentData[] documents = null;
-	        var matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
+	        IMatrixData matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
 
             CollectionAssert.AreEqual(new [] {"pep_MS/MS Count", "pep_id", "pep_Protein group IDs", "pep_Intensity"},
                 matched.ColumnNames.Concat(matched.StringColumnNames).Concat(matched.NumericColumnNames).ToArray());
@@ -97,15 +97,15 @@ namespace PerseusPluginLib.Test.Join
 	    [Test]
 	    public void TestSmallExample2()
 	    {
-	        var mainColParam = parameters.GetParam<int[]>("Main columns");
+	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Main columns");
 	        mainColParam.Value = new[] {0};
-	        var matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
+	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
             CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());
 	        matchColParam1.Value = 1;
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
 	        IDocumentData[] documents = null;
-	        var matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
+	        IMatrixData matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
 
             CollectionAssert.AreEqual(new [] {"pep_MS/MS Count", "prot_LFQ intensity", "pep_id", "pep_Protein group IDs", "pep_Intensity"},
                 matched.ColumnNames.Concat(matched.StringColumnNames).Concat(matched.NumericColumnNames).ToArray());
@@ -116,15 +116,15 @@ namespace PerseusPluginLib.Test.Join
         [Test]
 	    public void TestSmallExample3()
 	    {
-	        var mainColParam = parameters.GetParam<int[]>("Main columns");
+	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Main columns");
 	        mainColParam.Value = new[] {0};
-	        var matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
+	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
             CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());
 	        matchColParam1.Value = 1;
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
 	        IDocumentData[] documents = null;
-	        var matched = matching.ProcessData(new[] {peptides, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
+	        IMatrixData matched = matching.ProcessData(new[] {peptides, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
 
             CollectionAssert.AreEqual(new [] {"pep_MS/MS Count", "prot_LFQ intensity", "pep_id", "pep_Protein group IDs", "pep_Intensity"},
                 matched.ColumnNames.Concat(matched.StringColumnNames).Concat(matched.NumericColumnNames).ToArray());

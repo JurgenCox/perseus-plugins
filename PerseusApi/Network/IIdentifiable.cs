@@ -30,7 +30,7 @@ namespace PerseusApi.Network
 
         public override bool Equals(object obj)
         {
-            var other = obj as IIdentifiable;
+            IIdentifiable other = obj as IIdentifiable;
             return (other != null) && other.Guid.Equals(Guid);
         }
 

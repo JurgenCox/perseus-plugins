@@ -45,7 +45,7 @@ namespace PerseusPluginLib.Rearrange{
 
         public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables, ref IDocumentData[] documents, ProcessInfo processInfo)
         {
-            var ids = mdata.StringColumns[param.GetParam<int>(_unique).Value];
+            string[] ids = mdata.StringColumns[param.GetParam<int>(_unique).Value];
 			ParseParameters(param, out Func<double[], double> combineNumeric, out Func<string[], string> combineString, out Func<string[][], string[]> combineCategory, out Func<double[][], double[]> combineMultiNumeric);
 			mdata.UniqueRows(ids, combineNumeric, combineString, combineCategory, combineMultiNumeric);
         }
@@ -53,7 +53,7 @@ namespace PerseusPluginLib.Rearrange{
 	    private void ParseParameters(Parameters param, out Func<double[], double> combineNumeric, out Func<string[], string> combineString,
 	        out Func<string[][], string[]> combineCategory, out Func<double[][], double[]> combineMultiNumeric)
 	    {
-	        var combineNumericParm = _numeric_choices[param.GetParam<int>(_numeric).Value];
+	        string combineNumericParm = _numeric_choices[param.GetParam<int>(_numeric).Value];
 	        switch (combineNumericParm)
 	        {
 	            case "median":
@@ -62,7 +62,7 @@ namespace PerseusPluginLib.Rearrange{
 	            default:
 	                throw new NotImplementedException($"Method {combineNumericParm} is not implemented");
 	        }
-	        var combineStringParam = _string_choices[param.GetParam<int>(_string).Value];
+	        string combineStringParam = _string_choices[param.GetParam<int>(_string).Value];
 	        switch (combineStringParam)
 	        {
 	            case _str_union_split:
@@ -71,7 +71,7 @@ namespace PerseusPluginLib.Rearrange{
 	            default:
 	                throw new NotImplementedException($"Method {combineStringParam} is not implemented");
 	        }
-	        var combineCategoryParam = _category_choices[param.GetParam<int>(_category).Value];
+	        string combineCategoryParam = _category_choices[param.GetParam<int>(_category).Value];
 	        switch (combineCategoryParam)
 	        {
 	            case "union":
@@ -80,7 +80,7 @@ namespace PerseusPluginLib.Rearrange{
 	            default:
 	                throw new NotImplementedException($"Method {combineCategoryParam} is not implemented");
 	        }
-	        var combineMultiNumericParam = _multi_numeric_choices[param.GetParam<int>(_multi_numeric).Value];
+	        string combineMultiNumericParam = _multi_numeric_choices[param.GetParam<int>(_multi_numeric).Value];
 	        switch (combineMultiNumericParam)
 	        {
 	            case "concatenation":

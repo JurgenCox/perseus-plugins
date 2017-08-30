@@ -83,7 +83,7 @@ namespace PerseusPluginLib.AnnotCols{
 					}
 					float[] expProfile = new float[mdata.ColumnCount];
 					for (int i = 0; i < expProfile.Length; i++){
-						var vals = new List<double>();
+						List<double> vals = new List<double>();
 						foreach (int ind in inds){
 							double v = mdata.Values.Get(ind, i);
 							if (!double.IsNaN(v) && !double.IsInfinity(v)){
@@ -97,7 +97,7 @@ namespace PerseusPluginLib.AnnotCols{
 						catNames.Add(val);
 						exVals.Add(expProfile);
 						for (int i = 0; i < stringAnnot.Length; i++){
-							var vals = new List<string>();
+							List<string> vals = new List<string>();
 							foreach (int ind in inds){
 								string v = mdata.StringColumns[i][ind];
 								if (v.Length > 0){
@@ -112,7 +112,7 @@ namespace PerseusPluginLib.AnnotCols{
 						catNames[prevInd] = StringUtils.Concat(";",
 							ArrayUtils.UniqueValues(ArrayUtils.Concat(catNames[prevInd].Split(';'), new[]{val})));
 						for (int i = 0; i < stringAnnot.Length; i++){
-							var vals = new List<string>();
+							List<string> vals = new List<string>();
 							foreach (int ind in inds){
 								string v = mdata.StringColumns[i][ind];
 								if (v.Length > 0){
@@ -130,8 +130,8 @@ namespace PerseusPluginLib.AnnotCols{
 			List<string[]> stringAnn = new List<string[]>{catNames.ToArray()};
 			List<string> catColumnNames = mdata.StringColumnNames;
 			List<string[][]> catAnn = new List<string[][]>();
-			foreach (var w in stringAnnot.Select(t => t.ToArray())){
-				foreach (var t1 in w){
+			foreach (string[][] w in stringAnnot.Select(t => t.ToArray())){
+				foreach (string[] t1 in w){
 					Array.Sort(t1);
 				}
 				catAnn.Add(w);
@@ -180,7 +180,7 @@ namespace PerseusPluginLib.AnnotCols{
 		}
 
 		private static int[] GetIndices(IList<string[]> cat, string val){
-			var result = new List<int>();
+			List<int> result = new List<int>();
 			for (int i = 0; i < cat.Count; i++){
 				if (Array.BinarySearch(cat[i], val) >= 0){
 					result.Add(i);

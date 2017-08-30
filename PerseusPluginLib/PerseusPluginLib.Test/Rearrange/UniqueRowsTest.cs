@@ -1,5 +1,6 @@
 ﻿using BaseLibS.Num;
 using NUnit.Framework;
+using PerseusApi.Matrix;
 using PerseusApi.Utils;
 using PerseusLibS.Data;
 using PerseusPluginLib.Rearrange;
@@ -12,7 +13,7 @@ namespace PerseusPluginLib.Test.Rearrange{
         [Test]
         public void SmallTest()
         {
-            var mdata = PerseusFactory.CreateMatrixData(new float[,]
+            IMatrixData mdata = PerseusFactory.CreateMatrixData(new float[,]
             {
                 {0, 4},
                 {1, 5},

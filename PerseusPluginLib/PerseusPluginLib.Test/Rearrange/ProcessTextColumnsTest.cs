@@ -58,13 +58,13 @@ namespace PerseusPluginLib.Test.Rearrange{
 			List<string> stringColumnNames = new List<string>{"Column Name"};
 			List<string[]> stringColumnsInit = new List<string[]>{stringsInit};
 			List<string[]> stringColumnsExpect = new List<string[]>{stringsExpect};
-			var ptc = new ProcessTextColumns();
+			ProcessTextColumns ptc = new ProcessTextColumns();
 			IMatrixData mdata = PerseusFactory.CreateMatrixData();
 			mdata.Clear();
 			mdata.Name = name;
 			mdata.SetAnnotationColumns(stringColumnNames, stringColumnsInit, mdata.CategoryColumnNames, new List<string[][]>(),
 				mdata.NumericColumnNames, mdata.NumericColumns, mdata.MultiNumericColumnNames, mdata.MultiNumericColumns);
-		    var errorStr = string.Empty;
+		    string errorStr = string.Empty;
 		    Parameters param = ptc.GetParameters(mdata, ref errorStr);
 		    param.GetParam<int[]>("Columns").Value = new[] {0};
 		    param.GetParam<string>("Regular expression").Value = regexStr;
@@ -73,8 +73,8 @@ namespace PerseusPluginLib.Test.Rearrange{
 			ptc.ProcessData(mdata, param, ref supplTables, ref documents, null);
 			for (int rowInd = 0; rowInd < stringColumnsInit[0].Length; rowInd++)
 			{
-			    var expected = mdata.StringColumns[0][rowInd];
-			    var actual = stringColumnsExpect[0][rowInd];
+			    string expected = mdata.StringColumns[0][rowInd];
+			    string actual = stringColumnsExpect[0][rowInd];
                 StringAssert.AreEqualIgnoringCase(expected, actual);
 			}
 		}

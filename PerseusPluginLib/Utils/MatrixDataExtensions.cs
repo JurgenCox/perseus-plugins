@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using BaseLibS.Num;
+using BaseLibS.Num.Vector;
 using PerseusApi.Matrix;
 
 namespace PerseusPluginLib.Utils
@@ -11,13 +12,13 @@ namespace PerseusPluginLib.Utils
         public static void UniqueRows(this IMatrixData mdata, string[] ids, Func<double[], double> combineNumeric, Func<string[], string> combineString, Func<string[][], string[]> combineCategory,
             Func<double[][], double[]> combineMultiNumeric)
         {
-            var order = ArrayUtils.Order(ids);
-            var uniqueIdx = new List<int>();
-            var lastId = "";
-            var idxsWithSameId = new List<int>();
+            int[] order = ArrayUtils.Order(ids);
+            List<int> uniqueIdx = new List<int>();
+            string lastId = "";
+            List<int> idxsWithSameId = new List<int>();
             foreach (int j in order)
             {
-                var id = ids[j];
+                string id = ids[j];
                 if (id == lastId)
                 {
                     idxsWithSameId.Add(j);
@@ -41,36 +42,36 @@ namespace PerseusPluginLib.Utils
             {
                 return;
             }
-            var resultRow = rowIdxs[0];
+            int resultRow = rowIdxs[0];
             for (int i = 0; i < mdata.Values.ColumnCount; i++)
             {
-                var column = mdata.Values.GetColumn(i);
-                var values = column.SubArray(rowIdxs);
+                BaseVector column = mdata.Values.GetColumn(i);
+                BaseVector values = column.SubArray(rowIdxs);
                 mdata.Values[resultRow, i] = (float) combineNumeric(ArrayUtils.ToDoubles(values));
             }
             for (int i = 0; i < mdata.NumericColumnCount; i++)
             {
-                var column = mdata.NumericColumns[i];
-                var values = ArrayUtils.SubArray(column, rowIdxs);
+                double[] column = mdata.NumericColumns[i];
+                double[] values = ArrayUtils.SubArray(column, rowIdxs);
                 column[resultRow] = combineNumeric(values);
             }
             for (int i = 0; i < mdata.StringColumnCount; i++)
             {
-                var column = mdata.StringColumns[i];
-                var values = ArrayUtils.SubArray(column, rowIdxs);
+                string[] column = mdata.StringColumns[i];
+                string[] values = ArrayUtils.SubArray(column, rowIdxs);
                 column[resultRow] = combineString(values);
             }
             for (int i = 0; i < mdata.CategoryColumnCount; i++)
             {
-                var column = mdata.GetCategoryColumnAt(i);
-                var values = ArrayUtils.SubArray(column, rowIdxs);
+                string[][] column = mdata.GetCategoryColumnAt(i);
+                string[][] values = ArrayUtils.SubArray(column, rowIdxs);
                 column[resultRow] = combineCategory(values);
                 mdata.SetCategoryColumnAt(column, i);
             }
             for (int i = 0; i < mdata.MultiNumericColumnCount; i++)
             {
-                var column = mdata.MultiNumericColumns[i];
-                var values = ArrayUtils.SubArray(column, rowIdxs);
+                double[][] column = mdata.MultiNumericColumns[i];
+                double[][] values = ArrayUtils.SubArray(column, rowIdxs);
                 column[resultRow] = combineMultiNumeric(values);
             }
         }

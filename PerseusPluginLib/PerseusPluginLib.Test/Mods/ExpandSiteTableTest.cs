@@ -15,22 +15,22 @@ namespace PerseusPluginLib.Test.Mods
 	    [Test]
 	    public void TestSmallExample()
 	    {
-	        var values = new[,]
+	        float[,] values = new[,]
 	        {
 	            {0.0f, 1.0f, 0f, 5f},
                 {2.0f, 3.0f, 0f, 5f}
 	        };
-	        var mdata = PerseusFactory.CreateMatrixData(values, new List<string> {"Col___1" , "Col___2", "Col___3", "No expand"});
+	        IMatrixData mdata = PerseusFactory.CreateMatrixData(values, new List<string> {"Col___1" , "Col___2", "Col___3", "No expand"});
 	        mdata.ColumnDescriptions = new List<string> {"Description Col", "Col", "Col", "Description No expand"};
-	        var multiNum = new[]
+	        double[][] multiNum = new[]
 	        {
 	            new[] {0.0, 1.0},
 	            new[] {2.0}
 	        };
             mdata.AddMultiNumericColumn("MultiNum", "", multiNum);
-	        var stringCol = new[] {"row1", "row2"};
+	        string[] stringCol = new[] {"row1", "row2"};
             mdata.AddStringColumn("String", "", stringCol);
-            var expand = new ExpandSiteTable();
+            ExpandSiteTable expand = new ExpandSiteTable();
 	        IMatrixData[] supplData = null;
 	        IDocumentData[] docs = null;
             expand.ProcessData(mdata, new Parameters(), ref supplData, ref docs, CreateProcessInfo());

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -301,7 +302,7 @@ namespace PerseusPluginLib.AnnotCols{
 
 		public static Dictionary<string, string[]> ReadMapping(ICollection<string> allIds, string file, IList<int> selection){
 			Dictionary<string, string[]> result = new Dictionary<string, string[]>();
-		    using (var reader = FileUtils.GetReader(file))
+		    using (StreamReader reader = FileUtils.GetReader(file))
 		    {
                 reader.ReadLine();
                 reader.ReadLine();

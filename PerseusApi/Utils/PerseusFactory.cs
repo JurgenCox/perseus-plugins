@@ -35,7 +35,7 @@ namespace PerseusApi.Utils {
 			IMatrixData mdata = CreateMatrixData();
 			mdata.Values.Set(values);
 			mdata.ColumnNames = columnNames;
-			var imputed = new BoolMatrixIndexer();
+			BoolMatrixIndexer imputed = new BoolMatrixIndexer();
 			imputed.Init(mdata.RowCount, mdata.ColumnCount);
 			mdata.IsImputed = imputed;
 			return mdata;
