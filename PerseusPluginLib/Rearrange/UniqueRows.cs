@@ -46,12 +46,8 @@ namespace PerseusPluginLib.Rearrange{
         public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables, ref IDocumentData[] documents, ProcessInfo processInfo)
         {
             var ids = mdata.StringColumns[param.GetParam<int>(_unique).Value];
-            Func<double[], double> combineNumeric;
-            Func<string[], string> combineString;
-            Func<string[][], string[]> combineCategory;
-            Func<double[][], double[]> combineMultiNumeric;
-            ParseParameters(param, out combineNumeric, out combineString, out combineCategory, out combineMultiNumeric);
-            mdata.UniqueRows(ids, combineNumeric, combineString, combineCategory, combineMultiNumeric);
+			ParseParameters(param, out Func<double[], double> combineNumeric, out Func<string[], string> combineString, out Func<string[][], string[]> combineCategory, out Func<double[][], double[]> combineMultiNumeric);
+			mdata.UniqueRows(ids, combineNumeric, combineString, combineCategory, combineMultiNumeric);
         }
 
 	    private void ParseParameters(Parameters param, out Func<double[], double> combineNumeric, out Func<string[], string> combineString,

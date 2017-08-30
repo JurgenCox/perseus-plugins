@@ -34,9 +34,7 @@ namespace PerseusPluginLib.Basic{
 			string colName = param.GetParam<string>("Name of new column").Value;
 			int[] columns = param.GetParam<int[]>("Categories").Value;
 			bool inverse = param.GetParam<bool>("Inverse").Value;
-			int[] catCols;
-			int[] stringCols;
-			Split(columns, out catCols, out stringCols, mdata.CategoryColumnCount);
+			Split(columns, out int[] catCols, out int[] stringCols, mdata.CategoryColumnCount);
 			string[] word1 = param.GetParam<string[]>("Search terms").Value;
 			if (word1.Length == 0){
 				processInfo.ErrString = "Please specify one or more search terms.";

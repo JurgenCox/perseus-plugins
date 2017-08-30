@@ -185,8 +185,7 @@ namespace PerseusPluginLib.Mods {
 					colInds[i, j] = ArrayUtils.IndexOf(names, q);
 				}
 			}
-			int[] valid;
-			colInds = ExtractCompleteRows(colInds, out valid);
+			colInds = ExtractCompleteRows(colInds, out int[] valid);
 			allPrefixes = ArrayUtils.SubArray(allPrefixes, valid);
 			if (colInds.GetLength(0) == 0) {
 				errorString = "There are no suitable columns to expand.";

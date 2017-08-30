@@ -64,16 +64,8 @@ namespace PerseusPluginLib.Mods{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string[] seqWins;
-			string[] accs;
-			string[] function;
-			string[] process;
-			string[] protInteract;
-			string[] otherInteract;
-			string[] notes;
-			string[] species;
-			PhosphoSitePlusParser.ParseRegulatorySites(out seqWins, out accs, out function, out process, out protInteract,
-				out otherInteract, out notes, out species);
+			PhosphoSitePlusParser.ParseRegulatorySites(out string[] seqWins, out string[] accs, out string[] function, out string[] process, out string[] protInteract,
+				out string[] otherInteract, out string[] notes, out string[] species);
 			if (seqWins == null){
 				processInfo.ErrString = "File  does not exist.";
 				return;

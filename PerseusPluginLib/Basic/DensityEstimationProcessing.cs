@@ -53,14 +53,8 @@ namespace PerseusPluginLib.Basic{
 			for (int k = 0; k < colIndx.Length; k++){
 				double[] xvals = GetColumn(mdata, colIndx[k]);
 				double[] yvals = GetColumn(mdata, colIndy[k]);
-				double[] xvals1;
-				double[] yvals1;
-				GetValidPairs(xvals, yvals, out xvals1, out yvals1);
-				double xmin;
-				double xmax;
-				double ymin;
-				double ymax;
-				DensityEstimation.CalcRanges(xvals1, yvals1, out xmin, out xmax, out ymin, out ymax);
+				GetValidPairs(xvals, yvals, out double[] xvals1, out double[] yvals1);
+				DensityEstimation.CalcRanges(xvals1, yvals1, out double xmin, out double xmax, out double ymin, out double ymax);
 				double[,] values = DensityEstimation.GetValuesOnGrid(xvals1, xmin, (xmax - xmin)/points, points, yvals1, ymin,
 					(ymax - ymin)/points, points);
 				if (typeInd == 1){

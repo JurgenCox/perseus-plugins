@@ -64,9 +64,7 @@ namespace PerseusPluginLib.Norm{
 			bool report = param.GetParam<bool>("Report mean and std. dev.").Value;
 			bool median = param.GetParam<bool>("Use median").Value;
 			if (groupInd < 0){
-				double[] means;
-				double[] stddevs;
-				Zscore(rows, mdata, processInfo.NumThreads, report, median, out means, out stddevs);
+				Zscore(rows, mdata, processInfo.NumThreads, report, median, out double[] means, out double[] stddevs);
 				if (report){
 					if (rows){
 						mdata.AddNumericColumn("Mean", "Mean", means);
@@ -85,9 +83,7 @@ namespace PerseusPluginLib.Norm{
 					}
 				}
 				string[] groupVals = ArrayUtils.UniqueValuesPreserveOrder(catRow);
-				double[][] means;
-				double[][] stddevs;
-				ZscoreGroups(mdata, catRow, processInfo.NumThreads, report, median, groupVals, out means, out stddevs);
+				ZscoreGroups(mdata, catRow, processInfo.NumThreads, report, median, groupVals, out double[][] means, out double[][] stddevs);
 				if (report){
 					for (int i = 0; i < groupVals.Length; i++){
 						mdata.AddNumericColumn("Mean " + groupVals[i], "Mean", means[i]);
@@ -128,8 +124,7 @@ namespace PerseusPluginLib.Norm{
 				double q = data.Values.Get(i, inds[j]);
 				vals[j] = q;
 			}
-			double stddev;
-			double mean = ArrayUtils.MeanAndStddev(vals, out stddev, median);
+			double mean = ArrayUtils.MeanAndStddev(vals, out double stddev, median);
 			foreach (int t in inds){
 				data.Values.Set(i, t, (float) ((data.Values.Get(i, t) - mean)/stddev));
 			}
@@ -179,8 +174,7 @@ namespace PerseusPluginLib.Norm{
 			for (int j = 0; j < data.ColumnCount; j++){
 				vals[j] = data.Values.Get(i, j);
 			}
-			double stddev;
-			double mean = ArrayUtils.MeanAndStddev(vals, out stddev, median);
+			double mean = ArrayUtils.MeanAndStddev(vals, out double stddev, median);
 			for (int j = 0; j < data.ColumnCount; j++){
 				data.Values.Set(i, j, (float) ((data.Values.Get(i, j) - mean)/stddev));
 			}
@@ -196,8 +190,7 @@ namespace PerseusPluginLib.Norm{
 			for (int i = 0; i < data.RowCount; i++){
 				vals[i] = data.Values.Get(i, j);
 			}
-			double stddev;
-			double mean = ArrayUtils.MeanAndStddev(vals, out stddev, median);
+			double mean = ArrayUtils.MeanAndStddev(vals, out double stddev, median);
 			for (int i = 0; i < data.RowCount; i++){
 				data.Values.Set(i, j, (float) ((data.Values.Get(i, j) - mean)/stddev));
 			}

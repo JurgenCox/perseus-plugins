@@ -36,8 +36,7 @@ namespace PerseusPluginLib.Filter{
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			const bool rows = false;
-			bool percentage;
-			int minValids = PerseusPluginUtils.GetMinValids(param, out percentage);
+			int minValids = PerseusPluginUtils.GetMinValids(param, out bool percentage);
 			ParameterWithSubParams<int> modeParam = param.GetParamWithSubParams<int>("Mode");
 			int modeInd = modeParam.Value;
 			if (modeInd != 0 && mdata.CategoryRowNames.Count == 0){
@@ -48,10 +47,7 @@ namespace PerseusPluginLib.Filter{
 				processInfo.ErrString = "Group-wise filtering can only be appled to rows.";
 				return;
 			}
-			FilteringMode filterMode;
-			double threshold;
-			double threshold2;
-			PerseusPluginUtils.ReadValuesShouldBeParams(param, out filterMode, out threshold, out threshold2);
+			PerseusPluginUtils.ReadValuesShouldBeParams(param, out FilteringMode filterMode, out double threshold, out double threshold2);
 			if (modeInd != 0){
 				//TODO
 			} else{

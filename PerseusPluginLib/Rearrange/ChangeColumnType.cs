@@ -151,8 +151,7 @@ namespace PerseusPluginLib.Rearrange{
 						newNum[j][i] = double.NaN;
 					} else{
 						string x = str[j][i];
-						double d;
-						bool success = Parser.TryDouble(x, out d);
+						bool success = Parser.TryDouble(x, out double d);
 						newNum[j][i] = success ? d : double.NaN;
 					}
 				}
@@ -223,8 +222,7 @@ namespace PerseusPluginLib.Rearrange{
 						string[] y = x.Length > 0 ? x.Split(';') : new string[0];
 						newMNum[j][i] = new double[y.Length];
 						for (int k = 0; k < y.Length; k++){
-							double d;
-							bool success = Parser.TryDouble(y[k], out d);
+							bool success = Parser.TryDouble(y[k], out double d);
 							newMNum[j][i][k] = success ? d : double.NaN;
 						}
 					}
@@ -250,8 +248,7 @@ namespace PerseusPluginLib.Rearrange{
 					if (cat[j][i] == null || cat[j][i].Length == 0){
 						newNum[j][i] = double.NaN;
 					} else{
-						double x;
-						bool s = Parser.TryDouble(cat[j][i][0], out x);
+						bool s = Parser.TryDouble(cat[j][i][0], out double x);
 						if (s){
 							newNum[j][i] = x;
 						} else{
@@ -368,8 +365,7 @@ namespace PerseusPluginLib.Rearrange{
 			for (int j = 0; j < str.Length; j++){
 				newEx[j] = new float[str[j].Length];
 				for (int i = 0; i < newEx[j].Length; i++){
-					float f;
-					bool success = Parser.TryFloat(str[j][i], out f);
+					bool success = Parser.TryFloat(str[j][i], out float f);
 					newEx[j][i] = success ? f : float.NaN;
 				}
 			}

@@ -93,9 +93,7 @@ namespace PerseusPluginLib.Join{
 			int nrows1 = mdata1.RowCount;
 			int nrows2 = mdata2.RowCount;
 			int nrows = nrows1 + nrows2;
-			Dictionary<string, int> dic1;
-			Dictionary<string, int> dic2;
-			string[] expColNames = SpecialSort(mdata1.ColumnNames, mdata2.ColumnNames, out dic1, out dic2);
+			string[] expColNames = SpecialSort(mdata1.ColumnNames, mdata2.ColumnNames, out Dictionary<string, int> dic1, out Dictionary<string, int> dic2);
 			float[,] ex = new float[nrows, expColNames.Length];
 			for (int i = 0; i < ex.GetLength(0); i++){
 				for (int j = 0; j < ex.GetLength(1); j++){

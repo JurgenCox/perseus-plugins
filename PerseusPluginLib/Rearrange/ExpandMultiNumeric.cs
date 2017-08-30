@@ -73,8 +73,7 @@ namespace PerseusPluginLib.Rearrange{
 			}
 			int count = 0;
 			for (int i = 0; i < mdata.RowCount; i++){
-				string err;
-				int entryCount = GetEntryCount(i, mdata, multiNumCols, stringCols, out err);
+				int entryCount = GetEntryCount(i, mdata, multiNumCols, stringCols, out string err);
 				if (err != null){
 					processInfo.ErrString = err;
 					return;

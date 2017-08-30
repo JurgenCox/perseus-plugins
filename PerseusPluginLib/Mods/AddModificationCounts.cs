@@ -51,13 +51,7 @@ namespace PerseusPluginLib.Mods{
 					processInfo.ErrString = "File does not exist.";
 					return;
 				}
-				string[] seqWins;
-				string[] accs;
-				string[] pubmedLtp;
-				string[] pubmedMs2;
-				string[] cstMs2;
-				string[] species;
-				PhosphoSitePlusParser.ParseKnownMods(filename, out seqWins, out accs, out pubmedLtp, out pubmedMs2, out cstMs2, out species);
+				PhosphoSitePlusParser.ParseKnownMods(filename, out string[] seqWins, out string[] accs, out string[] pubmedLtp, out string[] pubmedMs2, out string[] cstMs2, out string[] species);
 				for (int i = 0; i < seqWins.Length; i++){
 					seqWins[i] = seqWins[i].ToUpper();
 				}

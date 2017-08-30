@@ -38,12 +38,7 @@ namespace PerseusPluginLib.Mods{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string[] seqWins;
-			string[] subAccs;
-			string[] kinases;
-			string[] kinAccs;
-			string[] species;
-			PhosphoSitePlusParser.ParseKinaseSubstrate(out seqWins, out subAccs, out kinases, out kinAccs, out species);
+			PhosphoSitePlusParser.ParseKinaseSubstrate(out string[] seqWins, out string[] subAccs, out string[] kinases, out string[] kinAccs, out string[] species);
 			if (seqWins == null){
 				processInfo.ErrString = "File does not exist.";
 				return;

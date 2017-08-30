@@ -44,10 +44,7 @@ namespace PerseusPluginLib.Filter{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string errString;
-			int[] colInds;
-			bool and;
-			Relation[] relations = PerseusUtils.GetRelationsNumFilter(param, out errString, out colInds, out and);
+			Relation[] relations = PerseusUtils.GetRelationsNumFilter(param, out string errString, out int[] colInds, out bool and);
 			if (errString != null){
 				processInfo.ErrString = errString;
 				return;

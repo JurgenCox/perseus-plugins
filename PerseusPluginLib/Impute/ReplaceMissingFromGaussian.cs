@@ -100,8 +100,7 @@ namespace PerseusPluginLib.Impute{
 					allValues.Add(x);
 				}
 			}
-			double stddev;
-			double mean = ArrayUtils.MeanAndStddev(allValues.ToArray(), out stddev);
+			double mean = ArrayUtils.MeanAndStddev(allValues.ToArray(), out double stddev);
 			if (double.IsNaN(mean) || double.IsInfinity(mean) || double.IsNaN(stddev) || double.IsInfinity(stddev)){
 				return false;
 			}
@@ -139,8 +138,7 @@ namespace PerseusPluginLib.Impute{
 					}
 				}
 			}
-			double stddev;
-			double mean = ArrayUtils.MeanAndStddev(allValues.ToArray(), out stddev);
+			double mean = ArrayUtils.MeanAndStddev(allValues.ToArray(), out double stddev);
 			if (double.IsNaN(mean) || double.IsInfinity(mean) || double.IsNaN(stddev) || double.IsInfinity(stddev)){
 				return "Imputation failed since mean and standard deviation could not be calculated.";
 			}

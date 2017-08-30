@@ -95,12 +95,10 @@ namespace PerseusPluginLib.Mods{
 						}
 						foreach (FeatureType featureType in mpa.Features.Keys){
 							foreach (UniprotFeature uf in mpa.Features[featureType]){
-								int begin;
-								int end;
-								if (!Parser.TryInt(uf.FeatureBegin, out begin)){
+								if (!Parser.TryInt(uf.FeatureBegin, out int begin)) {
 									begin = int.MaxValue;
 								}
-								if (!Parser.TryInt(uf.FeatureEnd, out end)){
+								if (!Parser.TryInt(uf.FeatureEnd, out int end)){
 									end = int.MinValue;
 								}
 								if (Fits(pos, begin, end)){

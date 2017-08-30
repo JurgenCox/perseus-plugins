@@ -47,10 +47,7 @@ namespace PerseusPluginLib.AnnotCols{
 					break;
 				}
 			}
-			string[] baseNames;
-			int[][] inds;
-			string[] files;
-			string[][] annots = GetAvailableTextAnnots(out baseNames, out inds, out files);
+			string[][] annots = GetAvailableTextAnnots(out string[] baseNames, out int[][] inds, out string[] files);
 			int selFile = 0;
 			for (int i = 0; i < files.Length; i++){
 				if (files[i].ToLower().Contains("perseusannot")){
@@ -88,10 +85,7 @@ namespace PerseusPluginLib.AnnotCols{
 
 		public void ProcessData(IMatrixData mdata, Parameters para, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string[] baseNames;
-			int[][] inds;
-			string[] files;
-			GetAvailableTextAnnots(out baseNames, out inds, out files);
+			GetAvailableTextAnnots(out string[] baseNames, out int[][] inds, out string[] files);
 			ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
 			int ind = spd.Value;
 			Parameters param = spd.GetSubParameters();
@@ -166,8 +160,7 @@ namespace PerseusPluginLib.AnnotCols{
 		}
 
 		private static string[][] GetAvailableTextAnnots(out string[] baseNames, out int[][] inds, out string[] files){
-			AnnotType[][] types;
-			string[][] annots = PerseusUtils.GetAvailableAnnots(out baseNames, out types, out files);
+			string[][] annots = PerseusUtils.GetAvailableAnnots(out baseNames, out AnnotType[][] types, out files);
 			inds = new int[files.Length][];
 			for (int i = 0; i < files.Length; i++){
 				List<int> result = new List<int>();
