@@ -85,13 +85,13 @@ namespace PerseusPluginLib.Mods {
 					count++;
 					int rowInd = i * mdata.RowCount + j;
 					for (int k = 0; k < normalIndices.Length; k++) {
-						data[rowInd, k] = mdata.Values.Get(j, normalIndices[k]);
-						quality[rowInd, k] = mdata.Quality.Get(j, normalIndices[k]);
+						data[rowInd, k] = (float)mdata.Values.Get(j, normalIndices[k]);
+						quality[rowInd, k] = (float)mdata.Quality.Get(j, normalIndices[k]);
 						imputed[rowInd, k] = mdata.IsImputed[j, normalIndices[k]];
 					}
 					for (int k = 0; k < allPrefixes.Length; k++) {
-						data[rowInd, normalIndices.Length + k] = mdata.Values.Get(j, colInds[k, i]);
-						quality[rowInd, normalIndices.Length + k] = mdata.Quality.Get(j, colInds[k, i]);
+						data[rowInd, normalIndices.Length + k] = (float)mdata.Values.Get(j, colInds[k, i]);
+						quality[rowInd, normalIndices.Length + k] = (float)mdata.Quality.Get(j, colInds[k, i]);
 						imputed[rowInd, normalIndices.Length + k] = mdata.IsImputed[j, colInds[k, i]];
 					}
 					for (int k = 0; k < validNumCols.Length; k++) {

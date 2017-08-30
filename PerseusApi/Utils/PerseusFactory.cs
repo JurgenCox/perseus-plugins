@@ -42,6 +42,19 @@ namespace PerseusApi.Utils {
 		}
 
 		/// <summary>
+		/// Create minimally initialized <see cref="IMatrixData"/>.
+		/// </summary>
+		public static IMatrixData CreateMatrixData(double[,] values, List<string> columnNames) {
+			IMatrixData mdata = CreateMatrixData();
+			mdata.Values.Set(values);
+			mdata.ColumnNames = columnNames;
+			BoolMatrixIndexer imputed = new BoolMatrixIndexer();
+			imputed.Init(mdata.RowCount, mdata.ColumnCount);
+			mdata.IsImputed = imputed;
+			return mdata;
+		}
+
+		/// <summary>
 		/// Creates an empty default implementation of <see cref="IDocumentData"/>.
 		/// </summary>
 		public static IDocumentData CreateDocumentData() {

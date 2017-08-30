@@ -94,7 +94,7 @@ namespace PerseusPluginLib.Join{
 			int nrows2 = mdata2.RowCount;
 			int nrows = nrows1 + nrows2;
 			string[] expColNames = SpecialSort(mdata1.ColumnNames, mdata2.ColumnNames, out Dictionary<string, int> dic1, out Dictionary<string, int> dic2);
-			float[,] ex = new float[nrows, expColNames.Length];
+			double[,] ex = new double[nrows, expColNames.Length];
 			for (int i = 0; i < ex.GetLength(0); i++){
 				for (int j = 0; j < ex.GetLength(1); j++){
 					ex[i, j] = float.NaN;

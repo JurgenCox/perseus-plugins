@@ -65,7 +65,7 @@ namespace PerseusPluginLib.AnnotCols{
 				default:
 					throw new Exception("Never get here.");
 			}
-			List<float[]> exVals = new List<float[]>();
+			List<double[]> exVals = new List<double[]>();
 			List<string[]>[] stringAnnot = new List<string[]>[mdata.StringColumnCount];
 			for (int i = 0; i < stringAnnot.Length; i++){
 				stringAnnot[i] = new List<string[]>();
@@ -81,7 +81,7 @@ namespace PerseusPluginLib.AnnotCols{
 					if (inds.Length < minSize){
 						continue;
 					}
-					float[] expProfile = new float[mdata.ColumnCount];
+					double[] expProfile = new double[mdata.ColumnCount];
 					for (int i = 0; i < expProfile.Length; i++){
 						List<double> vals = new List<double>();
 						foreach (int ind in inds){
@@ -90,7 +90,7 @@ namespace PerseusPluginLib.AnnotCols{
 								vals.Add(v);
 							}
 						}
-						expProfile[i] = vals.Count > 0 ? Calc(vals, type) : float.NaN;
+						expProfile[i] = vals.Count > 0 ? Calc(vals, type) : double.NaN;
 					}
 					int prevInd = LookupPreviousInd(exVals, expProfile);
 					if (prevInd == -1){
@@ -136,7 +136,7 @@ namespace PerseusPluginLib.AnnotCols{
 				}
 				catAnn.Add(w);
 			}
-			float[,] expressionValues = new float[exVals.Count, exVals[0].Length];
+			double[,] expressionValues = new double[exVals.Count, exVals[0].Length];
 			for (int i = 0; i < expressionValues.GetLength(0); i++){
 				for (int j = 0; j < expressionValues.GetLength(1); j++){
 					expressionValues[i, j] = exVals[i][j];
@@ -155,22 +155,22 @@ namespace PerseusPluginLib.AnnotCols{
 				new IntParam("Min. size", 3));
 		}
 
-		private static float Calc(IList<double> vals, SummaryType type){
+		private static double Calc(IList<double> vals, SummaryType type){
 			switch (type){
 				case SummaryType.Median:
-					return (float) ArrayUtils.Median(vals);
+					return ArrayUtils.Median(vals);
 				case SummaryType.Mean:
-					return (float) ArrayUtils.Mean(vals);
+					return ArrayUtils.Mean(vals);
 				case SummaryType.Sum:
-					return (float) ArrayUtils.Sum(vals);
+					return ArrayUtils.Sum(vals);
 				case SummaryType.StandardDeviation:
-					return (float) ArrayUtils.StandardDeviation(vals);
+					return ArrayUtils.StandardDeviation(vals);
 				default:
 					throw new Exception("Never get here.");
 			}
 		}
 
-		private static int LookupPreviousInd(IList<float[]> vals, IList<float> profile){
+		private static int LookupPreviousInd(IList<double[]> vals, IList<double> profile){
 			for (int i = 0; i < vals.Count; i++){
 				if (ArrayUtils.EqualArrays(vals[i], profile)){
 					return i;

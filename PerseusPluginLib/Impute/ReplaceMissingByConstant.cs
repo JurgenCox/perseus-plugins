@@ -56,7 +56,7 @@ namespace PerseusPluginLib.Impute{
 			IEnumerable<int> numInds){
 			foreach (int j in mainInds){
 				for (int i = 0; i < data.RowCount; i++){
-					if (float.IsNaN(data.Values.Get(i, j))){
+					if (double.IsNaN(data.Values.Get(i, j))){
 						data.Values.Set(i, j, value);
 						data.IsImputed[i, j] = true;
 					}

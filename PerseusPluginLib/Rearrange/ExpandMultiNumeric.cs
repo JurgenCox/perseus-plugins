@@ -82,12 +82,12 @@ namespace PerseusPluginLib.Rearrange{
 				entryCount = Math.Max(entryCount, 1);
 				for (int j = 0; j < entryCount; j++){
 					for (int k = 0; k < mdata.ColumnCount; k++){
-						expVals[count + j, k] = mdata.Values.Get(i, k);
+						expVals[count + j, k] = (float)mdata.Values.Get(i, k);
 					}
 				    if (mdata.HasQuality)
 				    {
                         for (int k = 0; k < mdata.ColumnCount; k++){
-                            qualVals[count + j, k] = mdata.Quality.Get(i, k);
+                            qualVals[count + j, k] = (float)mdata.Quality.Get(i, k);
                         }
 				    }
 					for (int k = 0; k < mdata.ColumnCount; k++){

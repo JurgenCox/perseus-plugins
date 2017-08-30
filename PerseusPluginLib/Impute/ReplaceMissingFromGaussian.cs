@@ -93,10 +93,10 @@ namespace PerseusPluginLib.Impute{
 
 		private static bool ReplaceMissingsByGaussianForOneColumn(double width, double shift, IMatrixData data, int colInd,
 			Random2 r){
-			List<float> allValues = new List<float>();
+			List<double> allValues = new List<double>();
 			for (int i = 0; i < data.RowCount; i++){
-				float x = GetValue(data, i, colInd);
-				if (!float.IsNaN(x) && !float.IsInfinity(x)){
+				double x = GetValue(data, i, colInd);
+				if (!double.IsNaN(x) && !double.IsInfinity(x)){
 					allValues.Add(x);
 				}
 			}
@@ -107,10 +107,10 @@ namespace PerseusPluginLib.Impute{
 			double m = mean - shift*stddev;
 			double s = stddev*width;
 			for (int i = 0; i < data.RowCount; i++){
-				float x = GetValue(data, i, colInd);
-				if (float.IsNaN(x) || float.IsInfinity(x)){
+				double x = GetValue(data, i, colInd);
+				if (double.IsNaN(x) || double.IsInfinity(x)){
 					if (colInd < data.ColumnCount){
-						data.Values.Set(i, colInd, (float) r.NextGaussian(m, s));
+						data.Values.Set(i, colInd, r.NextGaussian(m, s));
 						data.IsImputed[i, colInd] = true;
 					} else{
 						data.NumericColumns[colInd - data.ColumnCount][i] = r.NextGaussian(m, s);
@@ -120,20 +120,20 @@ namespace PerseusPluginLib.Impute{
 			return true;
 		}
 
-		private static float GetValue(IMatrixData data, int i, int colInd){
+		private static double GetValue(IMatrixData data, int i, int colInd){
 			if (colInd < data.ColumnCount){
 				return data.Values.Get(i, colInd);
 			}
 			colInd -= data.ColumnCount;
-			return (float) data.NumericColumns[colInd][i];
+			return data.NumericColumns[colInd][i];
 		}
 
 		public static string ReplaceMissingsByGaussianWholeMatrix(double width, double shift, IMatrixData data, int[] colInds){
-			List<float> allValues = new List<float>();
+			List<double> allValues = new List<double>();
 			for (int i = 0; i < data.RowCount; i++){
 				foreach (int t in colInds){
-					float x = GetValue(data, i, t);
-					if (!float.IsNaN(x) && !float.IsInfinity(x)){
+					double x = GetValue(data, i, t);
+					if (!double.IsNaN(x) && !double.IsInfinity(x)){
 						allValues.Add(x);
 					}
 				}
@@ -147,10 +147,10 @@ namespace PerseusPluginLib.Impute{
 			Random2 r = new Random2(7);
 			for (int i = 0; i < data.RowCount; i++){
 				foreach (int colInd in colInds){
-					float x = GetValue(data, i, colInd);
-					if (float.IsNaN(x) || float.IsInfinity(x)){
+					double x = GetValue(data, i, colInd);
+					if (double.IsNaN(x) || double.IsInfinity(x)){
 						if (colInd < data.ColumnCount){
-							data.Values.Set(i, colInd, (float) r.NextGaussian(m, s));
+							data.Values.Set(i, colInd, r.NextGaussian(m, s));
 							data.IsImputed[i, colInd] = true;
 						} else{
 							data.NumericColumns[colInd - data.ColumnCount][i] = r.NextGaussian(m, s);

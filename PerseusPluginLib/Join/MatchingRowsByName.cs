@@ -510,8 +510,8 @@ namespace PerseusPluginLib.Join{
 			bool[,] newImp = new bool[data.RowCount, data.ColumnCount + vals.GetLength(1)];
 			for (int i = 0; i < data.RowCount; i++){
 				for (int j = 0; j < data.ColumnCount; j++){
-					newVals[i, j] = data.Values.Get(i, j);
-					newQual[i, j] = data.Quality?.Get(i, j) ?? 0;
+					newVals[i, j] = (float)data.Values.Get(i, j);
+					newQual[i, j] = (float)(data.Quality?.Get(i, j) ?? 0);
 					newImp[i, j] = data.IsImputed?[i, j] ?? false;
 				}
 				for (int j = 0; j < vals.GetLength(1); j++){
