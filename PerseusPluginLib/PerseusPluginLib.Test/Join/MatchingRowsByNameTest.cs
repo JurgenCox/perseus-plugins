@@ -26,7 +26,7 @@ namespace PerseusPluginLib.Test.Join
         [SetUp]
         public void TestInitialize()
         {
-            float[,] peptidesValues = new[,] {{9.0f}};
+            double[,] peptidesValues = new[,] {{9.0}};
             peptides = PerseusFactory.CreateMatrixData(peptidesValues, new List<string> {"pep_MS/MS Count"});
             peptides.AddNumericColumn("pep_Intensity", "", new [] {0.0});
             peptides.AddStringColumn("pep_id", "", new []{"35"});
@@ -41,19 +41,19 @@ namespace PerseusPluginLib.Test.Join
             IDocumentData[] docs = null;
             multiNum.ProcessData(peptides, parameters2, ref suppl, ref docs, CreateProcessInfo());
 
-	        float[,] proteinMainValues = new[,]
+	        double[,] proteinMainValues = new[,]
 	        {
-	            {166250000.0f},
-                {8346000.0f}
+	            {166250000.0},
+                {8346000.0}
 	        };
 	        proteinMain = PerseusFactory.CreateMatrixData(proteinMainValues, new List<string> {"prot_LFQ intensity"});
 	        proteinMain.Name = "protein main";
             proteinMain.AddStringColumn("prot_id", "", new [] {"13", "21"});
             proteinMain.AddStringColumn("prot_gene name", "", new [] {"geneA", "geneB"});
-	        float[,] expandValues = new[,]
+	        double[,] expandValues = new[,]
 	        {
-	            {9.0f},
-                {9.0f}
+	            {9.0},
+                {9.0}
 	        };
 	        expand = PerseusFactory.CreateMatrixData(expandValues, new List<string> {"pep_MS/MS Count"});
 	        expand.Name = "expand";

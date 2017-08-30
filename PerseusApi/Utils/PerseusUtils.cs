@@ -90,7 +90,7 @@ namespace PerseusApi.Utils {
 				matrixData.Quality.Set(qualityValues);
 				matrixData.IsImputed.Set(isImputedValues);
 			} else {
-				matrixData.Quality.Set(new float[mainValues.GetLength(0), mainValues.GetLength(1)]);
+				matrixData.Quality.Set(new double[mainValues.GetLength(0), mainValues.GetLength(1)]);
 				matrixData.IsImputed.Set(new bool[mainValues.GetLength(0), mainValues.GetLength(1)]);
 			}
 			matrixData.Origin = origin;
@@ -102,8 +102,7 @@ namespace PerseusApi.Utils {
 			IList<int> catColIndices, IList<int> numColIndices, IList<int> textColIndices, IList<int> multiNumColIndices,
 			Action<int> progress, char separator, TextReader reader, int nrows, List<Tuple<Relation[], int[], bool>> filters) {
 			LoadAllData(matrixData, colNames, new int[0], catColIndices, numColIndices, textColIndices, multiNumColIndices,
-				reader, separator, nrows, filters, progress, false, out float[,] qualityValues, out bool[,] isImputedValues,
-				out float[,] mainValues);
+				reader, separator, nrows, filters, progress, false, out float[,] _, out bool[,] _, out float[,] _);
 		}
 
 		private static void LoadAllData(IDataWithAnnotationColumns matrixData, IList<string> colNames,
@@ -465,7 +464,7 @@ namespace PerseusApi.Utils {
 		/// <param name="files"></param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files) {
-			return GetAvailableAnnots(out baseNames, out AnnotType[][] types, out files, out List<string> badFiles);
+			return GetAvailableAnnots(out baseNames, out AnnotType[][] _, out files, out List<string> _);
 		}
 
 		/// <summary>
@@ -476,7 +475,7 @@ namespace PerseusApi.Utils {
 		/// <param name="badFiles">List of files which could not be processed</param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles) {
-			return GetAvailableAnnots(out baseNames, out AnnotType[][] types, out files, out badFiles);
+			return GetAvailableAnnots(out baseNames, out AnnotType[][] _, out files, out badFiles);
 		}
 
 		/// <summary>
@@ -487,7 +486,7 @@ namespace PerseusApi.Utils {
 		/// <param name="files"></param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
 		public static string[][] GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files) {
-			return GetAvailableAnnots(out baseNames, out types, out files, out List<string> badFiles);
+			return GetAvailableAnnots(out baseNames, out types, out files, out List<string> _);
 		}
 
 		/// <summary>
@@ -665,7 +664,7 @@ namespace PerseusApi.Utils {
 				if (rel.StartsWith(">") || rel.StartsWith("<") || rel.StartsWith("=")) {
 					rel = "x" + rel;
 				}
-				Relation r = Relation.CreateFromString(rel, realVariableNames, new string[0], out string err1);
+				Relation r = Relation.CreateFromString(rel, realVariableNames, new string[0], out string _);
 				result.Add(r);
 			}
 			return result.ToArray();
@@ -861,7 +860,7 @@ namespace PerseusApi.Utils {
 			List<string> words = new List<string>();
 			for (int i = 0; i < data.CategoryColumnCount; i++) {
 				string[] q = data.GetCategoryColumnEntryAt(i, j) ?? new string[0];
-				words.Add((q.Length > 0 ? StringUtils.Concat(";", q) : ""));
+				words.Add(q.Length > 0 ? StringUtils.Concat(";", q) : "");
 			}
 			for (int i = 0; i < data.NumericColumnCount; i++) {
 				words.Add("" + data.NumericColumns[i][j]);
@@ -871,7 +870,7 @@ namespace PerseusApi.Utils {
 			}
 			for (int i = 0; i < data.MultiNumericColumnCount; i++) {
 				double[] q = data.MultiNumericColumns[i][j];
-				words.Add((q.Length > 0 ? StringUtils.Concat(";", q) : ""));
+				words.Add(q.Length > 0 ? StringUtils.Concat(";", q) : "");
 			}
 			return words;
 		}

@@ -36,7 +36,7 @@ namespace PerseusPluginLib.Norm{
 			double[][] profiles = new double[inds.Count][];
 			for (int i = 0; i < profiles.Length; i++){
 				profiles[i] = ArrayUtils.ToDoubles(mdata.Values.GetRow(inds[i]));
-				float mean = (float) ArrayUtils.Mean(profiles[i]);
+				double mean = ArrayUtils.Mean(profiles[i]);
 				for (int j = 0; j < profiles[i].Length; j++){
 					profiles[i][j] -= mean;
 				}
@@ -55,7 +55,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			for (int i = 0; i < mdata.RowCount; i++){
 				for (int j = 0; j < mdata.ColumnCount; j++){
-					mdata.Values.Set(i, j, mdata.Values.Get(i, j)-(float) totalProfile[j]);
+					mdata.Values.Set(i, j, mdata.Values.Get(i, j)- totalProfile[j]);
 				}
 			}
 		}

@@ -70,7 +70,7 @@ namespace PerseusPluginLib.Norm{
 				}
 				double mean = func(vals);
 				foreach (int t in inds){
-					data.Values.Set(i, t, (float)((data.Values.Get(i, t) - mean)));
+					data.Values.Set(i, t, data.Values.Get(i, t) - mean);
 				}
 			}
 		}
@@ -127,7 +127,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			double med = summarize(vals.ToArray());
 			for (int j = 0; j < data.ColumnCount; j++){
-				data.Values.Set(i, j, data.Values.Get(i, j)-(float)med);
+				data.Values.Set(i, j, data.Values.Get(i, j)-med);
 			}
 		}
 
@@ -141,7 +141,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			double med = summarize(vals.ToArray());
 			for (int i = 0; i < data.RowCount; i++){
-				data.Values.Set(i, j, data.Values.Get(i, j)-(float)med);
+				data.Values.Set(i, j, data.Values.Get(i, j)-med);
 			}
 		}
 	}

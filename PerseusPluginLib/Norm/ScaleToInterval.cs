@@ -67,7 +67,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			ArrayUtils.MinMax(vals, out double mind, out double maxd);
 			for (int j = 0; j < data.ColumnCount; j++){
-				data.Values.Set(i, j, (float) (min + (max - min)/(maxd - mind)*(data.Values.Get(i, j) - mind)));
+				data.Values.Set(i, j, min + (max - min)/(maxd - mind)*(data.Values.Get(i, j) - mind));
 			}
 		}
 
@@ -81,7 +81,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			ArrayUtils.MinMax(vals, out double mind, out double maxd);
 			for (int i = 0; i < data.RowCount; i++){
-				data.Values.Set(i, j, (float) (min + (max - min)/(maxd - mind)*(data.Values.Get(i, j) - mind)));
+				data.Values.Set(i, j, min + (max - min)/(maxd - mind)*(data.Values.Get(i, j) - mind));
 			}
 		}
 	}

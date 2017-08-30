@@ -15,10 +15,10 @@ namespace PerseusPluginLib.Test.Mods
 	    [Test]
 	    public void TestSmallExample()
 	    {
-	        float[,] values = new[,]
+		    double[,] values = new[,]
 	        {
-	            {0.0f, 1.0f, 0f, 5f},
-                {2.0f, 3.0f, 0f, 5f}
+	            {0.0, 1.0, 0, 5},
+                {2.0, 3.0, 0, 5}
 	        };
 	        IMatrixData mdata = PerseusFactory.CreateMatrixData(values, new List<string> {"Col___1" , "Col___2", "Col___3", "No expand"});
 	        mdata.ColumnDescriptions = new List<string> {"Description Col", "Col", "Col", "Description No expand"};

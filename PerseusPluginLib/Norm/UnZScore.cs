@@ -98,7 +98,7 @@ namespace PerseusPluginLib.Norm{
 			double stddev = stddevs[i];
 			double mean = means[i];
 			for (int j = 0; j < data.ColumnCount; j++){
-				data.Values.Set(i, j, (float) ((data.Values.Get(i, j)*stddev) + mean));
+				data.Values.Set(i, j, data.Values.Get(i, j)*stddev + mean);
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace PerseusPluginLib.Norm{
 			double stddev = stddevs[j];
 			double mean = means[j];
 			for (int i = 0; i < data.RowCount; i++){
-				data.Values.Set(i, j, (float) ((data.Values.Get(i, j)*stddev) + mean));
+				data.Values.Set(i, j, data.Values.Get(i, j)*stddev + mean);
 			}
 		}
 	}

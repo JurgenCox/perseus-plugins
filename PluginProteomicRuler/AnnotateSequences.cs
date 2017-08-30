@@ -58,7 +58,7 @@ namespace PluginProteomicRuler{
 			processInfo.Status("Adding fasta header annotations.");
 			int[] selection =
 				param.GetParamWithSubParams<int>("Fasta header annotations").GetSubParameters().GetParam<int[]>("Annotations").Value;
-			string[][] idsToBeAnnotated = (param.GetParamWithSubParams<int>("Fasta header annotations").Value == 0)
+			string[][] idsToBeAnnotated = param.GetParamWithSubParams<int>("Fasta header annotations").Value == 0
 				? proteinIds
 				: leadingIds;
 			ProteinSequence[][] fastaEntries = new ProteinSequence[mdata.RowCount][];
@@ -149,7 +149,7 @@ namespace PluginProteomicRuler{
 			processInfo.Status("Adding numeric annotations.");
 			selection =
 				param.GetParamWithSubParams<int>("Numeric annotations").GetSubParameters().GetParam<int[]>("Annotations").Value;
-			bool annotateLeadingId = (param.GetParamWithSubParams<int>("Numeric annotations").Value == 1);
+			bool annotateLeadingId = param.GetParamWithSubParams<int>("Numeric annotations").Value == 1;
 			if (ArrayUtils.Contains(selection, 0)){ // Sequence length
 				double[] annotationColumn = new double[mdata.RowCount];
 				for (int row = 0; row < mdata.RowCount; row++){
@@ -197,7 +197,7 @@ namespace PluginProteomicRuler{
 			}
 			// Theoretical peptides
 			processInfo.Status("Calculating theoretical peptides.");
-			annotateLeadingId = (param.GetParamWithSubParams<int>("Calculate theoretical peptides").Value == 1);
+			annotateLeadingId = param.GetParamWithSubParams<int>("Calculate theoretical peptides").Value == 1;
 			Protease[] proteases = ArrayUtils.SubArray(Constants.defaultProteases,
 				param.GetParamWithSubParams<int>("Calculate theoretical peptides").GetSubParameters().GetParam<int[]>("Proteases")
 					.Value);
@@ -238,7 +238,7 @@ namespace PluginProteomicRuler{
 			}
 			// Sequence features
 			processInfo.Status("Counting sequence features.");
-			annotateLeadingId = (param.GetParamWithSubParams<int>("Count sequence features").Value == 1);
+			annotateLeadingId = param.GetParamWithSubParams<int>("Count sequence features").Value == 1;
 			bool normalizeBySequenceLength =
 				param.GetParamWithSubParams<int>("Count sequence features").GetSubParameters().GetParam<bool>(
 					"Normalize by sequence length").Value;

@@ -91,12 +91,12 @@ namespace PerseusPluginLib.Basic{
 			}
 			int nrows = rowInds.Length;
 			int ncols = mdata.ColumnCount;
-			float[,] expVals = new float[nrows, ncols];
+			double[,] expVals = new double[nrows, ncols];
 			for (int j = 0; j < ncols; j++){
 				double[] c = ArrayUtils.ToDoubles(mdata.Values.GetColumn(j));
 				for (int i = 0; i < nrows; i++){
 					double[] d = ArrayUtils.SubArray(c, rowInds[i]);
-					expVals[i, j] = (float) Average(d, atype);
+					expVals[i, j] = Average(d, atype);
 				}
 			}
 			mdata.Values.Set(expVals);

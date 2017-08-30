@@ -38,7 +38,7 @@ namespace PerseusPluginLib.Load{
 			ParameterWithSubParams<bool> setSeed = param.GetParamWithSubParams<bool>("Set seed");
 			Random2 randy = setSeed.Value ? new Random2(setSeed.GetSubParameters().GetParam<int>("Seed").Value) : new Random2(7);
 			ngroups = Math.Min(ngroups, ncols);
-			float[,] m = new float[nrows, ncols];
+			double[,] m = new double[nrows, ncols];
 			ParameterWithSubParams<int> x = param.GetParamWithSubParams<int>("Mode");
 			Parameters subParams = x.GetSubParameters();
 			List<string> catColNames = new List<string>();
@@ -48,23 +48,23 @@ namespace PerseusPluginLib.Load{
 					for (int i = 0; i < m.GetLength(0); i++){
 						for (int j = 0; j < m.GetLength(1); j++){
 							if (randy.NextDouble()*100 < missingPerc){
-								m[i, j] = float.NaN;
+								m[i, j] = double.NaN;
 							} else{
-								m[i, j] = (float) randy.NextGaussian();
+								m[i, j] = randy.NextGaussian();
 							}
 						}
 					}
 					break;
 				case 1:
-					float dist = (float) subParams.GetParam<double>("Distance").Value;
+					double dist = subParams.GetParam<double>("Distance").Value;
 					string[][] col = new string[m.GetLength(0)][];
 					for (int i = 0; i < m.GetLength(0); i++){
 						bool which = randy.NextDouble() < 0.5;
 						for (int j = 0; j < m.GetLength(1); j++){
 							if (randy.NextDouble()*100 < missingPerc){
-								m[i, j] = float.NaN;
+								m[i, j] = double.NaN;
 							} else{
-								m[i, j] = (float) randy.NextGaussian();
+								m[i, j] = randy.NextGaussian();
 							}
 						}
 						if (which){
@@ -81,19 +81,19 @@ namespace PerseusPluginLib.Load{
 					double boxLen = subParams.GetParam<double>("Box size").Value;
 					int howMany = subParams.GetParam<int>("How many").Value;
 					string[][] col1 = new string[m.GetLength(0)][];
-					float[,] centers = new float[howMany, m.GetLength(1)];
+					double[,] centers = new double[howMany, m.GetLength(1)];
 					for (int i = 0; i < centers.GetLength(0); i++){
 						for (int j = 0; j < centers.GetLength(1); j++){
-							centers[i, j] = (float) (randy.NextDouble()*boxLen);
+							centers[i, j] = randy.NextDouble()*boxLen;
 						}
 					}
 					for (int i = 0; i < m.GetLength(0); i++){
 						int which = (int) (randy.NextDouble()*howMany);
 						for (int j = 0; j < m.GetLength(1); j++){
 							if (randy.NextDouble()*100 < missingPerc){
-								m[i, j] = float.NaN;
+								m[i, j] = double.NaN;
 							} else{
-								m[i, j] = (float) randy.NextGaussian() + centers[which, j];
+								m[i, j] = randy.NextGaussian() + centers[which, j];
 							}
 						}
 						col1[i] = new[]{"Group" + (which + 1)};
@@ -109,7 +109,7 @@ namespace PerseusPluginLib.Load{
 			mdata.Name = "Random matrix";
 			mdata.ColumnNames = exprColumnNames;
 			mdata.Values.Set(m);
-			mdata.Quality.Set(new float[m.GetLength(0), m.GetLength(1)]);
+			mdata.Quality.Set(new double[m.GetLength(0), m.GetLength(1)]);
 			mdata.IsImputed.Set(new bool[m.GetLength(0), m.GetLength(1)]);
 			mdata.SetAnnotationColumns(new List<string>(), new List<string[]>(), catColNames, catCols, new List<string>(),
 				new List<double[]>(), new List<string>(), new List<double[][]>());

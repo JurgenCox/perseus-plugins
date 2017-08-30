@@ -30,7 +30,7 @@ namespace PerseusPluginLib.Impute{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			float value = (float) param.GetParam<double>("Value").Value;
+			double value = param.GetParam<double>("Value").Value;
 			int[] inds = param.GetParam<int[]>("Columns").Value;
 			List<int> mainInds = new List<int>();
 			List<int> numInds = new List<int>();
@@ -52,7 +52,7 @@ namespace PerseusPluginLib.Impute{
 					});
 		}
 
-		private static void ReplaceMissingsByVal(float value, IMatrixData data, IEnumerable<int> mainInds,
+		private static void ReplaceMissingsByVal(double value, IMatrixData data, IEnumerable<int> mainInds,
 			IEnumerable<int> numInds){
 			foreach (int j in mainInds){
 				for (int i = 0; i < data.RowCount; i++){

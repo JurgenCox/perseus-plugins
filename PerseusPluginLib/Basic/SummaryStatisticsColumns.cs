@@ -82,7 +82,7 @@ namespace PerseusPluginLib.Basic{
 					names.Add(SummaryStatisticsRows.procs[i].Item1);
 				}
 			}
-			float[,] exVals = GetExVals(ex);
+			double[,] exVals = GetExVals(ex);
 			string[] colNames = GetColNames(mdata, cols);
 			mdata.Name = "Summary";
 			mdata.ColumnNames = new List<string>(names.ToArray());
@@ -192,11 +192,11 @@ namespace PerseusPluginLib.Basic{
 			}
 		}
 
-		private static float[,] GetExVals(IList<double[]> rows){
-			float[,] result = new float[rows[0].Length, rows.Count];
+		private static double[,] GetExVals(IList<double[]> rows){
+			double[,] result = new double[rows[0].Length, rows.Count];
 			for (int i = 0; i < result.GetLength(1); i++){
 				for (int j = 0; j < result.GetLength(0); j++){
-					result[j, i] = (float) rows[i][j];
+					result[j, i] = rows[i][j];
 				}
 			}
 			return result;

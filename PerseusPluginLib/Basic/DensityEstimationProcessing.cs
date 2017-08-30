@@ -75,7 +75,7 @@ namespace PerseusPluginLib.Basic{
 				for (int i = 0; i < points; i++){
 					ymat[i] = ymin + i*(ymax - ymin)/points;
 				}
-				float[,] percvalues = CalcExcludedPercentage(values);
+				double[,] percvalues = CalcExcludedPercentage(values);
 				double[] dvals = new double[xvals.Length];
 				double[] pvals = new double[xvals.Length];
 				for (int i = 0; i < dvals.Length; i++){
@@ -176,7 +176,7 @@ namespace PerseusPluginLib.Basic{
 				: matrixData.NumericColumnNames[ind - matrixData.ColumnCount];
 		}
 
-		private static float[,] CalcExcludedPercentage(double[,] values){
+		private static double[,] CalcExcludedPercentage(double[,] values){
 			int n0 = values.GetLength(0);
 			int n1 = values.GetLength(1);
 			double[] v = new double[n0*n1];
@@ -199,10 +199,10 @@ namespace PerseusPluginLib.Basic{
 			foreach (double t in v){
 				total += t;
 			}
-			float[,] result = new float[n0, n1];
+			double[,] result = new double[n0, n1];
 			double sum = 0;
 			for (int i = 0; i < v.Length; i++){
-				result[ind0[i], ind1[i]] = (float) (sum/total);
+				result[ind0[i], ind1[i]] = sum/total;
 				sum += v[i];
 			}
 			return result;

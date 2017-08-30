@@ -249,7 +249,7 @@ namespace PerseusPluginLib.AnnotRows {
 			for (int i = 0; i < mdata.ColumnNames.Count; i++) {
 				string t = mdata.ColumnNames[i];
 				string help = "Specify a numerical value for the column '" + t + "'.";
-				par.Add(new DoubleParam(t, (i + 1.0)) {Help = help});
+				par.Add(new DoubleParam(t, i + 1.0) {Help = help});
 			}
 			return new Parameters(par);
 		}

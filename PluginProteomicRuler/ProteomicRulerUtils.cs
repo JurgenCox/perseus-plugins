@@ -20,7 +20,7 @@ namespace PluginProteomicRuler{
 				foreach (string hit in needles){
 					string needle = caseSensitive ? hit : hit.ToLower();
 					needle = needle.Trim();
-					if (hay.Equals(needle) || (matchSubstring && hay.Contains(needle))){
+					if (hay.Equals(needle) || matchSubstring && hay.Contains(needle)){
 						matches.Add(i);
 					}
 				}

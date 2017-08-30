@@ -92,7 +92,7 @@ namespace PerseusPluginLib.Filter{
 						break;
 					}
 				}
-				if ((valid && remove) || (!valid && !remove)){
+				if (valid && remove || !valid && !remove){
 					valids.Add(i);
 				}
 			}

@@ -87,7 +87,7 @@ namespace PerseusPluginLib.AnnotCols{
 					selPerc.Add(Math.Round(1000.0*c1/c)/10.0);
 				}
 			}
-			float[,] ex = new float[type.Count, 0];
+			double[,] ex = new double[type.Count, 0];
 			List<string[][]> catCols = new List<string[][]>{type.ToArray(), name.ToArray()};
 			List<string> catColNames = new List<string>(new[]{"Type", "Name"});
 			List<double[]> numCols = new List<double[]>{count.ToArray(), percOfTotal.ToArray()};

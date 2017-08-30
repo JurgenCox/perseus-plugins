@@ -24,21 +24,8 @@ namespace PerseusApi.Utils {
 		/// <summary>
 		/// Create minimally initialized <see cref="IMatrixData"/>.
 		/// </summary>
-		public static IMatrixData CreateMatrixData(float[,] values) {
+		public static IMatrixData CreateMatrixData(double[,] values) {
 			return CreateMatrixData(values, Enumerable.Range(1, values.GetLength(0) + 1).Select(i => $"Column {i}").ToList());
-		}
-
-		/// <summary>
-		/// Create minimally initialized <see cref="IMatrixData"/>.
-		/// </summary>
-		public static IMatrixData CreateMatrixData(float[,] values, List<string> columnNames) {
-			IMatrixData mdata = CreateMatrixData();
-			mdata.Values.Set(values);
-			mdata.ColumnNames = columnNames;
-			BoolMatrixIndexer imputed = new BoolMatrixIndexer();
-			imputed.Init(mdata.RowCount, mdata.ColumnCount);
-			mdata.IsImputed = imputed;
-			return mdata;
 		}
 
 		/// <summary>

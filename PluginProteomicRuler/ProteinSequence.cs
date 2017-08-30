@@ -34,10 +34,10 @@ namespace PluginProteomicRuler{
 				PeptideSequence theoreticalPeptide = new PeptideSequence();
 				theoreticalPeptide.SetSequence(match.Groups[1].Value);
 				if (theoreticalPeptide.GetLength() >= minLength && theoreticalPeptide.GetLength() <= maxLength &&
-					((minWeight > 0 && maxWeight < double.PositiveInfinity) // speed up calculations in case there are no weight limits
+					(minWeight > 0 && maxWeight < double.PositiveInfinity // speed up calculations in case there are no weight limits
 					||
-					(theoreticalPeptide.GetMonoisotopicMolecularMass() >= minWeight &&
-					theoreticalPeptide.GetMonoisotopicMolecularMass() <= maxWeight))){
+					theoreticalPeptide.GetMonoisotopicMolecularMass() >= minWeight &&
+					theoreticalPeptide.GetMonoisotopicMolecularMass() <= maxWeight)){
 					theoreticalPeptides1.Add(theoreticalPeptide);
 				}
 			}

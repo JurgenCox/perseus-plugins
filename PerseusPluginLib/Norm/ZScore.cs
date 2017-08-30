@@ -126,7 +126,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			double mean = ArrayUtils.MeanAndStddev(vals, out double stddev, median);
 			foreach (int t in inds){
-				data.Values.Set(i, t, (float) ((data.Values.Get(i, t) - mean)/stddev));
+				data.Values.Set(i, t, (data.Values.Get(i, t) - mean)/stddev);
 			}
 			if (report){
 				means[i] = mean;
@@ -176,7 +176,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			double mean = ArrayUtils.MeanAndStddev(vals, out double stddev, median);
 			for (int j = 0; j < data.ColumnCount; j++){
-				data.Values.Set(i, j, (float) ((data.Values.Get(i, j) - mean)/stddev));
+				data.Values.Set(i, j, (data.Values.Get(i, j) - mean)/stddev);
 			}
 			if (report){
 				means[i] = mean;
@@ -192,7 +192,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			double mean = ArrayUtils.MeanAndStddev(vals, out double stddev, median);
 			for (int i = 0; i < data.RowCount; i++){
-				data.Values.Set(i, j, (float) ((data.Values.Get(i, j) - mean)/stddev));
+				data.Values.Set(i, j, ((data.Values.Get(i, j) - mean)/stddev));
 			}
 			if (report){
 				means[j] = mean;

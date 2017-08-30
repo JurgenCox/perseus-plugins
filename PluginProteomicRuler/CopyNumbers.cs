@@ -126,13 +126,13 @@ namespace PluginProteomicRuler{
 			// detect the organism
 			Organism organism = DetectOrganism(proteinIds);
 			// c value the amount of DNA per haploid genome, see: http://en.wikipedia.org/wiki/C-value
-			double cValue = (organism.genomeSize*basePairWeight)/avogadro;
+			double cValue = organism.genomeSize*basePairWeight/avogadro;
 			// find the histones
 			int[] histoneRows = FindHistones(proteinIds, organism);
 			// write a categorical column indicating the histones
 			string[][] histoneCol = new string[mdata.RowCount][];
 			for (int row = 0; row < mdata.RowCount; row++){
-				histoneCol[row] = (ArrayUtils.Contains(histoneRows, row)) ? new[]{"+"} : new string[0];
+				histoneCol[row] = ArrayUtils.Contains(histoneRows, row) ? new[]{"+"} : new string[0];
 			}
 			mdata.AddCategoryColumn("Histones", "", histoneCol);
 
@@ -162,7 +162,7 @@ namespace PluginProteomicRuler{
 						double mwWeightedNormalizedSummedIntensities = 0;
 						for (int row = 0; row < mdata.RowCount; row++){
 							if (!double.IsNaN(column[row]) && !double.IsNaN(mw[row])){
-								mwWeightedNormalizedSummedIntensities += (column[row]/detectabilityNormFactor[row])*mw[row];
+								mwWeightedNormalizedSummedIntensities += column[row]/detectabilityNormFactor[row]*mw[row];
 							}
 						}
 						factor =
@@ -173,12 +173,12 @@ namespace PluginProteomicRuler{
 						double mwWeightedNormalizedSummedHistoneIntensities = 0;
 						foreach (int row in histoneRows){
 							if (!double.IsNaN(column[row]) && !double.IsNaN(mw[row])){
-								mwWeightedNormalizedSummedHistoneIntensities += (column[row]/detectabilityNormFactor[row])*mw[row];
+								mwWeightedNormalizedSummedHistoneIntensities += column[row]/detectabilityNormFactor[row]*mw[row];
 							}
 						}
 						double ploidy =
 							param.GetParamWithSubParams<int>("Scaling mode").GetSubParameters().GetParam<double>("Ploidy").Value;
-						factor = (cValue*ploidy*avogadro)/mwWeightedNormalizedSummedHistoneIntensities;
+						factor = cValue*ploidy*avogadro/mwWeightedNormalizedSummedHistoneIntensities;
 						break;
 					default:
 						factor = 1;
@@ -246,25 +246,25 @@ namespace PluginProteomicRuler{
 				double totalMolecules = 0;
 				for (int row = 0; row < mdata.RowCount; row++){
 					if (!double.IsNaN(column[row]) && !double.IsNaN(mw[row])){
-						copyNumbers[row] = (column[row]/detectabilityNormFactor[row])*factor;
+						copyNumbers[row] = column[row]/detectabilityNormFactor[row]*factor;
 						totalMolecules += copyNumbers[row];
-						totalProtein += (copyNumbers[row]*mw[row]*1e12)/avogadro; // picograms
+						totalProtein += copyNumbers[row]*mw[row]*1e12/avogadro; // picograms
 						if (ArrayUtils.Contains(histoneRows, row)){
-							histoneMass += (copyNumbers[row]*mw[row]*1e12)/avogadro; // picograms
+							histoneMass += copyNumbers[row]*mw[row]*1e12/avogadro; // picograms
 						}
 					}
 				}
-				double totalVolume = (totalProtein/(param.GetParam<double>("Total cellular protein concentration [g/l]").Value))*
+				double totalVolume = totalProtein/param.GetParam<double>("Total cellular protein concentration [g/l]").Value*
 									1000;
 				// femtoliters
 				for (int row = 0; row < mdata.RowCount; row++){
 					if (!double.IsNaN(column[row]) && !double.IsNaN(mw[row])){
-						concentrations[row] = ((copyNumbers[row]/(totalVolume*1e-15))/avogadro)*1e9; // nanomolar
-						massFraction[row] = (((copyNumbers[row]*mw[row]*1e12)/avogadro)/totalProtein)*1e6; // ppm
-						moleFraction[row] = (copyNumbers[row]/totalMolecules)*1e6; // ppm
+						concentrations[row] = copyNumbers[row]/(totalVolume*1e-15)/avogadro*1e9; // nanomolar
+						massFraction[row] = copyNumbers[row]*mw[row]*1e12/avogadro/totalProtein*1e6; // ppm
+						moleFraction[row] = copyNumbers[row]/totalMolecules*1e6; // ppm
 					}
 				}
-				string suffix = (sampleName == "") ? "" : " " + sampleName;
+				string suffix = sampleName == "" ? "" : " " + sampleName;
 				if (ArrayUtils.Contains(outputColumns, 0)){
 					mdata.AddNumericColumn("Copy number" + suffix, "", copyNumbers);
 				}
@@ -282,7 +282,7 @@ namespace PluginProteomicRuler{
 				double validRanks = mdata.RowCount;
 				for (int row = 0; row < mdata.RowCount; row++){
 					// remove rank for protein with no copy number information
-					if (double.IsNaN((copyNumbers[row])) || copyNumbers[row] == 0){
+					if (double.IsNaN(copyNumbers[row]) || copyNumbers[row] == 0){
 						rank[row] = double.NaN;
 						validRanks--; // do not consider as valid
 					}
@@ -305,7 +305,7 @@ namespace PluginProteomicRuler{
 					totalMoleculesRow[intensityCols[col]] = Math.Round(totalMolecules, 0);
 					organismRow[intensityCols[col]] = new[]{organism.name};
 					histoneMassRow[intensityCols[col]] = Math.Round(histoneMass, 4);
-					ploidyRow[intensityCols[col]] = Math.Round((histoneMass*1e-12)/cValue, 2);
+					ploidyRow[intensityCols[col]] = Math.Round(histoneMass*1e-12/cValue, 2);
 					cellVolumeRow[intensityCols[col]] = Math.Round(totalVolume, 2); // femtoliters
 				}
 			}

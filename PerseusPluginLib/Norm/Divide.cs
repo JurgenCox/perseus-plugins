@@ -70,7 +70,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			double med = summarize(vals.ToArray());
 			for (int j = 0; j < data.ColumnCount; j++){
-				data.Values.Set(i, j, data.Values.Get(i, j)/(float) med);
+				data.Values.Set(i, j, data.Values.Get(i, j)/med);
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace PerseusPluginLib.Norm{
 			}
 			double med = summarize(vals.ToArray());
 			for (int i = 0; i < data.RowCount; i++){
-				data.Values.Set(i, j, data.Values.Get(i, j)/(float) med);
+				data.Values.Set(i, j, data.Values.Get(i, j)/med);
 			}
 		}
 

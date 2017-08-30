@@ -57,7 +57,7 @@ namespace PerseusPluginLib.Basic{
 					catCol[i] = new[]{"missing"};
 				}
 				for (int i = 0; i < o.Length; i++){
-					int catVal = (i*numQuantiles)/o.Length + 1;
+					int catVal = i*numQuantiles/o.Length + 1;
 					catCol[o[i]] = new[]{"Q" + catVal};
 				}
 				string name = GetName(mdata, colInd);

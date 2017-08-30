@@ -59,7 +59,7 @@ namespace PerseusPluginLib.Norm{
 					}
 					len = Math.Sqrt(len);
 					for (int j = 0; j < data.ColumnCount; j++){
-						data.Values.Set(i, j, data.Values.Get(i, j)/(float) len);
+						data.Values.Set(i, j, data.Values.Get(i, j)/ len);
 					}
 				}
 			} else{
@@ -71,7 +71,7 @@ namespace PerseusPluginLib.Norm{
 					}
 					len = Math.Sqrt(len);
 					for (int i = 0; i < data.RowCount; i++){
-						data.Values.Set(i, j, data.Values.Get(i, j) / (float) len);
+						data.Values.Set(i, j, data.Values.Get(i, j) /  len);
 					}
 				}
 			}

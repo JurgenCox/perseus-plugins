@@ -31,7 +31,7 @@ namespace PerseusApi.Network
         public override bool Equals(object obj)
         {
             IIdentifiable other = obj as IIdentifiable;
-            return (other != null) && other.Guid.Equals(Guid);
+            return other != null && other.Guid.Equals(Guid);
         }
 
         public override int GetHashCode()

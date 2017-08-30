@@ -13,7 +13,7 @@ namespace PerseusPluginLib.Test.Rearrange{
         [Test]
         public void SmallTest()
         {
-            IMatrixData mdata = PerseusFactory.CreateMatrixData(new float[,]
+            IMatrixData mdata = PerseusFactory.CreateMatrixData(new double[,]
             {
                 {0, 4},
                 {1, 5},

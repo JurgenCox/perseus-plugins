@@ -318,25 +318,25 @@ namespace PerseusPluginLib.Rearrange{
 			string[] names = ArrayUtils.SubArray(mdata.NumericColumnNames, colInds);
 			string[] descriptions = ArrayUtils.SubArray(mdata.NumericColumnDescriptions, colInds);
 			double[][] num = ArrayUtils.SubArray(mdata.NumericColumns, colInds);
-			float[][] newEx = new float[num.Length][];
+			double[][] newEx = new double[num.Length][];
 			for (int j = 0; j < num.Length; j++){
-				newEx[j] = new float[num[j].Length];
+				newEx[j] = new double[num[j].Length];
 				for (int i = 0; i < newEx[j].Length; i++){
-					newEx[j][i] = (float) num[j][i];
+					newEx[j][i] = num[j][i];
 				}
 			}
-			float[,] newExp = new float[mdata.RowCount,mdata.ColumnCount + num.Length];
-			float[,] newQual = new float[mdata.RowCount,mdata.ColumnCount + num.Length];
+			double[,] newExp = new double[mdata.RowCount,mdata.ColumnCount + num.Length];
+			double[,] newQual = new double[mdata.RowCount,mdata.ColumnCount + num.Length];
 			bool[,] newIsImputed = new bool[mdata.RowCount,mdata.ColumnCount + num.Length];
 			for (int i = 0; i < mdata.RowCount; i++){
 				for (int j = 0; j < mdata.ColumnCount; j++){
-					newExp[i, j] = (float)mdata.Values.Get(i, j);
-					newQual[i, j] = (float)mdata.Quality.Get(i, j);
+					newExp[i, j] = mdata.Values.Get(i, j);
+					newQual[i, j] = mdata.Quality.Get(i, j);
 					newIsImputed[i, j] = mdata.IsImputed[i, j];
 				}
 				for (int j = 0; j < newEx.Length; j++){
 					newExp[i, j + mdata.ColumnCount] = newEx[j][i];
-					newQual[i, j + mdata.ColumnCount] = float.NaN;
+					newQual[i, j + mdata.ColumnCount] = double.NaN;
 					newIsImputed[i, j + mdata.ColumnCount] = false;
 				}
 			}
@@ -361,21 +361,21 @@ namespace PerseusPluginLib.Rearrange{
 			string[] names = ArrayUtils.SubArray(mdata.StringColumnNames, colInds);
 			string[] descriptions = ArrayUtils.SubArray(mdata.StringColumnDescriptions, colInds);
 			string[][] str = ArrayUtils.SubArray(mdata.StringColumns, colInds);
-			float[][] newEx = new float[str.Length][];
+			double[][] newEx = new double[str.Length][];
 			for (int j = 0; j < str.Length; j++){
-				newEx[j] = new float[str[j].Length];
+				newEx[j] = new double[str[j].Length];
 				for (int i = 0; i < newEx[j].Length; i++){
-					bool success = Parser.TryFloat(str[j][i], out float f);
-					newEx[j][i] = success ? f : float.NaN;
+					bool success = Parser.TryDouble(str[j][i], out double f);
+					newEx[j][i] = success ? f : double.NaN;
 				}
 			}
-			float[,] newExp = new float[mdata.RowCount,mdata.ColumnCount + str.Length];
-			float[,] newQual = new float[mdata.RowCount,mdata.ColumnCount + str.Length];
+			double[,] newExp = new double[mdata.RowCount,mdata.ColumnCount + str.Length];
+			double[,] newQual = new double[mdata.RowCount,mdata.ColumnCount + str.Length];
 			bool[,] newIsImputed = new bool[mdata.RowCount,mdata.ColumnCount + str.Length];
 			for (int i = 0; i < mdata.RowCount; i++){
 				for (int j = 0; j < mdata.ColumnCount; j++){
-					newExp[i, j] = (float)mdata.Values.Get(i, j);
-					newQual[i, j] = (float)mdata.Quality.Get(i, j);
+					newExp[i, j] = mdata.Values.Get(i, j);
+					newQual[i, j] = mdata.Quality.Get(i, j);
 					newIsImputed[i, j] = mdata.IsImputed[i, j];
 				}
 				for (int j = 0; j < newEx.Length; j++){

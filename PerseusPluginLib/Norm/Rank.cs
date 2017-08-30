@@ -57,10 +57,10 @@ namespace PerseusPluginLib.Norm{
 					}
 					double[] ranks = ArrayUtils.Rank(vals);
 					for (int j = 0; j < data.ColumnCount; j++){
-						data.Values.Set(i, j, float.NaN);
+						data.Values.Set(i, j, double.NaN);
 					}
 					for (int j = 0; j < ranks.Length; j++){
-						data.Values.Set(i, indices[j], (float) ranks[j]);
+						data.Values.Set(i, indices[j], ranks[j]);
 					}
 				}
 			} else{
@@ -76,10 +76,10 @@ namespace PerseusPluginLib.Norm{
 					}
 					double[] ranks = ArrayUtils.Rank(vals);
 					for (int i = 0; i < data.RowCount; i++){
-						data.Values.Set(i, j, float.NaN);
+						data.Values.Set(i, j, double.NaN);
 					}
 					for (int i = 0; i < ranks.Length; i++){
-						data.Values.Set(indices[i], j, (float) ranks[i]);
+						data.Values.Set(indices[i], j, ranks[i]);
 					}
 				}
 			}

@@ -39,7 +39,7 @@ namespace PerseusPluginLib.Impute{
 			for (int i = 0; i < data.RowCount; i++){
 				for (int j = 0; j < data.ColumnCount; j++){
 					if (data.IsImputed[i, j]){
-						data.Values.Set(i, j, float.NaN);
+						data.Values.Set(i, j, double.NaN);
 					}
 				}
 			}

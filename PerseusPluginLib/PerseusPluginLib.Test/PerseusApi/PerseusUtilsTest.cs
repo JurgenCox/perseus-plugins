@@ -29,7 +29,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 		[Test]
 		public void WriteMatrixTest() {
 			// main data
-			IMatrixData mdata = PerseusFactory.CreateMatrixData(new float[,] {{1, 2, 3}, {3, 4, 5}},
+			IMatrixData mdata = PerseusFactory.CreateMatrixData(new double[,] {{1, 2, 3}, {3, 4, 5}},
 				new List<string> {"col1", "col2", "col3"});
 			// annotation rows
 			mdata.AddCategoryRow("catrow", "this is catrow", new[] {new[] {"cat1"}, new[] {"cat1", "cat2"}, new[] {"cat2"}});

@@ -93,8 +93,8 @@ namespace PerseusPluginLib.AnnotRows{
 			string[][] groupCol = mdata.GetCategoryRowAt(groupColInd);
 			string[] groupNames = ArrayUtils.UniqueValuesPreserveOrder(groupCol);
 			int[][] colInds = PerseusPluginUtils.GetMainColIndices(groupCol, groupNames);
-			float[,] newExCols = new float[mdata.RowCount, groupNames.Length];
-			float[,] newQuality = new float[mdata.RowCount, groupNames.Length];
+			double[,] newExCols = new double[mdata.RowCount, groupNames.Length];
+			double[,] newQuality = new double[mdata.RowCount, groupNames.Length];
 			bool[,] newImputed = new bool[mdata.RowCount, groupNames.Length];
 			for (int i = 0; i < newExCols.GetLength(0); i++){
 				for (int j = 0; j < newExCols.GetLength(1); j++){
@@ -108,13 +108,13 @@ namespace PerseusPluginLib.AnnotRows{
 						}
 					}
 					bool imp = false;
-					float xy = float.NaN;
+					double xy = double.NaN;
 					if (vals.Count >= validVals){
-						xy = (float) func(vals);
+						xy = func(vals);
 						imp = ArrayUtils.Or(imps);
 					}
 					newExCols[i, j] = xy;
-					newQuality[i, j] = float.NaN;
+					newQuality[i, j] = double.NaN;
 					newImputed[i, j] = imp;
 				}
 			}
@@ -157,12 +157,12 @@ namespace PerseusPluginLib.AnnotRows{
 							vals.Add(val);
 						}
 					}
-					float xy = float.NaN;
+					double xy = double.NaN;
 					if (vals.Count >= validVals){
 						if (varInd == 0){
-							xy = (float) ArrayUtils.StandardDeviation(vals);
+							xy = ArrayUtils.StandardDeviation(vals);
 						} else{
-							xy = (float) (ArrayUtils.StandardDeviation(vals)/Math.Sqrt(vals.Count));
+							xy = ArrayUtils.StandardDeviation(vals)/Math.Sqrt(vals.Count);
 						}
 					}
 					newNumCols[j][i] = xy;
@@ -191,9 +191,9 @@ namespace PerseusPluginLib.AnnotRows{
 							vals.Add(val);
 						}
 					}
-					float xy = float.NaN;
+					double xy = double.NaN;
 					if (vals.Count >= validVals){
-						xy = (float) func(vals);
+						xy = func(vals);
 					}
 					newNumCols[j][i] = xy;
 				}

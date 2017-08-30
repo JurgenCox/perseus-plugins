@@ -46,12 +46,12 @@ namespace PerseusPluginLib.Load{
 			List<string> hexLines = new List<string>();
 			List<string> charLines = new List<string>();
 			for (int i = 0; i < x.Length/nb; i++){
-				byte[] y = ArrayUtils.SubArray(x, i*nb, (i + 1)*(nb));
+				byte[] y = ArrayUtils.SubArray(x, i*nb, (i + 1)*nb);
 				hexLines.Add(ToHex(y));
 				charLines.Add(ToChar(y));
 			}
 			if (x.Length/nb > 0){
-				byte[] y = ArrayUtils.SubArray(x, (x.Length/nb)*nb, x.Length);
+				byte[] y = ArrayUtils.SubArray(x, x.Length/nb*nb, x.Length);
 				hexLines.Add(ToHex(y));
 				charLines.Add(ToChar(y));
 			}

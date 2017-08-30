@@ -97,7 +97,7 @@ namespace PerseusPluginLib.Join{
 			double[,] ex = new double[nrows, expColNames.Length];
 			for (int i = 0; i < ex.GetLength(0); i++){
 				for (int j = 0; j < ex.GetLength(1); j++){
-					ex[i, j] = float.NaN;
+					ex[i, j] = double.NaN;
 				}
 			}
 			for (int i = 0; i < expColNames.Length; i++){

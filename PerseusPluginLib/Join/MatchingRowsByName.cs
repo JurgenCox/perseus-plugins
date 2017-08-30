@@ -162,8 +162,8 @@ namespace PerseusPluginLib.Join{
 			Func<double[], double> avExpression = GetAveraging(parameters.GetParam<int>("Combine main values").Value);
 			int[] exColInds = parameters.GetParam<int[]>("Main columns").Value;
 			if (exColInds.Length > 0){
-				float[,] newExColumns = new float[mdata1.RowCount, exColInds.Length];
-				float[,] newQuality = new float[mdata1.RowCount, exColInds.Length];
+				double[,] newExColumns = new double[mdata1.RowCount, exColInds.Length];
+				double[,] newQuality = new double[mdata1.RowCount, exColInds.Length];
 				bool[,] newIsImputed = new bool[mdata1.RowCount, exColInds.Length];
 				string[] newExColNames = new string[exColInds.Length];
 				for (int i = 0; i < exColInds.Length; i++){
@@ -189,8 +189,8 @@ namespace PerseusPluginLib.Join{
 								}
 							}
 						}
-						newExColumns[j, i] = values.Count == 0 ? float.NaN : (float) avExpression(values.ToArray());
-						newQuality[j, i] = qual.Count == 0 ? float.NaN : (float) avExpression(qual.ToArray());
+						newExColumns[j, i] = values.Count == 0 ? double.NaN : avExpression(values.ToArray());
+						newQuality[j, i] = qual.Count == 0 ? double.NaN : avExpression(qual.ToArray());
 						newIsImputed[j, i] = imp.Count != 0 && AvImp(imp.ToArray());
 					}
 				}
@@ -504,14 +504,14 @@ namespace PerseusPluginLib.Join{
 			}
 		}
 
-		private static void AddMainColumns(IMatrixData data, string[] names, float[,] vals, float[,] qual, bool[,] imp){
-			float[,] newVals = new float[data.RowCount, data.ColumnCount + vals.GetLength(1)];
-			float[,] newQual = new float[data.RowCount, data.ColumnCount + vals.GetLength(1)];
+		private static void AddMainColumns(IMatrixData data, string[] names, double[,] vals, double[,] qual, bool[,] imp){
+			double[,] newVals = new double[data.RowCount, data.ColumnCount + vals.GetLength(1)];
+			double[,] newQual = new double[data.RowCount, data.ColumnCount + vals.GetLength(1)];
 			bool[,] newImp = new bool[data.RowCount, data.ColumnCount + vals.GetLength(1)];
 			for (int i = 0; i < data.RowCount; i++){
 				for (int j = 0; j < data.ColumnCount; j++){
-					newVals[i, j] = (float)data.Values.Get(i, j);
-					newQual[i, j] = (float)(data.Quality?.Get(i, j) ?? 0);
+					newVals[i, j] = data.Values.Get(i, j);
+					newQual[i, j] = data.Quality?.Get(i, j) ?? 0;
 					newImp[i, j] = data.IsImputed?[i, j] ?? false;
 				}
 				for (int j = 0; j < vals.GetLength(1); j++){
