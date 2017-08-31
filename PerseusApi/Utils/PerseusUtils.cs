@@ -869,7 +869,7 @@ namespace PerseusApi.Utils {
 			}
 			for (int i = 0; i < data.MultiNumericColumnCount; i++) {
 				double[] q = data.MultiNumericColumns[i][j];
-				words.Add(q.Length > 0 ? StringUtils.Concat(";", q) : "");
+				words.Add(q != null && q.Length > 0 ? StringUtils.Concat(";", q) : "");
 			}
 			return words;
 		}
