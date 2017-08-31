@@ -113,9 +113,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetDir)\$(TargetName).dll $(SolutionDir)..\net\net\DLLs\
+    <PostBuildEvent>IF EXIST $(SolutionDir)..\net\net\DLLs\nul (
+copy $(TargetDir)\$(TargetName).dll $(SolutionDir)..\net\net\DLLs\
 copy $(TargetDir)\$(TargetName).xml $(SolutionDir)..\net\net\DLLs\
-copy $(TargetDir)\$(TargetName).pdb $(SolutionDir)..\net\net\DLLs\</PostBuildEvent>
+copy $(TargetDir)\$(TargetName).pdb $(SolutionDir)..\net\net\DLLs\
+) ELSE (
+echo "DLL folder not found"
+)
+</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
