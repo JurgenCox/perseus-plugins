@@ -276,6 +276,10 @@
     <EmbeddedResource Include="img\zscoreButton.Image.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetDir)\$(TargetName).dll $(SolutionDir)..\net\net\DLLs\
+copy $(TargetDir)\$(TargetName).pdb $(SolutionDir)..\net\net\DLLs\</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
