@@ -74,8 +74,8 @@ namespace PerseusApi.Utils {
 			bool addtlMatrices) {
 			status("Reading data");
 			LoadAllData(matrixData, colNames, mainColIndices, catColIndices, numColIndices, textColIndices, multiNumColIndices,
-				reader, separator, nrows, filters, progress, addtlMatrices, out float[,] qualityValues, out bool[,] isImputedValues,
-				out float[,] mainValues);
+				reader, separator, nrows, filters, progress, addtlMatrices, out double[,] qualityValues,
+				out bool[,] isImputedValues, out double[,] mainValues);
 			AddColumnDescriptions(colDescriptions, catColIndices, numColIndices, textColIndices, multiNumColIndices, matrixData);
 			AddMainColumnDescriptions(colDescriptions, mainColIndices, matrixData);
 			matrixData.Name = origin;
@@ -101,14 +101,14 @@ namespace PerseusApi.Utils {
 			IList<int> catColIndices, IList<int> numColIndices, IList<int> textColIndices, IList<int> multiNumColIndices,
 			Action<int> progress, char separator, TextReader reader, int nrows, List<Tuple<Relation[], int[], bool>> filters) {
 			LoadAllData(matrixData, colNames, new int[0], catColIndices, numColIndices, textColIndices, multiNumColIndices,
-				reader, separator, nrows, filters, progress, false, out float[,] _, out bool[,] _, out float[,] _);
+				reader, separator, nrows, filters, progress, false, out double[,] _, out bool[,] _, out double[,] _);
 		}
 
 		private static void LoadAllData(IDataWithAnnotationColumns matrixData, IList<string> colNames,
 			IList<int> mainColIndices, IList<int> catColIndices, IList<int> numColIndices, IList<int> textColIndices,
 			IList<int> multiNumColIndices, TextReader reader, char separator, int nrows,
-			List<Tuple<Relation[], int[], bool>> filters, Action<int> progress, bool addtlMatrices, out float[,] qualityValues,
-			out bool[,] isImputedValues, out float[,] mainValues) {
+			List<Tuple<Relation[], int[], bool>> filters, Action<int> progress, bool addtlMatrices, out double[,] qualityValues,
+			out bool[,] isImputedValues, out double[,] mainValues) {
 			InitializeAnnotationColumns(catColIndices, numColIndices, textColIndices, multiNumColIndices, nrows,
 				out List<string[][]> categoryAnnotation, out List<double[]> numericAnnotation,
 				out List<double[][]> multiNumericAnnotation, out List<string[]> stringAnnotation);
@@ -266,19 +266,19 @@ namespace PerseusApi.Utils {
 		}
 
 		private static void ReadMainColumns(IList<int> mainColIndices, bool addtlMatrices, string[] words,
-			float[,] mainValues, int count, bool[,] isImputedValues, float[,] qualityValues) {
+			double[,] mainValues, int count, bool[,] isImputedValues, double[,] qualityValues) {
 			for (int i = 0; i < mainColIndices.Count; i++) {
 				if (mainColIndices[i] >= words.Length) {
-					mainValues[count, i] = float.NaN;
+					mainValues[count, i] = double.NaN;
 				} else {
 					string s = StringUtils.RemoveWhitespace(words[mainColIndices[i]]);
 					if (addtlMatrices) {
 						ParseExp(s, out mainValues[count, i], out isImputedValues[count, i], out qualityValues[count, i]);
 					} else {
 						if (count < mainValues.GetLength(0)) {
-							bool success = Parser.TryFloat(s, out mainValues[count, i]);
+							bool success = Parser.TryDouble(s, out mainValues[count, i]);
 							if (!success) {
-								mainValues[count, i] = float.NaN;
+								mainValues[count, i] = double.NaN;
 							}
 						}
 					}
@@ -298,13 +298,13 @@ namespace PerseusApi.Utils {
 			return false;
 		}
 
-		private static float[,] InitializeMainValues(IList<int> mainColIndices, int nrows, bool addtlMatrices,
-			out float[,] qualityValues, out bool[,] isImputedValues) {
-			float[,] mainValues = new float[nrows, mainColIndices.Count];
+		private static double[,] InitializeMainValues(IList<int> mainColIndices, int nrows, bool addtlMatrices,
+			out double[,] qualityValues, out bool[,] isImputedValues) {
+			double[,] mainValues = new double[nrows, mainColIndices.Count];
 			qualityValues = null;
 			isImputedValues = null;
 			if (addtlMatrices) {
-				qualityValues = new float[nrows, mainColIndices.Count];
+				qualityValues = new double[nrows, mainColIndices.Count];
 				isImputedValues = new bool[nrows, mainColIndices.Count];
 			}
 			return mainValues;
@@ -332,15 +332,15 @@ namespace PerseusApi.Utils {
 			}
 		}
 
-		private static void ParseExp(string s, out float expressionValue, out bool isImputedValue, out float qualityValue) {
+		private static void ParseExp(string s, out double expressionValue, out bool isImputedValue, out double qualityValue) {
 			string[] w = s.Split(';');
-			expressionValue = float.NaN;
+			expressionValue = double.NaN;
 			isImputedValue = false;
-			qualityValue = float.NaN;
+			qualityValue = double.NaN;
 			if (w.Length > 0) {
-				bool success = Parser.TryFloat(w[0], out expressionValue);
+				bool success = Parser.TryDouble(w[0], out expressionValue);
 				if (!success) {
-					expressionValue = float.NaN;
+					expressionValue = double.NaN;
 				}
 			}
 			if (w.Length > 1) {
@@ -350,9 +350,9 @@ namespace PerseusApi.Utils {
 				}
 			}
 			if (w.Length > 2) {
-				bool success = Parser.TryFloat(w[2], out qualityValue);
+				bool success = Parser.TryDouble(w[2], out qualityValue);
 				if (!success) {
-					qualityValue = float.NaN;
+					qualityValue = double.NaN;
 				}
 			}
 		}
@@ -718,7 +718,7 @@ namespace PerseusApi.Utils {
 			for (int i = 0; i < s1.Length; i++) {
 				string s = StringUtils.RemoveWhitespace(s1[i]);
 				if (hasAddtlMatrices) {
-					ParseExp(s, out float f, out bool _, out float _);
+					ParseExp(s, out double f, out bool _, out double _);
 					result[i] = f;
 				} else {
 					bool success = Parser.TryDouble(s, out result[i]);
