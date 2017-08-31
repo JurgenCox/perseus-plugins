@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnnotRows\ManageCategoricalAnnotRowTest.cs" />
     <Compile Include="Annot\AddAnnotationToMatrixTest.cs" />
     <Compile Include="Join\MatchingRowsByNameTest.cs" />
     <Compile Include="Mods\ExpandSiteTableTest.cs" />

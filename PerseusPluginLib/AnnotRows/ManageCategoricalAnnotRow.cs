@@ -203,7 +203,9 @@ namespace PerseusPluginLib.AnnotRows {
 		}
 
 		private static void ProcessDataCreateFromGoupNames(IDataWithAnnotationRows mdata, Parameters param,
-			ProcessInfo processInfo) {
+			ProcessInfo processInfo)
+		{
+		    var name = param.GetParam<string>("Name").Value;
 			ParameterWithSubParams<int> scwsp = param.GetParamWithSubParams<int>("Pattern");
 			Parameters spar = scwsp.GetSubParameters();
 			string regexString = "";
@@ -239,7 +241,7 @@ namespace PerseusPluginLib.AnnotRows {
 				}
 				groupNames.Add(new[] {groupName});
 			}
-			mdata.AddCategoryRow("Grouping", "", groupNames.ToArray());
+			mdata.AddCategoryRow(name, "", groupNames.ToArray());
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString) {
@@ -249,7 +251,7 @@ namespace PerseusPluginLib.AnnotRows {
 						"Create", "Create from experiment name", "Edit", "Rename", "Delete", "Write template file", "Read from file"
 					},
 				SubParams = new[] {
-					GetCreateParameters(mdata), GetCreateFromExperimentNamesParameters(mdata, ref errorString),
+					GetCreateParameters(mdata), GetCreateFromExperimentNamesParameters(mdata),
 					GetEditParameters(mdata), GetRenameParameters(mdata), GetDeleteParameters(mdata),
 					GetWriteTemplateFileParameters(mdata), GetReadFromFileParameters(mdata)
 				},
@@ -307,7 +309,7 @@ namespace PerseusPluginLib.AnnotRows {
 		}
 
 		/// <remarks>author: Marco Hein</remarks>>
-		public Parameters GetCreateFromExperimentNamesParameters(IMatrixData mdata, ref string errorString) {
+		public Parameters GetCreateFromExperimentNamesParameters(IMatrixData mdata) {
 			List<string[]> selectableRegexes = GetSelectableRegexes();
 			List<string> vals = new List<string>();
 			foreach (string[] s in selectableRegexes) {
@@ -321,14 +323,15 @@ namespace PerseusPluginLib.AnnotRows {
 			}
 			subparams.Add(new Parameters(new Parameter[] {new StringParam("Regex", "")}));
 			subparams.Add(new Parameters(new StringParam("Regex", ""), new StringParam("Replace with", "")));
-			return new Parameters(new Parameter[] {
+			return new Parameters(
+                new StringParam("Name", "Grouping"), 
 				new SingleChoiceWithSubParams("Pattern", 0) {
 					Values = vals,
 					SubParams = subparams,
 					ParamNameWidth = 100,
 					TotalWidth = 400
 				}
-			});
+			);
 		}
 
 		private static List<string[]> GetSelectableRegexes() {
