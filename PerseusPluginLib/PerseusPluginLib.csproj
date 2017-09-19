@@ -283,6 +283,12 @@ copy $(TargetDir)\$(TargetName).pdb $(SolutionDir)..\net\net\DLLs\
 ) ELSE (
 echo "DLL folder not found"
 )
+IF EXIST $(SolutionDir)..\net\net\PerseusGui\bin\x64\Debug\nul (
+copy $(TargetDir)\$(TargetName).dll $(SolutionDir)..\net\net\PerseusGui\bin\x64\Debug\
+copy $(TargetDir)\$(TargetName).pdb $(SolutionDir)..\net\net\PerseusGui\bin\x64\Debug\
+) ELSE (
+echo "PerseusGui folder not found"
+)
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
