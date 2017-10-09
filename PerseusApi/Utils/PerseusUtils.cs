@@ -862,10 +862,10 @@ namespace PerseusApi.Utils {
 				words.Add(q.Length > 0 ? StringUtils.Concat(";", q) : "");
 			}
 			for (int i = 0; i < data.NumericColumnCount; i++) {
-				words.Add("" + data.NumericColumns[i][j]);
+				words.Add(data.NumericColumns[i][j].ToString());
 			}
 			for (int i = 0; i < data.StringColumnCount; i++) {
-				words.Add(data.StringColumns[i][j]);
+				words.Add(data.StringColumns[i][j]?? string.Empty);
 			}
 			for (int i = 0; i < data.MultiNumericColumnCount; i++) {
 				double[] q = data.MultiNumericColumns[i][j];

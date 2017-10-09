@@ -68,6 +68,7 @@
     <Compile Include="Mods\ExpandSiteTableTest.cs" />
     <Compile Include="PerseusApi\PerseusUtilsTest.cs" />
     <Compile Include="BaseTest.cs" />
+    <Compile Include="PerseusUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rearrange\UniqueRowsTest.cs" />
     <Compile Include="Rearrange\ProcessTextColumnsTest.cs" />
