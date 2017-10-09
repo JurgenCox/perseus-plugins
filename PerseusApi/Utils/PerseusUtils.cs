@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BaseLibS.Calc;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using BaseLibS.Parse;
 using BaseLibS.Util;
-using Calc;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 

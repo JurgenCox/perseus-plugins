@@ -45,9 +45,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DLLs\BaseLibS.dll</HintPath>
     </Reference>
-    <Reference Include="Calc">
-      <HintPath>..\DLLs\Calc.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Xml" />
   </ItemGroup>

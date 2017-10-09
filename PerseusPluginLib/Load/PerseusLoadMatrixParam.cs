@@ -42,8 +42,8 @@ namespace PerseusPluginLib.Load{
 		}
 
 		public override string StringValue{
-			get { return StringUtils.Concat("\n", Value); }
-			set { Value = value.Split('\n'); }
+			get => StringUtils.Concat("\n", Value);
+			set => Value = value.Split('\n');
 		}
 
 		public override bool IsDropTarget => true;

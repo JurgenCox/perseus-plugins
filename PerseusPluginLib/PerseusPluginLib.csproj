@@ -46,9 +46,6 @@
     <Reference Include="BaseLibS">
       <HintPath>..\DLLs\BaseLibS.dll</HintPath>
     </Reference>
-    <Reference Include="Calc">
-      <HintPath>..\DLLs\Calc.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
