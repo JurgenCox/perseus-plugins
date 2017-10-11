@@ -50,6 +50,13 @@ namespace PerseusApi.Network
         void RemoveNodes(IEnumerable<INode> nodes);
 
         /// <summary>
+        /// Remove the nodes from the graph. Removes dangling edges.
+        /// </summary>
+        /// <param name="nodes"></param>
+        /// <param name="danglingEdges">dangling edges that were removed</param>
+        void RemoveNodes(IEnumerable<INode> nodes, out IEnumerable<IEdge> danglingEdges);
+
+        /// <summary>
         /// Remove edges from the graph.
         /// </summary>
         /// <param name="edges"></param>
