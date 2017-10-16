@@ -54,7 +54,8 @@ namespace PerseusApi.Network
         /// </summary>
         /// <param name="nodes"></param>
         /// <param name="danglingEdges">dangling edges that were removed</param>
-        void RemoveNodes(IEnumerable<INode> nodes, out IEnumerable<IEdge> danglingEdges);
+        /// <param name="orphans">nodes orphaned (no remaining edges) after removing dangling edges</param>
+        void RemoveNodes(IEnumerable<INode> nodes, out HashSet<IEdge> danglingEdges, out HashSet<INode> orphans);
 
         /// <summary>
         /// Remove edges from the graph.
