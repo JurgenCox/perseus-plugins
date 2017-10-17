@@ -14,12 +14,10 @@ namespace PerseusApi.Network{
         /// <param name="data"></param>
         /// <param name="inMatrix"></param>
         /// <param name="param"></param>
-        /// <param name="supplTables"></param>
-        /// <param name="documents"></param>
+        /// <param name="supplData"></param>
         /// <param name="processInfo"></param>
         /// <returns></returns>
-		INetworkData ProcessData(INetworkData data, IMatrixData inMatrix, Parameters param, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo);
+		INetworkData ProcessData(INetworkData data, IMatrixData inMatrix, Parameters param, ref IData[] supplData, ProcessInfo processInfo);
 
 		/// <summary>
 		/// Define here the parameters that determine the specifics of the processing.

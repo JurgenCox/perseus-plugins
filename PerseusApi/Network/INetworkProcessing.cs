@@ -13,11 +13,9 @@ namespace PerseusApi.Network{
         /// </summary>
         /// <param name="ndata"></param>
         /// <param name="param"></param>
-        /// <param name="supplTables"></param>
-        /// <param name="documents"></param>
+        /// <param name="supplData"></param>
         /// <param name="processInfo"></param>
-		void ProcessData(INetworkData ndata, Parameters param, ref IMatrixData[] supplTables, ref IDocumentData[] documents,
-			ProcessInfo processInfo);
+		void ProcessData(INetworkData ndata, Parameters param, ref IData[] supplData, ProcessInfo processInfo);
 
 		/// <summary>
 		/// Define here the parameters that determine the specifics of the processing.

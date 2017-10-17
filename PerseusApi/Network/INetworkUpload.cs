@@ -13,10 +13,8 @@ namespace PerseusApi.Network{
         /// </summary>
         /// <param name="ndata"></param>
         /// <param name="parameters"></param>
-        /// <param name="supplTables"></param>
-        /// <param name="documents"></param>
+        /// <param name="supplData"></param>
         /// <param name="processInfo"></param>
-        void LoadData(INetworkData ndata, Parameters parameters, ref IMatrixData[] supplTables,
-                      ref IDocumentData[] documents, ProcessInfo processInfo);
+        void LoadData(INetworkData ndata, Parameters parameters, ref IData[] supplData, ProcessInfo processInfo);
 	}
 }

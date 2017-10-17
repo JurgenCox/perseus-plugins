@@ -11,8 +11,7 @@ namespace PerseusApi.Network {
         /// <summary>
         /// Process multiple network collections.
         /// </summary>
-		INetworkData ProcessData(INetworkData[] inputData, Parameters param, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo);
+		INetworkData ProcessData(INetworkData[] inputData, Parameters param, ref IData[] supplData, ProcessInfo processInfo);
 
 		/// <summary>
 		/// Define here the parameters that determine the specifics of the processing.
