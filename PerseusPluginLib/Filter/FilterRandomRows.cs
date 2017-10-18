@@ -31,7 +31,7 @@ namespace PerseusPluginLib.Filter{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(new IntParam("Number of rows", mdata.RowCount), PerseusPluginUtils.GetFilterModeParam(true));
+				new Parameters(new IntParam("Number of rows", mdata.RowCount), PerseusPluginUtils.CreateFilterModeParam(true));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,

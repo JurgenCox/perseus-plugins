@@ -563,6 +563,11 @@ namespace PerseusApi.Utils {
 			return result.ToArray();
 		}
 
+        /// <summary>
+        /// Create numeric filter parameters for each selection, consisting of a column selection, a relations and a combination parameter.
+        /// </summary>
+        /// <param name="selection"></param>
+        /// <returns></returns>
 		public static Parameter[] GetNumFilterParams(string[] selection) {
 			return new[] {
 				GetColumnSelectionParameter(selection), GetRelationsParameter(),

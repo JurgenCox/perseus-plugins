@@ -62,7 +62,7 @@ namespace PerseusPluginLib.Filter{
 					SubParams ={new Parameters(new Parameter[0])},
 					ParamNameWidth = 50,
 					TotalWidth = 731
-				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.GetFilterModeParam(true));
+				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParam(true));
 		}
 	}
 }
