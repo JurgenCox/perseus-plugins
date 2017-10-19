@@ -11,13 +11,43 @@ using PerseusPluginLib.Filter;
 
 namespace PerseusPluginLib.Utils{
 	public static class PerseusPluginUtils{
-		public static SingleChoiceParam GetFilterModeParam(bool column){
+
+        /// <summary>
+        /// Create 'Filter mode' parameter. To upack the value see <see cref="UnpackFilterModeParam"/>.
+        /// </summary>
+        /// <param name="column"></param>
+        /// <returns></returns>
+		public static SingleChoiceParam CreateFilterModeParam(bool column){
 			return new SingleChoiceParam("Filter mode"){
-				Values = new[]{"Reduce matrix", column ? "Add categorical column" : "Add categorical row"}
-			};
+                Values = new[] { "Reduce matrix", column ? "Add categorical column" : "Add categorical row" }
+            };
 		}
 
-		private static SingleChoiceParam GetModeParam1(){
+        /// <summary>
+        /// Filter mode used 
+        /// </summary>
+	    public enum FilterMode
+	    {
+	        Reduce,
+            Mark,
+            //Split
+	    }
+
+        /// <summary>
+        /// Unpack a filter mode param. To create the parameter see <see cref="CreateFilterModeParam"/>.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static FilterMode UnpackFilterModeParam(Parameters parameters)
+        {
+            return parameters.GetParam<int>("Filter mode").Value == 0 ? FilterMode.Reduce : FilterMode.Mark;
+        }
+
+        /// <summary>
+        /// Reduce 'Mode' param with options for 'Remove matching rows' and 'Keep matching rows'.
+        /// </summary>
+        /// <returns></returns>
+		private static SingleChoiceParam GetReduceModeParam(){
 			return new SingleChoiceParam("Mode"){
 				Values = new[]{"Remove matching rows", "Keep matching rows"},
 				Help =
@@ -26,7 +56,11 @@ namespace PerseusPluginLib.Utils{
 			};
 		}
 
-		private static SingleChoiceParam GetModeParam2(){
+        /// <summary>
+        /// Mark 'Mode' param with options for 'Mark matching rows' and 'Mark non-matching rows'.
+        /// </summary>
+        /// <returns></returns>
+		private static SingleChoiceParam GetMarkModeParam(){
 			return new SingleChoiceParam("Mode"){
 				Values = new[]{"Mark matching rows", "Mark non-matching rows"},
 				Help =
@@ -35,17 +69,21 @@ namespace PerseusPluginLib.Utils{
 			};
 		}
 
+        /// <summary>
+        /// 'Filter mode' parameter with reduce, mark and split options.
+        /// </summary>
+        /// <returns></returns>
 		internal static SingleChoiceWithSubParams GetFilterModeParamNew(){
 			SingleChoiceWithSubParams p = new SingleChoiceWithSubParams("Filter mode"){
 				Values = new[]{"Reduce matrix", "Add categorical column", "Split matrix"},
 				SubParams =
-					new List<Parameters>(new[]{new Parameters(GetModeParam1()), new Parameters(GetModeParam2()), new Parameters()})
+					new List<Parameters>(new[]{new Parameters(GetReduceModeParam()), new Parameters(GetMarkModeParam()), new Parameters()})
 			};
 			return p;
 		}
 
 		public static void FilterRows(IMatrixData mdata, Parameters parameters, int[] rows){
-			bool reduceMatrix = GetReduceMatrix(parameters);
+			bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
 			if (reduceMatrix){
 				mdata.ExtractRows(rows);
 			} else{
@@ -59,12 +97,8 @@ namespace PerseusPluginLib.Utils{
 			}
 		}
 
-		private static bool GetReduceMatrix(Parameters parameters){
-			return parameters.GetParam<int>("Filter mode").Value == 0;
-		}
-
 		public static void FilterColumns(IMatrixData mdata, Parameters parameters, int[] cols){
-			bool reduceMatrix = GetReduceMatrix(parameters);
+			bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
 			if (reduceMatrix){
 				mdata.ExtractColumns(cols);
 			} else{

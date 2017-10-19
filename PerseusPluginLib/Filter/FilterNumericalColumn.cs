@@ -35,7 +35,7 @@ namespace PerseusPluginLib.Filter{
 			string[] selection = ArrayUtils.Concat(mdata.NumericColumnNames, mdata.ColumnNames);
 			return
 				new Parameters(ArrayUtils.Concat(PerseusUtils.GetNumFilterParams(selection),
-					PerseusPluginUtils.GetFilterModeParam(true)));
+					PerseusPluginUtils.CreateFilterModeParam(true)));
 		}
 
 		public int GetMaxThreads(Parameters parameters){

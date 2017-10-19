@@ -58,7 +58,7 @@ namespace PerseusPluginLib.Filter{
 					Help =
 						"If 'Remove matching columns' is selected, rows having the values specified above will be removed while " +
 						"all other rows will be kept. If 'Keep matching columns' is selected, the opposite will happen."
-				}, PerseusPluginUtils.GetFilterModeParam(false));
+				}, PerseusPluginUtils.CreateFilterModeParam(false));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
