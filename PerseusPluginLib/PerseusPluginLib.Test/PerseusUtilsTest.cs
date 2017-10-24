@@ -22,5 +22,17 @@ namespace PerseusPluginLib.Test
             var writer = new StreamWriter(new MemoryStream());
             PerseusUtils.WriteDataWithAnnotationColumns(data, writer);
         }
+
+        [Test]
+        public void TestReadEmptyMatrixFromFile()
+        {
+            var data = PerseusFactory.CreateDataWithAnnotationColumns();
+            PerseusUtils.ReadDataWithAnnotationColumns(data, BaseTest.CreateProcessInfo(), () =>
+            {
+                var memstream = new MemoryStream(Encoding.UTF8.GetBytes("Node\n#!{Type}T\n"));
+                return new StreamReader(memstream);
+            }, "test", '\t');
+            Assert.AreEqual(0, data.RowCount);
+        }
     }
 }

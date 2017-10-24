@@ -117,8 +117,8 @@ namespace PerseusApi.Utils {
 			int count = 0;
 			string line;
 			while ((line = reader.ReadLine()) != null) {
-				progress(100 * (count + 1) / nrows);
 				if (SkipCommentOrInvalid(separator, filters, addtlMatrices, line, out string[] words)) continue;
+				progress(100 * (count + 1) / nrows);
 				ReadMainColumns(mainColIndices, addtlMatrices, words, mainValues, count, isImputedValues, qualityValues);
 				ReadAnnotationColumns(catColIndices, numColIndices, textColIndices, multiNumColIndices, words, numericAnnotation,
 					count, multiNumericAnnotation, categoryAnnotation, stringAnnotation);
@@ -748,8 +748,9 @@ namespace PerseusApi.Utils {
 			int count = 0;
 			string line;
 			while ((line = reader.ReadLine()) != null) {
-				while (TabSep.IsCommentLine(line, commentPrefix, commentPrefixExceptions)) {
-					line = reader.ReadLine();
+                if (TabSep.IsCommentLine(line, commentPrefix, commentPrefixExceptions))
+                {
+                    continue;
 				}
 				if (IsValidLine(line, separator, filters, addtlMatrices)) {
 					count++;
