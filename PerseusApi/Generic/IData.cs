@@ -67,5 +67,11 @@ namespace PerseusApi.Generic{
 		/// Clears up all data from this instance.
 		/// </summary>
 		void Clear();
+        /// <summary>
+        /// Check if the data structue is consistent.
+        /// </summary>
+        /// <param name="errString"></param>
+        /// <returns></returns>
+	    bool IsConsistent(out string errString);
 	}
 }

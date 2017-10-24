@@ -9,14 +9,14 @@ namespace PerseusApi.Network{
 	{
         #warning This API is experimental and might change frequently
         /// <summary>
-        /// Get network by index
+        /// Get network by index.
         /// </summary>
         /// <param name="i"></param>
         /// <returns></returns>
 		INetworkInfo this[int i] { get; }
 
         /// <summary>
-        /// Add a network to the collection
+        /// Add a network to the collection.
         /// </summary>
         /// <param name="networks"></param>
         void AddNetworks(params INetworkInfo[] networks);
