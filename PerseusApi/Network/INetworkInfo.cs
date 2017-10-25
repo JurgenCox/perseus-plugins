@@ -35,9 +35,16 @@ namespace PerseusApi.Network{
         /// Network name
         /// </summary>
         string Name { get; set; }
+
+        /// <summary>
+        /// Check if table and graph representation are consistent
+        /// </summary>
+        /// <param name="errString"></param>
+        /// <returns></returns>
+	    bool IsConsistent(out string errString);
         
         /// <summary>
-        /// Contais arbitrary meta-data for the networks.
+        /// Contains arbitrary meta-data for the networks.
         /// </summary>
         Dictionary<string, object> MetaData { get; set; }
 	}

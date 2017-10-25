@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PerseusApi.Network
 {
@@ -69,5 +70,13 @@ namespace PerseusApi.Network
         /// <param name="edges"></param>
         /// <param name="orphans">Orphaned nodes without any remaining edges.</param>
         void RemoveEdges(IEnumerable<IEdge> edges, out HashSet<INode> orphans);
+
+        /// <summary>
+        /// Clone the graph. Provides node and edge mapping.
+        /// </summary>
+        /// <param name="nodeMapping"></param>
+        /// <param name="edgeMapping"></param>
+        /// <returns></returns>
+        IGraph Clone(out Dictionary<INode, INode> nodeMapping, out Dictionary<IEdge, IEdge> edgeMapping);
     }
 }
