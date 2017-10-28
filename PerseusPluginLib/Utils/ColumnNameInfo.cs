@@ -1,8 +1,10 @@
-﻿using BaseLibS.Num;
+﻿using System;
+using BaseLibS.Num;
 using BaseLibS.Util;
 using PerseusApi.Matrix;
 
 namespace PerseusPluginLib.Utils{
+    [Serializable]
 	public class ColumnNameInfo : INameInfo{
 		public bool CutNames { get; set; }
 		public bool CutNames2 { get; set; }
