@@ -41,14 +41,24 @@ namespace PerseusPluginLib.AnnotCols{
 			return 1;
 		}
 
+	    private IList<string> ColChoice(IMatrixData mdata)
+	    {
+	        return mdata.StringColumnNames;
+	    }
+
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString)
 		{
-		    return CreateParameters(mdata, ref errorString);
+		    return CreateParameters(ColChoice(mdata), ref errorString);
 		}
 
-	    private static Parameters CreateParameters(IDataWithAnnotationColumns mdata, ref string errorString)
+        /// <summary>
+        /// Create parameters for annotations according to provided column choices.
+        /// </summary>
+        /// <param name="colChoice"></param>
+        /// <param name="errorString"></param>
+        /// <returns></returns>
+	    public static Parameters CreateParameters(IList<string> colChoice, ref string errorString)
 	    {
-	        List<string> colChoice = mdata.StringColumnNames;
 	        string[][] annots =
 	            PerseusUtils.GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles);
 	        if (badFiles.Any())
@@ -122,25 +132,35 @@ namespace PerseusPluginLib.AnnotCols{
 	                }, new MultiChoiceParam("Additional sources") {Values = files});
 	    }
 
-	    private static string[] GetBaseIds(Parameters para, IDataWithAnnotationColumns mdata){
-			PerseusUtils.GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files);
+        /// <summary>
+        /// Get the string column with the identifiers used in the mapping.
+        /// </summary>
+        /// <param name="para"></param>
+        /// <param name="colChoice">Subset of string column names used for restricting columns. Should be identical to choice in <see cref="CreateParameters"/></param>
+        /// <param name="mdata"></param>
+        /// <returns></returns>
+        private static string[] GetBaseIds(Parameters para, IList<string> colChoice, IDataWithAnnotationColumns mdata)
+        {
+            PerseusUtils.GetAvailableAnnots(out string[] baseNames, out _, out string[] _);
 			ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
 			int ind = spd.Value;
 			Parameters param = spd.GetSubParameters();
 			int baseCol = param.GetParam<int>(baseNames[ind] + " column").Value;
-			string[] baseIds = mdata.StringColumns[baseCol];
+            int column = mdata.StringColumnNames.Intersect(colChoice).ToList()
+                .FindIndex(col => col.Equals(colChoice[baseCol]));
+			string[] baseIds = mdata.StringColumns[column];
 			return baseIds;
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters para, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo)
 		{
-		    ProcessData(mdata, para, processInfo);
+		    ProcessData(mdata, ColChoice(mdata), para, processInfo);
 		}
 
-	    public static void ProcessData(IDataWithAnnotationColumns mdata, Parameters para, ProcessInfo processInfo)
+	    public static void ProcessData(IDataWithAnnotationColumns mdata, IList<string> colChoice, Parameters para, ProcessInfo processInfo)
 	    {
-	        string[] baseIds = GetBaseIds(para, mdata);
+	        string[] baseIds = GetBaseIds(para, colChoice, mdata);
 	        bool success = ProcessDataAddAnnotation(mdata.RowCount, para, baseIds, processInfo, out string[] name,
 	            out int[] catColInds,
 	            out int[] textColInds, out int[] numColInds, out string[][][] catCols, out string[][] textCols,
