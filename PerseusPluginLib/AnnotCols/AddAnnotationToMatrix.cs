@@ -41,67 +41,88 @@ namespace PerseusPluginLib.AnnotCols{
 			return 1;
 		}
 
-		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
-			List<string> colChoice = mdata.StringColumnNames;
-			string[][] annots = PerseusUtils.GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles);
-			if (badFiles.Any())
-		    {
-                errorString = $"Could not load annotations from file(s): {string.Join(", ", badFiles)}";
-            }
-            int selFile = 0;
-			bool isMainAnnot = false;
-			for (int i = 0; i < files.Length; i++){
-				if (files[i].ToLower().Contains("perseusannot")){
-					selFile = i;
-					isMainAnnot = true;
-					break;
-				}
-			}
-			Parameters[] subParams = new Parameters[files.Length];
-			for (int i = 0; i < subParams.Length; i++){
-				int colInd = 0;
-				if (isMainAnnot && i == selFile){
-					for (int j = 0; j < colChoice.Count; j++){
-						if (colChoice[j].ToUpper().Contains("PROTEIN IDS")){
-							colInd = j;
-							break;
-						}
-					}
-					for (int j = 0; j < colChoice.Count; j++){
-						if (colChoice[j].ToUpper().Contains("MAJORITY PROTEIN IDS")){
-							colInd = j;
-							break;
-						}
-					}
-				} else{
-					for (int j = 0; j < colChoice.Count; j++){
-						if (colChoice[j].ToUpper().Contains(baseNames[i].ToUpper())){
-							colInd = j;
-							break;
-						}
-					}
-				}
-				subParams[i] =
-					new Parameters(
-						new SingleChoiceParam(baseNames[i] + " column"){
-							Values = colChoice,
-							Value = colInd,
-							Help =
-								"Specify here the column that contains the base identifiers which are going to be " +
-								"matched to the annotation."
-						}, new MultiChoiceParam("Annotations to be added"){Values = annots[i]});
-			}
-			return
-				new Parameters(
-					new SingleChoiceWithSubParams("Source", selFile){
-						Values = files,
-						SubParams = subParams,
-						ParamNameWidth = 136,
-						TotalWidth = 735
-					}, new MultiChoiceParam("Additional sources"){Values = files});
+		public Parameters GetParameters(IMatrixData mdata, ref string errorString)
+		{
+		    return CreateParameters(mdata, ref errorString);
 		}
 
-		private static string[] GetBaseIds(Parameters para, IDataWithAnnotationColumns mdata){
+	    private static Parameters CreateParameters(IDataWithAnnotationColumns mdata, ref string errorString)
+	    {
+	        List<string> colChoice = mdata.StringColumnNames;
+	        string[][] annots =
+	            PerseusUtils.GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles);
+	        if (badFiles.Any())
+	        {
+	            errorString = $"Could not load annotations from file(s): {string.Join(", ", badFiles)}";
+	        }
+	        int selFile = 0;
+	        bool isMainAnnot = false;
+	        for (int i = 0; i < files.Length; i++)
+	        {
+	            if (files[i].ToLower().Contains("perseusannot"))
+	            {
+	                selFile = i;
+	                isMainAnnot = true;
+	                break;
+	            }
+	        }
+	        Parameters[] subParams = new Parameters[files.Length];
+	        for (int i = 0; i < subParams.Length; i++)
+	        {
+	            int colInd = 0;
+	            if (isMainAnnot && i == selFile)
+	            {
+	                for (int j = 0; j < colChoice.Count; j++)
+	                {
+	                    if (colChoice[j].ToUpper().Contains("PROTEIN IDS"))
+	                    {
+	                        colInd = j;
+	                        break;
+	                    }
+	                }
+	                for (int j = 0; j < colChoice.Count; j++)
+	                {
+	                    if (colChoice[j].ToUpper().Contains("MAJORITY PROTEIN IDS"))
+	                    {
+	                        colInd = j;
+	                        break;
+	                    }
+	                }
+	            }
+	            else
+	            {
+	                for (int j = 0; j < colChoice.Count; j++)
+	                {
+	                    if (colChoice[j].ToUpper().Contains(baseNames[i].ToUpper()))
+	                    {
+	                        colInd = j;
+	                        break;
+	                    }
+	                }
+	            }
+	            subParams[i] =
+	                new Parameters(
+	                    new SingleChoiceParam(baseNames[i] + " column")
+	                    {
+	                        Values = colChoice,
+	                        Value = colInd,
+	                        Help =
+	                            "Specify here the column that contains the base identifiers which are going to be " +
+	                            "matched to the annotation."
+	                    }, new MultiChoiceParam("Annotations to be added") {Values = annots[i]});
+	        }
+	        return
+	            new Parameters(
+	                new SingleChoiceWithSubParams("Source", selFile)
+	                {
+	                    Values = files,
+	                    SubParams = subParams,
+	                    ParamNameWidth = 136,
+	                    TotalWidth = 735
+	                }, new MultiChoiceParam("Additional sources") {Values = files});
+	    }
+
+	    private static string[] GetBaseIds(Parameters para, IDataWithAnnotationColumns mdata){
 			PerseusUtils.GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files);
 			ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
 			int ind = spd.Value;
@@ -112,25 +133,37 @@ namespace PerseusPluginLib.AnnotCols{
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters para, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo){
-			string[] baseIds = GetBaseIds(para, mdata);
-			bool success = ProcessDataAddAnnotation(mdata.RowCount, para, baseIds, processInfo, out string[] name, out int[] catColInds,
-				out int[] textColInds, out int[] numColInds, out string[][][] catCols, out string[][] textCols, out double[][] numCols);
-			if (!success){
-				return;
-			}
-			for (int i = 0; i < catCols.Length; i++){
-				mdata.AddCategoryColumn(name[catColInds[i]], "", catCols[i]);
-			}
-			for (int i = 0; i < textCols.Length; i++){
-				mdata.AddStringColumn(name[textColInds[i]], "", textCols[i]);
-			}
-			for (int i = 0; i < numCols.Length; i++){
-				mdata.AddNumericColumn(name[numColInds[i]], "", numCols[i]);
-			}
+			ref IDocumentData[] documents, ProcessInfo processInfo)
+		{
+		    ProcessData(mdata, para, processInfo);
 		}
 
-		public static bool ProcessDataAddAnnotation(int nrows, Parameters para, string[] baseIds, ProcessInfo processInfo,
+	    public static void ProcessData(IDataWithAnnotationColumns mdata, Parameters para, ProcessInfo processInfo)
+	    {
+	        string[] baseIds = GetBaseIds(para, mdata);
+	        bool success = ProcessDataAddAnnotation(mdata.RowCount, para, baseIds, processInfo, out string[] name,
+	            out int[] catColInds,
+	            out int[] textColInds, out int[] numColInds, out string[][][] catCols, out string[][] textCols,
+	            out double[][] numCols);
+	        if (!success)
+	        {
+	            return;
+	        }
+	        for (int i = 0; i < catCols.Length; i++)
+	        {
+	            mdata.AddCategoryColumn(name[catColInds[i]], "", catCols[i]);
+	        }
+	        for (int i = 0; i < textCols.Length; i++)
+	        {
+	            mdata.AddStringColumn(name[textColInds[i]], "", textCols[i]);
+	        }
+	        for (int i = 0; i < numCols.Length; i++)
+	        {
+	            mdata.AddNumericColumn(name[numColInds[i]], "", numCols[i]);
+	        }
+	    }
+
+	    public static bool ProcessDataAddAnnotation(int nrows, Parameters para, string[] baseIds, ProcessInfo processInfo,
 			out string[] name, out int[] catColInds, out int[] textColInds, out int[] numColInds, out string[][][] catCols,
 			out string[][] textCols, out double[][] numCols){
 			string[][] names = PerseusUtils.GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files);
