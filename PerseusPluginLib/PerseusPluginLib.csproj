@@ -56,7 +56,9 @@
     <Compile Include="AnnotCols\AverageCategories.cs" />
     <Compile Include="AnnotCols\BackToBaseIdentifiers.cs" />
     <Compile Include="AnnotCols\CategoryCounting.cs" />
+    <Compile Include="AnnotCols\AnnotationProvider\ConfFolderAnnotationProvider.cs" />
     <Compile Include="AnnotCols\CountingResult.cs" />
+    <Compile Include="AnnotCols\AnnotationProvider\IAnnotationProvider.cs" />
     <Compile Include="Basic\CloneProcessing.cs" />
     <Compile Include="Basic\CombineAnnotations.cs" />
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />

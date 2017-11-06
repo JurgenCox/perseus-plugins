@@ -10,6 +10,7 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
+using PerseusPluginLib.AnnotCols.AnnotationProvider;
 using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.AnnotCols{
@@ -46,21 +47,23 @@ namespace PerseusPluginLib.AnnotCols{
 	        return mdata.StringColumnNames;
 	    }
 
+	    private IAnnotationProvider _annotationProvider => new ConfFolderAnnotationProvider();
+
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString)
 		{
-		    return CreateParameters(ColChoice(mdata), ref errorString);
+		    return CreateParameters(ColChoice(mdata), _annotationProvider, ref errorString);
 		}
 
-        /// <summary>
-        /// Create parameters for annotations according to provided column choices.
-        /// </summary>
-        /// <param name="colChoice"></param>
-        /// <param name="errorString"></param>
-        /// <returns></returns>
-	    public static Parameters CreateParameters(IList<string> colChoice, ref string errorString)
+	    /// <summary>
+	    /// Create parameters for annotations according to provided column choices.
+	    /// </summary>
+	    /// <param name="colChoice"></param>
+	    /// <param name="annotationProvider"></param>
+	    /// <param name="errorString"></param>
+	    /// <returns></returns>
+	    public static Parameters CreateParameters(IList<string> colChoice, IAnnotationProvider annotationProvider, ref string errorString)
 	    {
-	        string[][] annots =
-	            PerseusUtils.GetAvailableAnnots(out string[] baseNames, out string[] files, out List<string> badFiles);
+	        string[][] annots = annotationProvider.GetAvailableAnnots(out string[] baseNames, out _, out string[] files, out List<string> badFiles);
 	        if (badFiles.Any())
 	        {
 	            errorString = $"Could not load annotations from file(s): {string.Join(", ", badFiles)}";
@@ -132,16 +135,17 @@ namespace PerseusPluginLib.AnnotCols{
 	                }, new MultiChoiceParam("Additional sources") {Values = files});
 	    }
 
-        /// <summary>
-        /// Get the string column with the identifiers used in the mapping.
-        /// </summary>
-        /// <param name="para"></param>
-        /// <param name="colChoice">Subset of string column names used for restricting columns. Should be identical to choice in <see cref="CreateParameters"/></param>
-        /// <param name="mdata"></param>
-        /// <returns></returns>
-        private static string[] GetBaseIds(Parameters para, IList<string> colChoice, IDataWithAnnotationColumns mdata)
+	    /// <summary>
+	    /// Get the string column with the identifiers used in the mapping.
+	    /// </summary>
+	    /// <param name="para"></param>
+	    /// <param name="colChoice">Subset of string column names used for restricting columns. Should be identical to choice in <see cref="CreateParameters"/></param>
+	    /// <param name="annotationProvider"></param>
+	    /// <param name="mdata"></param>
+	    /// <returns></returns>
+	    private static string[] GetBaseIds(Parameters para, IList<string> colChoice, IAnnotationProvider annotationProvider, IDataWithAnnotationColumns mdata)
         {
-            PerseusUtils.GetAvailableAnnots(out string[] baseNames, out _, out string[] _);
+            annotationProvider.GetAvailableAnnots(out string[] baseNames, out _, out _, out _);
 			ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
 			int ind = spd.Value;
 			Parameters param = spd.GetSubParameters();
@@ -155,16 +159,15 @@ namespace PerseusPluginLib.AnnotCols{
 		public void ProcessData(IMatrixData mdata, Parameters para, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo)
 		{
-		    ProcessData(mdata, ColChoice(mdata), para, processInfo);
+		    ProcessData(mdata, ColChoice(mdata), _annotationProvider, para, processInfo);
 		}
 
-	    public static void ProcessData(IDataWithAnnotationColumns mdata, IList<string> colChoice, Parameters para, ProcessInfo processInfo)
+	    public static void ProcessData(IDataWithAnnotationColumns mdata, IList<string> colChoice, IAnnotationProvider annotationProvider, Parameters para, ProcessInfo processInfo)
 	    {
-	        string[] baseIds = GetBaseIds(para, colChoice, mdata);
-	        bool success = ProcessDataAddAnnotation(mdata.RowCount, para, baseIds, processInfo, out string[] name,
-	            out int[] catColInds,
-	            out int[] textColInds, out int[] numColInds, out string[][][] catCols, out string[][] textCols,
-	            out double[][] numCols);
+	        string[] baseIds = GetBaseIds(para, colChoice, annotationProvider, mdata);
+            bool success = ProcessDataAddAnnotation(mdata.RowCount, annotationProvider, para, baseIds, processInfo,
+                out string[] name, out int[] catColInds, out int[] textColInds, out int[] numColInds,
+                out string[][][] catCols, out string[][] textCols, out double[][] numCols);
 	        if (!success)
 	        {
 	            return;
@@ -183,10 +186,10 @@ namespace PerseusPluginLib.AnnotCols{
 	        }
 	    }
 
-	    public static bool ProcessDataAddAnnotation(int nrows, Parameters para, string[] baseIds, ProcessInfo processInfo,
+	    public static bool ProcessDataAddAnnotation(int nrows, IAnnotationProvider annotationProvider, Parameters para, string[] baseIds, ProcessInfo processInfo,
 			out string[] name, out int[] catColInds, out int[] textColInds, out int[] numColInds, out string[][][] catCols,
 			out string[][] textCols, out double[][] numCols){
-			string[][] names = PerseusUtils.GetAvailableAnnots(out string[] baseNames, out AnnotType[][] types, out string[] files);
+			string[][] names = annotationProvider.GetAvailableAnnots(out _, out AnnotType[][] types, out string[] files, out _);
 			const bool deHyphenate = true;
 			ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
 			int ind = spd.Value;
