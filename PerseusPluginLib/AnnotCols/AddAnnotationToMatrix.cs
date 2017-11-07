@@ -198,32 +198,19 @@ namespace PerseusPluginLib.AnnotCols{
 			name = names[ind];
 			int[] addtlSources = para.GetParam<int[]>("Additional sources").Value;
 			addtlSources = ArrayUtils.Remove(addtlSources, ind);
-			foreach (int addtlSource in addtlSources){
-				AnnotType[] type1 = types[addtlSource];
-				string[] name1 = names[addtlSource];
-				if (!ArrayUtils.EqualArrays(type, type1)){
-					processInfo.ErrString = "Additional annotation file does not have the same column structure.";
-					catColInds = new int[]{};
-					textColInds = new int[]{};
-					numColInds = new int[]{};
-					catCols = new string[][][]{};
-					textCols = new string[][]{};
-					numCols = new double[][]{};
-					return false;
-				}
-				if (!ArrayUtils.EqualArrays(name, name1)){
-					processInfo.ErrString = "Additional annotation file does not have the same column structure.";
-					catColInds = new int[]{};
-					textColInds = new int[]{};
-					numColInds = new int[]{};
-					catCols = new string[][][]{};
-					textCols = new string[][]{};
-					numCols = new double[][]{};
-					return false;
-				}
-			}
 			int[] selection = param.GetParam<int[]>("Annotations to be added").Value;
-			type = ArrayUtils.SubArray(type, selection);
+            if (!IsValidSelection(name, addtlSources, types, names, type, selection, out string errString))
+            {
+                catColInds = new int[] { };
+                textColInds = new int[] { };
+                numColInds = new int[] { };
+                catCols = new string[][][] { };
+                textCols = new string[][] { };
+                numCols = new double[][] { };
+                processInfo.ErrString = errString;
+                return false;
+            }
+            type = ArrayUtils.SubArray(type, selection);
 			name = ArrayUtils.SubArray(name, selection);
 			HashSet<string> allIds = GetAllIds(baseIds, deHyphenate);
 			Dictionary<string, string[]> mapping = ReadMapping(allIds, files[ind], selection);
@@ -293,7 +280,33 @@ namespace PerseusPluginLib.AnnotCols{
 			return true;
 		}
 
-		private static void AddCatVals(IList<string> values, IList<HashSet<string>> catVals){
+        private static bool IsValidSelection(string[] name, int[] addtlSources, AnnotType[][] types, string[][] names,
+            AnnotType[] type, int[] selection, out string errString)
+        {
+            errString = string.Empty;
+            foreach (int addtlSource in addtlSources)
+            {
+                AnnotType[] type1 = types[addtlSource];
+                string[] name1 = names[addtlSource];
+                if (!ArrayUtils.EqualArrays(type, type1) || !ArrayUtils.EqualArrays(name, name1))
+                {
+                    {
+                        errString = "Additional annotation file does not have the same column structure.";
+                        return false;
+                    }
+                }
+            }
+            if (addtlSources.Length + selection.Length < 1)
+            {
+                {
+                    errString = "Please select at least one annotation.";
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static void AddCatVals(IList<string> values, IList<HashSet<string>> catVals){
 			for (int i = 0; i < values.Count; i++){
 				AddCatVals(values[i], catVals[i]);
 			}
