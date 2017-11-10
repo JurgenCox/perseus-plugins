@@ -48,11 +48,17 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotCols\AddAnnotationToMatrix.cs" />
+    <Compile Include="AnnotCols\AnnotationProvider\AnnotationFormat.cs" />
+    <Compile Include="AnnotCols\AnnotationProvider\AnnotationProviderExtensions.cs" />
+    <Compile Include="AnnotCols\AnnotationProvider\StreamAnnotationProvider.cs" />
     <Compile Include="AnnotCols\AverageCategories.cs" />
     <Compile Include="AnnotCols\BackToBaseIdentifiers.cs" />
     <Compile Include="AnnotCols\CategoryCounting.cs" />
@@ -184,6 +190,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\missingsButton.Image.png" />
   </ItemGroup>
   <ItemGroup>

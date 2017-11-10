@@ -61,25 +61,27 @@ namespace PerseusPluginLib.AnnotCols
         /// <returns></returns>
         public static Parameters CreateParameters(IList<string> colChoice, IAnnotationProvider annotationProvider, ref string errorString)
         {
-            string[][] annots = annotationProvider.GetAvailableAnnots(out string[] baseNames, out _, out string[] files, out List<string> badFiles);
-            if (badFiles.Any())
+            if (annotationProvider.BadSources.Any())
             {
-                errorString = $"Could not load annotations from file(s): {string.Join(", ", badFiles)}";
+                errorString = $"Could not load annotations from file(s): {string.Join(", ", annotationProvider.BadSources)}";
             }
+            var annots = annotationProvider.Sources;
             int selFile = 0;
             bool isMainAnnot = false;
-            for (int i = 0; i < files.Length; i++)
+            var sources = annotationProvider.Sources;
+            for (int i = 0; i < sources.Length; i++)
             {
-                if (files[i].ToLower().Contains("perseusannot"))
+                if (sources[i].source.ToLower().Contains("perseusannot"))
                 {
                     selFile = i;
                     isMainAnnot = true;
                     break;
                 }
             }
-            Parameters[] subParams = new Parameters[files.Length];
+            Parameters[] subParams = new Parameters[sources.Length];
             for (int i = 0; i < subParams.Length; i++)
             {
+                var source = sources[i];
                 int colInd = 0;
                 if (isMainAnnot && i == selFile)
                 {
@@ -104,7 +106,7 @@ namespace PerseusPluginLib.AnnotCols
                 {
                     for (int j = 0; j < colChoice.Count; j++)
                     {
-                        if (colChoice[j].ToUpper().Contains(baseNames[i].ToUpper()))
+                        if (colChoice[j].ToUpper().Contains(source.id.ToUpper()))
                         {
                             colInd = j;
                             break;
@@ -113,15 +115,16 @@ namespace PerseusPluginLib.AnnotCols
                 }
                 subParams[i] =
                     new Parameters(
-                        new SingleChoiceParam(baseNames[i] + " column")
+                        new SingleChoiceParam(source.id + " column")
                         {
                             Values = colChoice,
                             Value = colInd,
                             Help =
                                 "Specify here the column that contains the base identifiers which are going to be " +
                                 "matched to the annotation."
-                        }, new MultiChoiceParam("Annotations to be added") { Values = annots[i] });
+                        }, new MultiChoiceParam("Annotations to be added") { Values = source.annotation.Select(annot => annot.name).ToArray() });
             }
+            var files = sources.Select(source => source.source).ToArray();
             return
                 new Parameters(
                     new SingleChoiceWithSubParams("Source", selFile)
@@ -142,11 +145,10 @@ namespace PerseusPluginLib.AnnotCols
         /// <returns></returns>
         private static string[] GetBaseIds(IDataWithAnnotationColumns mdata, IAnnotationProvider annotationProvider, Parameters para)
         {
-            annotationProvider.GetAvailableAnnots(out string[] baseNames, out _, out _, out _);
             ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
             int ind = spd.Value;
             Parameters param = spd.GetSubParameters();
-            int baseCol = param.GetParam<int>(baseNames[ind] + " column").Value;
+            int baseCol = param.GetParam<int>(annotationProvider.Sources[ind].id + " column").Value;
             string[] baseIds = mdata.StringColumns[baseCol];
             return baseIds;
         }
@@ -186,12 +188,13 @@ namespace PerseusPluginLib.AnnotCols
             out string[] name, out int[] catColInds, out int[] textColInds, out int[] numColInds, out string[][][] catCols,
             out string[][] textCols, out double[][] numCols)
         {
-            string[][] names = annotationProvider.GetAvailableAnnots(out _, out AnnotType[][] types, out string[] files, out _);
             const bool deHyphenate = true;
             ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
             int ind = spd.Value;
             Parameters param = spd.GetSubParameters();
-            AnnotType[] type = types[ind];
+            var types = annotationProvider.Sources.Select(s => s.annotation.Select(annotation => annotation.type).ToArray()).ToArray();
+            var type = types[ind];
+            var names = annotationProvider.Sources.Select(s => s.annotation.Select(annotation => annotation.name).ToArray()).ToArray();
             name = names[ind];
             int[] addtlSources = para.GetParam<int[]>("Additional sources").Value;
             addtlSources = ArrayUtils.Remove(addtlSources, ind);
@@ -210,6 +213,7 @@ namespace PerseusPluginLib.AnnotCols
             type = ArrayUtils.SubArray(type, selection);
             name = ArrayUtils.SubArray(name, selection);
             HashSet<string> allIds = GetAllIds(baseIds, deHyphenate);
+            var files = annotationProvider.Sources.Select(s => s.source).ToArray();
             Dictionary<string, string[]> mapping = ReadMapping(allIds, files[ind], selection);
             foreach (int addtlSource in addtlSources)
             {

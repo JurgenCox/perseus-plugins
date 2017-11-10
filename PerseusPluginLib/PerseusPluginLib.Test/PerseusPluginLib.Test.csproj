@@ -56,6 +56,9 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.4.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -64,7 +67,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotRows\ManageCategoricalAnnotRowTest.cs" />
-    <Compile Include="Annot\AddAnnotationToMatrixTest.cs" />
+    <Compile Include="Annot\AnnotationProverTest.cs" />
+    <Compile Include="Annot\AnnotationFormatTest.cs" />
+    <Compile Include="Annot\Examples.cs" />
+    <Compile Include="Annot\MockAnnotationProvider.cs" />
     <Compile Include="Join\MatchingRowsByNameTest.cs" />
     <Compile Include="Mods\ExpandSiteTableTest.cs" />
     <Compile Include="PerseusApi\PerseusUtilsTest.cs" />

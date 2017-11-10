@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -9,6 +10,7 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
+using PerseusPluginLib.AnnotCols.AnnotationProvider;
 
 namespace PerseusPluginLib.AnnotCols{
 	public class BackToBaseIdentifiers : IMatrixProcessing{
@@ -38,141 +40,81 @@ namespace PerseusPluginLib.AnnotCols{
 			return 1;
 		}
 
-		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
-			List<string> colChoice = mdata.StringColumnNames;
-			int colInd = 0;
-			for (int i = 0; i < colChoice.Count; i++){
-				if (colChoice[i].ToUpper().Contains("GENE NAME")){
-					colInd = i;
-					break;
-				}
-			}
-			string[][] annots = GetAvailableTextAnnots(out string[] baseNames, out int[][] inds, out string[] files);
-			int selFile = 0;
-			for (int i = 0; i < files.Length; i++){
-				if (files[i].ToLower().Contains("perseusannot")){
-					selFile = i;
-					break;
-				}
-			}
-			Parameters[] subParams = new Parameters[files.Length];
-			for (int i = 0; i < subParams.Length; i++){
-				int selInd = 0;
-				for (int j = 0; j < annots[i].Length; j++){
-					if (annots[i][j].ToLower().Contains("gene name")){
-						selInd = j;
-						break;
-					}
-				}
-				subParams[i] =
-					new Parameters(
-						new SingleChoiceParam("Identifiers"){
-							Values = colChoice,
-							Value = colInd,
-							Help =
-								"Specify here the column that contains the identifiers which are going to be matched back to " + baseNames[i] +
-								" identifiers."
-						}, new SingleChoiceParam("Identifier type"){Values = annots[i], Value = selInd});
-			}
-			return
-				new Parameters(new SingleChoiceWithSubParams("Source", selFile){
-					Values = files,
-					SubParams = subParams,
-					ParamNameWidth = 136,
-					TotalWidth = 735
-				});
+        private readonly IAnnotationProvider _annotationProvider = new ConfFolderAnnotationProvider();
+		public Parameters GetParameters(IMatrixData mdata, ref string errorString)
+		{
+		    return CreateParameters(mdata.StringColumnNames, _annotationProvider);
 		}
 
-		public void ProcessData(IMatrixData mdata, Parameters para, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo){
-			GetAvailableTextAnnots(out string[] baseNames, out int[][] inds, out string[] files);
-			ParameterWithSubParams<int> spd = para.GetParamWithSubParams<int>("Source");
-			int ind = spd.Value;
-			Parameters param = spd.GetSubParameters();
-			int baseCol = param.GetParam<int>("Identifiers").Value;
-			int selection = param.GetParam<int>("Identifier type").Value;
-			HashSet<string> allIds = GetAllIds(mdata, baseCol);
-			string file = files[ind];
-			Dictionary<string, string[]> mapping = ReadMapping(allIds, file, inds[ind][selection]);
-			string[] x = mdata.StringColumns[baseCol];
-			string[] newCol = new string[x.Length];
-			for (int i = 0; i < x.Length; i++){
-				string w = x[i];
-				string[] q = w.Length > 0 ? w.Split(';') : new string[0];
-				List<string> m = new List<string>();
-				foreach (string s in q){
-					string r = s.ToLower();
-					if (mapping.ContainsKey(r)){
-						m.AddRange(mapping[r]);
-					}
-				}
-				string[] vals = ArrayUtils.UniqueValues(m);
-				newCol[i] = StringUtils.Concat(";", vals);
-			}
-			mdata.AddStringColumn(baseNames[ind], baseNames[ind], newCol);
-		}
+	    public static Parameters CreateParameters(List<string> colChoice, IAnnotationProvider annotationProvider)
+	    {
+	        int colInd = 0;
+	        for (int i = 0; i < colChoice.Count; i++)
+	        {
+	            if (colChoice[i].ToUpper().Contains("GENE NAME"))
+	            {
+	                colInd = i;
+	                break;
+	            }
+	        }
+	        int selFile = 0;
+	        var textSources = annotationProvider.TextSources();
+	        for (int i = 0; i < textSources.Length; i++)
+	        {
+	            if (textSources[i].source.ToLower().Contains("perseusannot"))
+	            {
+	                selFile = i;
+	                break;
+	            }
+	        }
+	        Parameters[] subParams = new Parameters[textSources.Length];
+	        for (int i = 0; i < subParams.Length; i++)
+	        {
+	            int selInd = 0;
+	            var annot = textSources[i];
+	            for (int j = 0; j < annot.names.Length; j++)
+	            {
+	                if (annot.names[j].ToLower().Contains("gene name"))
+	                {
+	                    selInd = j;
+	                    break;
+	                }
+	            }
+	            subParams[i] =
+	                new Parameters(
+	                    new SingleChoiceParam("Identifiers")
+	                    {
+	                        Values = colChoice,
+	                        Value = colInd,
+	                        Help =
+	                            "Specify here the column that contains the identifiers which are going to be matched back to " +
+	                            annot.id +
+	                            " identifiers."
+	                    }, new SingleChoiceParam("Identifier type") {Values = annot.names, Value = selInd});
+	        }
+	        return
+	            new Parameters(new SingleChoiceWithSubParams("Source", selFile)
+	            {
+	                Values = textSources.Select(source => source.source).ToArray(),
+	                SubParams = subParams,
+	                ParamNameWidth = 136,
+	                TotalWidth = 735
+	            });
+	    }
 
-		private static Dictionary<string, string[]> ReadMapping(ICollection<string> allIds, string file, int selection){
-			selection++;
-			StreamReader reader = FileUtils.GetReader(file);
-			reader.ReadLine();
-			reader.ReadLine();
-			string line;
-			Dictionary<string, HashSet<string>> result = new Dictionary<string, HashSet<string>>();
-			while ((line = reader.ReadLine()) != null){
-				string[] q = line.Split('\t');
-				string w = q[0];
-				string[] ids1 = w.Length > 0 ? w.Split(';') : new string[0];
-				string v = q[selection];
-				string[] ids2 = v.Length > 0 ? v.Split(';') : new string[0];
-				foreach (string id in ids2){
-					string idx = id.ToLower();
-					if (!allIds.Contains(idx)){
-						continue;
-					}
-					if (!result.ContainsKey(idx)){
-						result.Add(idx, new HashSet<string>());
-					}
-					foreach (string s in ids1){
-						result[idx].Add(s);
-					}
-				}
-			}
-			Dictionary<string, string[]> result1 = new Dictionary<string, string[]>();
-			foreach (KeyValuePair<string, HashSet<string>> pair in result){
-				string[] s = ArrayUtils.ToArray(pair.Value);
-				Array.Sort(s);
-				result1.Add(pair.Key, s);
-			}
-			return result1;
-		}
+	    public void ProcessData(IMatrixData mdata, Parameters para, ref IMatrixData[] supplTables,
+			ref IDocumentData[] documents, ProcessInfo processInfo)
+	    {
+	        var annotationProvider = _annotationProvider;
+	        ParameterWithSubParams<int> sourceParam = para.GetParamWithSubParams<int>("Source");
+	        int sourceIndex = sourceParam.Value;
+	        Parameters param = sourceParam.GetSubParameters();
+	        int baseCol = param.GetParam<int>("Identifiers").Value;
+	        int selection = param.GetParam<int>("Identifier type").Value;
+	        var (_, id, _) = annotationProvider.TextSources()[sourceIndex];
+	        var newColumn = annotationProvider.MapToBaseIdentifiers(mdata.StringColumns[baseCol], sourceIndex, selection);
+            mdata.AddStringColumn(id, id, newColumn);
+	    }
 
-		private static HashSet<string> GetAllIds(IDataWithAnnotationColumns mdata, int baseCol){
-			string[] x = mdata.StringColumns[baseCol];
-			HashSet<string> result = new HashSet<string>();
-			foreach (string y in x){
-				string[] z = y.Length > 0 ? y.Split(';') : new string[0];
-				foreach (string q in z){
-					result.Add(q.ToLower());
-				}
-			}
-			return result;
-		}
-
-		private static string[][] GetAvailableTextAnnots(out string[] baseNames, out int[][] inds, out string[] files){
-			string[][] annots = PerseusUtils.GetAvailableAnnots(out baseNames, out AnnotType[][] types, out files);
-			inds = new int[files.Length][];
-			for (int i = 0; i < files.Length; i++){
-				List<int> result = new List<int>();
-				for (int j = 0; j < types[i].Length; j++){
-					if (types[i][j] == AnnotType.Text){
-						result.Add(j);
-					}
-				}
-				inds[i] = result.ToArray();
-				annots[i] = ArrayUtils.SubArray(annots[i], result);
-			}
-			return annots;
-		}
 	}
 }
