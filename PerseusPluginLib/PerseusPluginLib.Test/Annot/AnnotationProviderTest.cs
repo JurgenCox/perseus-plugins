@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using PerseusApi.Utils;
+using PerseusLibS.Data;
 using PerseusPluginLib.AnnotCols.AnnotationProvider;
 
 namespace PerseusPluginLib.Test.Annot
@@ -159,6 +161,29 @@ namespace PerseusPluginLib.Test.Annot
             Assert.AreEqual(1, annots.category.Length);
             Assert.AreEqual(1, annots.numeric.Length);
             CollectionAssert.AreEqual(new [] {1.0, -1, double.NaN}, annots.numeric.Single().values);
+        }
+
+        [Test]
+        public void TestMapAnnotationsForRealExample()
+        {
+            using (var memstream = new MemoryStream(Encoding.UTF8.GetBytes(Examples.MouseUniprotExampleAnnotations)))
+            using (var reader = new StreamReader(memstream))
+            {
+                var provider = new StreamAnnotationProvider(("test", reader));
+                var mdata = PerseusFactory.CreateMatrixData();
+                PerseusUtils.ReadMatrix(mdata, BaseTest.CreateProcessInfo(), () => new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(Examples.MouseUniprotExampleData))), "test", '\t');
+                CollectionAssert.AreEquivalent(new [] {"Proteins", "Gene name"}, mdata.StringColumnNames);
+                CollectionAssert.AreEquivalent(new [] {"GOBP name"}, mdata.CategoryColumnNames);
+                var ids = mdata.GetStringColumn("Proteins");
+                var annotations = provider.Sources.Single().annotation.ToList();
+                var geneName = annotations.FindIndex(annot => annot.name.Equals("Gene name"));
+                var gobpName = annotations.FindIndex(annot => annot.name.Equals("GOBP name"));
+                var (text, cat, num) = provider.ReadAnnotations(ids, 0, new[] {gobpName, geneName});
+                Assert.AreEqual(1, text.Length);
+                CollectionAssert.AreEqual(mdata.GetStringColumn("Gene name"), text.Single().values);
+                Assert.AreEqual(1, cat.Length);
+                CollectionAssert.AreEqual(mdata.GetCategoryColumnAt(0), cat.Single().values);
+            }
         }
     }
 }

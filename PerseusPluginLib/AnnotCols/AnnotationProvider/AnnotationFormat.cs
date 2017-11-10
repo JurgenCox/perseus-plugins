@@ -7,8 +7,32 @@ using PerseusApi.Generic;
 
 namespace PerseusPluginLib.AnnotCols.AnnotationProvider
 {
+    /// <summary>
+    /// Class for reading and writing the Perseus annotation format.
+    /// All annotation files are plain text files. If the file ends with ".gz" it will be assumed to be zip compressed.
+    /// The file starts with a 2 line header section denoting column names and type annotations.
+    /// The rest of the file contains the annotations. All entries are separated by '\t'.
+    /// Within one entry values are separated by ';'.
+    /// 
+    /// Example file:
+    /// <example>
+    /// Base Identifier Annot1  Annot2  ...
+    /// #!{Type}    TypeAnnot1  TypeAnnot2  ...
+    /// id  annot1  annot2
+    /// </example>
+    ///
+    /// Type annotations are textual representations of <see cref="AnnotType"/>, i.e. "Text", "Categorical", "Numerical".
+    /// </summary>
     public static class AnnotationFormat
     {
+        /// <summary>
+        /// Reads a mapping between <see cref="fromColumn"/> to <see cref="toColumns"/>.
+        /// The <c>fromId</c>s in the returned iterater are unique.
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <param name="fromColumn"></param>
+        /// <param name="toColumns"></param>
+        /// <returns></returns>
         public static IEnumerable<(string fromId, string[][] toIds)> ReadMappings(StreamReader reader, int fromColumn, int[] toColumns)
         {
             char[] semicolon = {';'};
@@ -37,6 +61,14 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
             return groupedById;
         }
 
+        /// <summary>
+        /// Reads a mapping between <see cref="fromColumn"/> to <see cref="toColumns"/>.
+        /// The <c>fromId</c>s in the returned iterater are unique.
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="fromColumn"></param>
+        /// <param name="toColumns"></param>
+        /// <returns></returns>
         public static IEnumerable<(string fromId, string[][] toIds)> ReadMappings(string file, int fromColumn, int[] toColumns)
         {
             using (var reader = FileUtils.GetReader(file))
@@ -58,6 +90,14 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
             }
         }
 
+        /// <summary>
+        /// Write a perseus annotation file according to the format specified in <see cref="AnnotationFormat"/>.
+        /// </summary>
+        /// <param name="baseIdentifiers"></param>
+        /// <param name="text"></param>
+        /// <param name="category"></param>
+        /// <param name="numeric"></param>
+        /// <param name="path"></param>
         public static void WriteMapping((string name, string[] values) baseIdentifiers, (string name, string[] values)[] text,
             (string name, string[][] values)[] category, (string name, double[] values)[] numeric, string path)
         {
@@ -67,6 +107,9 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
             }
         }
 
+        /// <summary>
+        /// Write a perseus annotation file according to the format specified in <see cref="AnnotationFormat"/>.
+        /// </summary>
         public static void WriteMapping((string name, string[] values) baseIdentifiers, (string name, string[] values)[] text,
             (string name, string[][] values)[] category, (string name, double[] values)[] numeric, StreamWriter writer)
         {
@@ -95,6 +138,11 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
             writer.Flush();
         }
 
+        /// <summary>
+        /// Read out the identifier types e.g. "Uniprot" and available annotations e.g. [("Gene name", AnnotType.Text), ...].
+        /// </summary>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         public static (string id, (string name, AnnotType type)[] annotations) Annotations(StreamReader reader)
         {
             var headers = ReadLines(reader).Take(2).ToArray();
