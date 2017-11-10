@@ -67,7 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotRows\ManageCategoricalAnnotRowTest.cs" />
-    <Compile Include="Annot\AnnotationProverTest.cs" />
+    <Compile Include="Annot\AnnotationProviderTest.cs" />
     <Compile Include="Annot\AnnotationFormatTest.cs" />
     <Compile Include="Annot\Examples.cs" />
     <Compile Include="Annot\MockAnnotationProvider.cs" />

@@ -44,7 +44,7 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
         /// <param name="mapping"></param>
         /// <param name="numberOfMappings"></param>
         /// <returns></returns>
-        private static IEnumerable<string[][]> OuterLeftJoin(string[] identifiers, IEnumerable<(string fromId, string[][] toIds)> mapping, int numberOfMappings)
+        public static IEnumerable<string[][]> OuterLeftJoin(string[] identifiers, IEnumerable<(string fromId, string[][] toIds)> mapping, int numberOfMappings)
         {
             var split = new[] {';'};
             var noMatch = new[] {new string[0]};
@@ -61,8 +61,16 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
                         {
                             return (row: idRow.row, toIds: maps.SelectMany(_ => noMatch).ToArray());
                         }
-                        var toIds = maps.DefaultIfEmpty((fromId: idRow.id, toIds: noMatch))
-                            .Select(map => map.toIds.SelectMany(id => id).ToArray()).ToArray();
+                        var toIdsMaps = maps.DefaultIfEmpty((fromId: idRow.id, toIds: noMatch)).Select(map => map.toIds);
+                        var aggregators = Enumerable.Range(0, numberOfMappings).Select(_ => new HashSet<string>()).ToArray();
+                        foreach (var idMaps in toIdsMaps)
+                        {
+                            for (int i = 0; i < idMaps.Length; i++)
+                            {
+                                aggregators[i].UnionWith(idMaps[i]);
+                            }
+                        }
+                        var toIds = aggregators.Select(idSet => idSet.Select(id => id.Trim()).OrderBy(id => id).ToArray()).ToArray();
                         return (row: idRow.row, toIds: toIds);
                     })
                 // aggregate values per row
@@ -95,13 +103,14 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
         public static ((string name, string[] values)[] text, (string name, string[][] values)[] category, (string name, double[] values)[] numeric)
             ReadAnnotations(this IAnnotationProvider annotationProvider, string[] identifiers, int sourceIndex, int[] annotationIndices)
         {
-            var mappings = annotationProvider.ReadMappings(sourceIndex, 0, annotationIndices);
+            var adjustedAnnotationIndices = annotationIndices.Select(i => i + 1).ToArray();
+            var mappings = annotationProvider.ReadMappings(sourceIndex, 0, adjustedAnnotationIndices);
             var indexedAnnotations = annotationProvider.Sources[sourceIndex].annotation.Select((annotation, i) => (annotation:annotation, i:i));
             var annotations = annotationIndices.Join(indexedAnnotations, i => i, iAnnotation => iAnnotation.i, (i, iAnnotation) => iAnnotation.annotation).ToArray();
             var text = new List<(string name, string[] values)>();
             var category = new List<(string name, string[][] values)>();
             var numeric = new List<(string name, double[] values)>();
-            var outerLeftJoin = OuterLeftJoin(identifiers, mappings, annotationIndices.Length);
+            var outerLeftJoin = OuterLeftJoin(identifiers, mappings, adjustedAnnotationIndices.Length);
             var columns = Enumerable.Range(0, annotationIndices.Length).Select(_ => new List<string[]>()).ToArray();
             foreach (var map in outerLeftJoin)
             {

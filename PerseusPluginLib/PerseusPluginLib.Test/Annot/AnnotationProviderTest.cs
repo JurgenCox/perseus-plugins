@@ -7,7 +7,7 @@ using PerseusPluginLib.AnnotCols.AnnotationProvider;
 namespace PerseusPluginLib.Test.Annot
 {
     [TestFixture]
-    public class AnnotationProverTest
+    public class AnnotationProviderTest
     {
         [Test]
         public void TestWritingMockData()
@@ -133,7 +133,7 @@ namespace PerseusPluginLib.Test.Annot
         {
             var provider = new MockAnnotationProvider();
             var mapping = provider.MapToBaseIdentifiers(new []{"c;b", "0"}, 0, 0);
-            CollectionAssert.AreEqual(new [] {"2;4;5", ""}, mapping);
+            CollectionAssert.AreEqual(new [] {"1;2;4;5", ""}, mapping);
         }
 
         [Test]
