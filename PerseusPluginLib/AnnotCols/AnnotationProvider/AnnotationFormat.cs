@@ -152,6 +152,19 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
             return (colnames[0], annotations);
         }
 
+        /// <summary>
+        /// Read out the identifier types e.g. "Uniprot" and available annotations e.g. [("Gene name", AnnotType.Text), ...].
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static (string id, (string name, AnnotType type)[] annotations) Annotations(string path)
+        {
+            using (var reader = FileUtils.GetReader(path))
+            {
+                return Annotations(reader);
+            }
+        }
+
         private static AnnotType ParseAnnotationType(string type)
         {
             if (type.Equals("Text"))
