@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
-namespace PerseusApi.Generic{
-	public interface IDataWithAnnotationRows {
-		void CopyAnnotationRowsFrom(IDataWithAnnotationRows other);
+namespace PerseusApi.Generic
+{
+    public interface IDataWithAnnotationRows : IEquatable<IDataWithAnnotationRows>
+    {
+        void CopyAnnotationRowsFrom(IDataWithAnnotationRows other);
 		void CopyAnnotationRowsFromColumns(IDataWithAnnotationColumns other);
 		int ColumnCount { get; }
 

@@ -6,7 +6,7 @@ namespace PerseusApi.Generic{
     /// Generic data structure holding the data that flows through the network. 
     /// For example, this could be <code>IMatrixData</code>.
     /// </summary>
-    public interface IData : IDisposable, ICloneable
+    public interface IData : IDisposable, ICloneable, IEquatable<IData>
     {
         /// <summary>
         /// This the id of the data object.
