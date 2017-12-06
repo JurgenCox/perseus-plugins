@@ -109,7 +109,12 @@ namespace PerseusApi.Generic{
 		List<string> MultiNumericColumnNames { get; set; }
 		List<string> MultiNumericColumnDescriptions { get; set; }
 
+        /// <summary>
+        /// Keep only rows in the order provided by the indices.
+        /// </summary>
+        /// <param name="indices"></param>
 		void ExtractRows(int[] indices);
+
 		void SetAnnotationColumns(List<string> stringColumnNames, List<string[]> stringColumns,
 			List<string> categoryColumnNames, List<string[][]> categoryColumns, List<string> numericColumnNames,
 			List<double[]> numericColumns, List<string> multiNumericColumnNames, List<double[][]> multiNumericColumns);

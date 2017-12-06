@@ -48,7 +48,17 @@ namespace PerseusPluginLib.Join{
 
 		public Parameters GetParameters(IMatrixData[] inputData, ref string errString){
 			IMatrixData matrixData1 = inputData[0];
+		    if (matrixData1.StringColumnCount < 1)
+		    {
+		        errString = $"Please add at least one text column to {matrixData1.Name}";
+		        return null;
+		    }
 			IMatrixData matrixData2 = inputData[1];
+		    if (matrixData2.StringColumnCount < 1)
+		    {
+		        errString = $"Please add at least one text column to {matrixData2.Name}";
+		        return null;
+		    }
 			List<string> controlChoice1 = matrixData1.StringColumnNames;
 			int index1 = 0;
 			for (int i = 0; i < controlChoice1.Count; i++){
@@ -504,28 +514,6 @@ namespace PerseusPluginLib.Join{
 			}
 		}
 
-		private static void AddMainColumns(IMatrixData data, string[] names, double[,] vals, double[,] qual, bool[,] imp){
-			double[,] newVals = new double[data.RowCount, data.ColumnCount + vals.GetLength(1)];
-			double[,] newQual = new double[data.RowCount, data.ColumnCount + vals.GetLength(1)];
-			bool[,] newImp = new bool[data.RowCount, data.ColumnCount + vals.GetLength(1)];
-			for (int i = 0; i < data.RowCount; i++){
-				for (int j = 0; j < data.ColumnCount; j++){
-					newVals[i, j] = data.Values.Get(i, j);
-					newQual[i, j] = data.Quality?.Get(i, j) ?? 0;
-					newImp[i, j] = data.IsImputed?[i, j] ?? false;
-				}
-				for (int j = 0; j < vals.GetLength(1); j++){
-					newVals[i, data.ColumnCount + j] = vals[i, j];
-					newQual[i, data.ColumnCount + j] = qual[i, j];
-					newImp[i, data.ColumnCount + j] = imp[i, j];
-				}
-			}
-			data.Values.Set(newVals);
-			data.Quality?.Set(newQual);
-			data.IsImputed?.Set(newImp);
-			data.ColumnNames.AddRange(names);
-			data.ColumnDescriptions.AddRange(names);
-		}
 
 		private static void MakeNewNames(IList<string> newExColNames, IEnumerable<string> mainColumnNames){
 			HashSet<string> taken = new HashSet<string>(mainColumnNames);

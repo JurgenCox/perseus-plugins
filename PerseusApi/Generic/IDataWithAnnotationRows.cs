@@ -7,7 +7,6 @@ namespace PerseusApi.Generic
     {
         void CopyAnnotationRowsFrom(IDataWithAnnotationRows other);
 		void CopyAnnotationRowsFromColumns(IDataWithAnnotationColumns other);
-		int ColumnCount { get; }
 
         /// <summary>
         /// Returns the entire category row at the given row index.
@@ -80,6 +79,8 @@ namespace PerseusApi.Generic
 			List<string> multiNumericRowNames, List<double[][]> multiNumericRows);
 
 		void ClearAnnotationRows();
+
+		int ColumnCount { get; }
 		List<string> ColumnNames { get; set; }
 		List<string> ColumnDescriptions { get; set; }
 	}

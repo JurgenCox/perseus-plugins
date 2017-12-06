@@ -130,5 +130,83 @@ namespace PerseusPluginLib.Test.Join
             Assert.AreEqual(2, matched.ColumnCount);
             Assert.AreEqual(1, matched.NumericColumnCount);
 	    }
-	}
+
+        [Test]
+        public void TestStringAnnotationRowsWithDifferentNames()
+        {
+            var matching = new MatchingRowsByName();
+            var mdata1 = PerseusFactory.CreateMatrixData(new[,] { { 0.0, 1 }, { 2, 3 } }, new List<string> { "A", "B" });
+            mdata1.AddStringRow("catRow1", "", new []{"A", "B"});
+            mdata1.AddStringColumn("Id", "", new []{"1", "2"});
+            var mdata2 = PerseusFactory.CreateMatrixData(new[,] { { 0.0, 1 }, { 2, 3 } }, new List<string> { "B", "C" });
+            mdata2.AddStringRow("catRow2", "", new []{"A", "B"});
+            mdata2.AddStringColumn("Id", "", new []{"2", "1"});
+            mdata2.AddStringColumn("Test", "", new []{"2_", "1_"});
+            var inputData = new[] {mdata1, mdata2};
+            var errString = string.Empty;
+            var parameters = matching.GetParameters(inputData, ref errString);
+            parameters.GetParam<int[]>("Text columns").Value = new []{1};
+            Assert.IsTrue(string.IsNullOrEmpty(errString), errString);
+	        IMatrixData[] supplTables = null;
+	        IDocumentData[] documents = null;
+            var processInfo = CreateProcessInfo();
+            var output = matching.ProcessData(inputData, parameters, ref supplTables, ref documents, processInfo);
+            Assert.IsTrue(string.IsNullOrEmpty(processInfo.ErrString));
+            Assert.IsTrue(output.IsConsistent(out string con), con);
+            Assert.AreEqual(output.ColumnCount, output.Values.ColumnCount);
+            Assert.AreEqual(output.ColumnCount, output.StringRows[0].Length);
+            Assert.AreEqual(2, output.StringColumnCount);
+            CollectionAssert.AreEqual(new [] {"1_", "2_"}, output.StringColumns[1]);
+        }
+        [Test]
+        public void TestCategoryAnnotationRowsWithDifferentNames()
+        {
+            var matching = new MatchingRowsByName();
+            var mdata1 = PerseusFactory.CreateMatrixData(new[,] { { 0.0, 1 }, { 2, 3 } }, new List<string> { "A", "B" });
+            mdata1.AddCategoryRow("catRow1", "", new []{new []{"A", "B"}});
+            mdata1.AddStringColumn("Id", "", new []{"1", "2"});
+            var mdata2 = PerseusFactory.CreateMatrixData(new[,] { { 0.0, 1 }, { 2, 3 } }, new List<string> { "B", "C" });
+            mdata2.AddCategoryRow("catRow2", "", new []{new []{"B", "C"}});
+            mdata2.AddStringColumn("Id", "", new []{"1", "2"});
+            var inputData = new[] {mdata1, mdata2};
+            var errString = string.Empty;
+            var parameters = matching.GetParameters(inputData, ref errString);
+            Assert.IsTrue(string.IsNullOrEmpty(errString), errString);
+	        IMatrixData[] supplTables = null;
+	        IDocumentData[] documents = null;
+            var processInfo = CreateProcessInfo();
+            var output = matching.ProcessData(inputData, parameters, ref supplTables, ref documents, processInfo);
+            Assert.IsTrue(string.IsNullOrEmpty(processInfo.ErrString));
+            Assert.IsTrue(output.IsConsistent(out string con), con);
+            Assert.AreEqual(output.ColumnCount, output.Values.ColumnCount);
+            Assert.AreEqual(output.ColumnCount, output.StringRows[0].Length);
+            Assert.AreEqual(output.ColumnCount, output.GetCategoryRowAt(0).Length);
+        }
+        [Test]
+        public void TestAnnotationRows()
+        {
+            var matching = new MatchingRowsByName();
+            var mdata1 = PerseusFactory.CreateMatrixData(new[,] { { 0.0, 1 }, { 2, 3 } }, new List<string> { "A", "B" });
+            mdata1.AddCategoryRow("catRow", "", new []{new []{"A", "B"}});
+            mdata1.AddStringRow("stringRow", "", new []{"A", "B"});
+            mdata1.AddStringColumn("Id", "", new []{"1", "2"});
+            var mdata2 = PerseusFactory.CreateMatrixData(new[,] { { 0.0, 1 }, { 2, 3 } }, new List<string> { "B", "C" });
+            mdata2.AddCategoryRow("catRow", "", new []{new []{"B", "C"}});
+            mdata2.AddStringRow("stringRow", "", new []{"A", "B"});
+            mdata2.AddStringColumn("Id", "", new []{"1", "2"});
+            var inputData = new[] {mdata1, mdata2};
+            var errString = string.Empty;
+            var parameters = matching.GetParameters(inputData, ref errString);
+            Assert.IsTrue(string.IsNullOrEmpty(errString), errString);
+	        IMatrixData[] supplTables = null;
+	        IDocumentData[] documents = null;
+            var processInfo = CreateProcessInfo();
+            var output = matching.ProcessData(inputData, parameters, ref supplTables, ref documents, processInfo);
+            Assert.IsTrue(string.IsNullOrEmpty(processInfo.ErrString));
+            Assert.IsTrue(output.IsConsistent(out string con), con);
+            Assert.AreEqual(output.ColumnCount, output.Values.ColumnCount);
+            Assert.AreEqual(output.ColumnCount, output.StringRows[0].Length);
+            Assert.AreEqual(output.ColumnCount, output.GetCategoryRowAt(0).Length);
+        }
+    }
 }

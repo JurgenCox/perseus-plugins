@@ -131,6 +131,7 @@
     <Compile Include="Rearrange\ChangeColumnType.cs" />
     <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
     <Compile Include="Rearrange\ReorderColumnsByNumAnnotationRow.cs" />
+    <Compile Include="Utils\DataWithAnnotatioRowsExtensions.cs" />
     <Compile Include="Utils\MatrixDataExtensions.cs" />
     <Compile Include="Rearrange\UniqueRows.cs" />
     <Compile Include="Utils\DataWithAnnotationColumnsExtensions.cs" />

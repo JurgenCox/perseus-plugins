@@ -8,19 +8,8 @@ using PerseusPluginLib.Utils;
 namespace PerseusPluginLib.Test.Utils
 {
     [TestFixture]
-    public class DataWithAnnotationColumnsExtensionsTest
+    public class IMatrixDataExtensionsTest
     {
-        [Test]
-        public void UniqueValuesTest()
-        {
-            Mock<IDataWithAnnotationColumns> moq = new Mock<IDataWithAnnotationColumns>();
-            List<string[]> testList = new List<string[]> { new[] { "a;b", "a;a" } };
-            moq.Setup(data => data.StringColumns).Returns(testList);
-            IDataWithAnnotationColumns asdf = moq.Object;
-            asdf.UniqueValues(new[] { 0 });
-            CollectionAssert.AreEqual(new [] {"a;b", "a"}, testList[0]);
-        }
-
         [Test]
         public void TestCombine()
         {
@@ -42,7 +31,7 @@ namespace PerseusPluginLib.Test.Utils
             data2.AddStringColumn("Id", "id", new []{"0", "2", "1", "3;4", "5"});
             data2.AddStringColumn("String", "string", new []{"zero", "two", "one", "three_or_four", "five"});
             data1.Concat(data2, new []{0}, new []{0});
-            CollectionAssert.AreEqual(new []{"one;two", "three_or_four", "three_or_four"}, data1.StringColumns[1] );
+            CollectionAssert.AreEqual(new []{"two;one", "three_or_four", "three_or_four"}, data1.StringColumns[1] );
         }
 
         [Test]
