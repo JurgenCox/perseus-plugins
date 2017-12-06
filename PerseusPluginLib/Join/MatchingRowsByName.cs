@@ -132,8 +132,9 @@ namespace PerseusPluginLib.Join{
 			IMatrixData mdata1 = inputData[0];
 			IMatrixData mdata2 = inputData[1];
 			int[][] indexMap = GetIndexMap(mdata1, mdata2, parameters, separator);
-			IMatrixData result = GetResult(mdata1, mdata2, parameters, indexMap);
-			AddMainColumns(mdata1, mdata2, parameters, indexMap, result);
+		    var exColInds = parameters.GetParam<int[]>("Main columns").Value;
+			IMatrixData result = GetResult(mdata1, mdata2, parameters, indexMap, exColInds);
+		    AddMainColumns(mdata1, mdata2, parameters, indexMap, result, exColInds);
 			AddNumericColumns(mdata1, mdata2, parameters, indexMap, result);
 			AddCategoricalColumns(mdata1, mdata2, parameters, indexMap, result);
 			AddStringColumns(mdata1, mdata2, parameters, indexMap, result);
@@ -141,10 +142,10 @@ namespace PerseusPluginLib.Join{
 		}
 
 		private static IMatrixData GetResult(IMatrixData mdata1, IMatrixData mdata2,
-			Parameters parameters, IList<int[]> indexMap)
+			Parameters parameters, IList<int[]> indexMap, int[] exColInds)
 		{
 			IMatrixData result = (IMatrixData) mdata1.Clone();
-			SetAnnotationRows(result, mdata1, mdata2);
+			SetAnnotationRows(result, mdata1, mdata2, exColInds);
 			bool indicator = parameters.GetParam<bool>("Indicator").Value;
 			if (indicator){
 				string[][] indicatorCol = new string[indexMap.Count][];
@@ -158,10 +159,9 @@ namespace PerseusPluginLib.Join{
 		}
 
 		private static void AddMainColumns(IDataWithAnnotationColumns mdata1, IMatrixData mdata2, Parameters parameters,
-			IList<int[]> indexMap, IMatrixData result){
+			IList<int[]> indexMap, IMatrixData result, int[] exColInds){
 			Func<double[], double> avExpression = GetAveraging(parameters.GetParam<int>("Combine main values").Value);
-			int[] exColInds = parameters.GetParam<int[]>("Main columns").Value;
-			if (exColInds.Length > 0){
+		    if (exColInds.Length > 0){
 				double[,] newExColumns = new double[mdata1.RowCount, exColInds.Length];
 				double[,] newQuality = new double[mdata1.RowCount, exColInds.Length];
 				bool[,] newIsImputed = new bool[mdata1.RowCount, exColInds.Length];
@@ -404,14 +404,15 @@ namespace PerseusPluginLib.Join{
 			return false;
 		}
 
-		private static void SetAnnotationRows(IDataWithAnnotationRows result, IDataWithAnnotationRows mdata1,
-			IDataWithAnnotationRows mdata2){
-			result.CategoryRowNames.Clear();
+		private static void SetAnnotationRows(IDataWithAnnotationRows result, IDataWithAnnotationRows mdata1, IDataWithAnnotationRows mdata2, int[] exColInds)
+        {
+            result.CategoryRowNames.Clear();
 			result.CategoryRowDescriptions.Clear();
 			result.ClearCategoryRows();
 			result.NumericRowNames.Clear();
 			result.NumericRowDescriptions.Clear();
 			result.NumericRows.Clear();
+            var exColCount = exColInds.Length;
 			string[] allCatNames = ArrayUtils.Concat(mdata1.CategoryRowNames, mdata2.CategoryRowNames);
 			allCatNames = ArrayUtils.UniqueValues(allCatNames);
 			result.CategoryRowNames = new List<string>();
@@ -423,7 +424,7 @@ namespace PerseusPluginLib.Join{
 			result.CategoryRowDescriptions = new List<string>();
 			for (int index = 0; index < allCatNames.Length; index++){
 				string t = allCatNames[index];
-				string[][] categoryRow = new string[mdata1.ColumnCount + mdata2.ColumnCount][];
+				string[][] categoryRow = new string[mdata1.ColumnCount + exColCount][];
 				for (int j = 0; j < categoryRow.Length; j++){
 					categoryRow[j] = new string[0];
 				}
@@ -437,8 +438,8 @@ namespace PerseusPluginLib.Join{
 				int ind2 = mdata2.CategoryRowNames.IndexOf(t);
 				if (ind2 >= 0){
 					string[][] c2 = mdata2.GetCategoryRowAt(ind2);
-					for (int j = 0; j < c2.Length; j++){
-						categoryRow[mdata1.ColumnCount + j] = c2[j];
+					for (int j = 0; j < exColCount; j++){
+						categoryRow[mdata1.ColumnCount + j] = c2[exColInds[j]];
 					}
 				}
 				result.AddCategoryRow(allCatNames[index], allCatDescriptions[index], categoryRow);
@@ -453,7 +454,7 @@ namespace PerseusPluginLib.Join{
 			}
 			result.NumericRowDescriptions = new List<string>(allNumDescriptions);
 			foreach (string t in allNumNames){
-				double[] numericRow = new double[mdata1.ColumnCount + mdata2.ColumnCount];
+				double[] numericRow = new double[mdata1.ColumnCount + exColCount];
 				for (int j = 0; j < numericRow.Length; j++){
 					numericRow[j] = double.NaN;
 				}
@@ -467,8 +468,8 @@ namespace PerseusPluginLib.Join{
 				int ind2 = mdata2.NumericRowNames.IndexOf(t);
 				if (ind2 >= 0){
 					double[] c2 = mdata2.NumericRows[ind2];
-					for (int j = 0; j < c2.Length; j++){
-						numericRow[mdata1.ColumnCount + j] = c2[j];
+					for (int j = 0; j < exColCount; j++){
+						numericRow[mdata1.ColumnCount + j] = c2[exColInds[j]];
 					}
 				}
 				result.NumericRows.Add(numericRow);
