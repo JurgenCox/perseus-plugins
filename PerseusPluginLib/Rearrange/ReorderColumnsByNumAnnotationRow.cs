@@ -19,7 +19,7 @@ namespace PerseusPluginLib.Rearrange {
 		public float DisplayRank => 2.9f;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
-		public string Url => null;
+		public string Url => "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Rearrange:ReorderColumnsByNumAnnotationRow";
 
 		public string Description =>
 			"The order of the columns as they appear in the matrix is changed according to the values in a numerical row " +

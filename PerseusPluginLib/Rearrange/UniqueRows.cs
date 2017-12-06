@@ -23,7 +23,7 @@ namespace PerseusPluginLib.Rearrange{
 		public string HelpOutput => "";
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
-		public string Url => "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Rearrange:UniqueValues";
+		public string Url => "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Rearrange:UniqueRows";
 
 		public int GetMaxThreads(Parameters parameters){
 			return 1;
