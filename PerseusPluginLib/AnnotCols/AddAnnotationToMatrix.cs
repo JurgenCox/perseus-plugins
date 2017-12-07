@@ -65,13 +65,12 @@ namespace PerseusPluginLib.AnnotCols
             {
                 errorString = $"Could not load annotations from file(s): {string.Join(", ", annotationProvider.BadSources)}";
             }
-            var annots = annotationProvider.Sources;
             int selFile = 0;
             bool isMainAnnot = false;
             var sources = annotationProvider.Sources;
             for (int i = 0; i < sources.Length; i++)
             {
-                if (sources[i].source.ToLower().Contains("perseusannot"))
+                if (sources[i].source.ToLower().Contains("mainannot"))
                 {
                     selFile = i;
                     isMainAnnot = true;

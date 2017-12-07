@@ -61,7 +61,7 @@ namespace PerseusPluginLib.AnnotCols{
 	        var textSources = annotationProvider.TextSources();
 	        for (int i = 0; i < textSources.Length; i++)
 	        {
-	            if (textSources[i].source.ToLower().Contains("perseusannot"))
+	            if (textSources[i].source.ToLower().Contains("mainannot"))
 	            {
 	                selFile = i;
 	                break;
