@@ -29,7 +29,7 @@ namespace PerseusPluginLib.AnnotRows {
 		public int NumDocuments => 0;
 
 		public string Url =>
-			"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Annotrows:CreateNumericalAnnotRow";
+			"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Annotrows:ManageNumericalAnnotRow";
 
 		public int GetMaxThreads(Parameters parameters) {
 			return 1;

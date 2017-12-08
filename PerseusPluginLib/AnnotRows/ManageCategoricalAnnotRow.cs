@@ -36,7 +36,7 @@ namespace PerseusPluginLib.AnnotRows {
 		}
 
 		public string Url =>
-			"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Annotrows:CreateCategoricalAnnotRow";
+			"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Annotrows:ManageCategoricalAnnotRow";
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo) {
