@@ -116,22 +116,22 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
             const string tab = "\t";
             var header = string.Join(tab,
                 new [] {baseIdentifiers.name}
-                .Concat(text.Select(t => t.name))
                 .Concat(category.Select(cat => cat.name))
+                .Concat(text.Select(t => t.name))
                 .Concat(numeric.Select(num => num.name)));
             writer.WriteLine(header);
             var typerow = string.Join(tab,
                 new [] {"#!{Type}"}
-                .Concat(Enumerable.Repeat("Text", text.Length))
                 .Concat(Enumerable.Repeat("Categorical", category.Length)
+                .Concat(Enumerable.Repeat("Text", text.Length))
                 .Concat(Enumerable.Repeat("Numerical", numeric.Length))));
             writer.WriteLine(typerow);
             for (int i = 0; i < baseIdentifiers.values.Length; i++)
             {
                 var captureI = i;
                 var row = new[] { baseIdentifiers.values[captureI] }
-                    .Concat(text.Select(annot => annot.values[captureI]))
                     .Concat(category.Select(annot => string.Join(";", annot.values[captureI].Where(values => !string.IsNullOrEmpty(values)))))
+                    .Concat(text.Select(annot => annot.values[captureI]))
                     .Concat(numeric.Select(annot => $"{annot.values[captureI]}"));
                 writer.WriteLine(string.Join(tab, row));
             }

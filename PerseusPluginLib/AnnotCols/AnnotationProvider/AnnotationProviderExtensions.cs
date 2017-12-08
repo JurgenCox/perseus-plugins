@@ -27,11 +27,15 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
         /// <param name="annotationProvider"></param>
         /// <param name="identifiers"></param>
         /// <param name="sourceIndex"></param>
-        /// <param name="annotationIndex"></param>
+        /// <param name="textAnnotationIndex"></param>
         /// <returns></returns>
-        public static string[] MapToBaseIdentifiers(this IAnnotationProvider annotationProvider, string[] identifiers, int sourceIndex, int annotationIndex)
+        public static string[] MapToBaseIdentifiers(this IAnnotationProvider annotationProvider, string[] identifiers, int sourceIndex, int textAnnotationIndex)
         {
             var selection = new[] {0};
+            var source = annotationProvider.Sources[sourceIndex];
+            var textAnnotations = source.annotation.Select((annot, i) => (annot: annot, i: i))
+                .Where(tup => tup.annot.type.Equals(AnnotType.Text)).ToArray();
+            var annotationIndex = textAnnotations[textAnnotationIndex].i;
             var mapping = annotationProvider.ReadMappings(sourceIndex, annotationIndex + 1, selection);
             var outerLeftJoin = OuterLeftJoin(identifiers, mapping, selection.Length);
             return outerLeftJoin.Select(toIds => string.Join(";", toIds.Single())).ToArray();

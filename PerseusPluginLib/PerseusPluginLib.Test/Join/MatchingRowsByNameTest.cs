@@ -13,7 +13,7 @@ using CollectionAssert = NUnit.Framework.CollectionAssert;
 namespace PerseusPluginLib.Test.Join
 {
 	[TestFixture]
-	public class MatchingRowsByNameTest : BaseTest
+	public class MatchingRowsByNameTest
     {
         private Parameters parameters;
         private IMatrixData expand;
@@ -37,7 +37,7 @@ namespace PerseusPluginLib.Test.Join
             parameters2.GetParam<int[]>("Text columns").Value = new[] {1};
             IMatrixData[] suppl = null;
             IDocumentData[] docs = null;
-            multiNum.ProcessData(peptides, parameters2, ref suppl, ref docs, CreateProcessInfo());
+            multiNum.ProcessData(peptides, parameters2, ref suppl, ref docs, BaseTest.CreateProcessInfo());
 
 	        double[,] proteinMainValues = new[,]
 	        {
@@ -84,7 +84,7 @@ namespace PerseusPluginLib.Test.Join
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
 	        IDocumentData[] documents = null;
-	        IMatrixData matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
+	        IMatrixData matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, BaseTest.CreateProcessInfo());
 
             CollectionAssert.AreEqual(new [] {"pep_MS/MS Count", "pep_id", "pep_Protein group IDs", "pep_Intensity"},
                 matched.ColumnNames.Concat(matched.StringColumnNames).Concat(matched.NumericColumnNames).ToArray());
@@ -103,7 +103,7 @@ namespace PerseusPluginLib.Test.Join
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
 	        IDocumentData[] documents = null;
-	        IMatrixData matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
+	        IMatrixData matched = matching.ProcessData(new[] {expand, proteinMain}, parameters, ref supplTables, ref documents, BaseTest.CreateProcessInfo());
 
             CollectionAssert.AreEqual(new [] {"pep_MS/MS Count", "prot_LFQ intensity", "pep_id", "pep_Protein group IDs", "pep_Intensity"},
                 matched.ColumnNames.Concat(matched.StringColumnNames).Concat(matched.NumericColumnNames).ToArray());
@@ -122,7 +122,7 @@ namespace PerseusPluginLib.Test.Join
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
 	        IDocumentData[] documents = null;
-	        IMatrixData matched = matching.ProcessData(new[] {peptides, proteinMain}, parameters, ref supplTables, ref documents, CreateProcessInfo());
+	        IMatrixData matched = matching.ProcessData(new[] {peptides, proteinMain}, parameters, ref supplTables, ref documents, BaseTest.CreateProcessInfo());
 
             CollectionAssert.AreEqual(new [] {"pep_MS/MS Count", "prot_LFQ intensity", "pep_id", "pep_Protein group IDs", "pep_Intensity"},
                 matched.ColumnNames.Concat(matched.StringColumnNames).Concat(matched.NumericColumnNames).ToArray());

@@ -66,11 +66,11 @@ namespace PerseusPluginLib.Test.Annot
                 var result = Encoding.UTF8.GetString(stream.ToArray());
                 var lines = Regex.Split(result, @"\r?\n|\r");
                 Assert.AreEqual(6, lines.Length);
-                Assert.AreEqual("ids\ttextannot\ttextannot2\tcatannot\tnumannot", lines[0]);
-                Assert.AreEqual("#!{Type}\tText\tText\tCategorical\tNumerical", lines[1]);
-                Assert.AreEqual("0;3\t1\t4\ta;b;c\t0", lines[2]);
-                Assert.AreEqual("4\t2\t5;6\t\t1", lines[3]);
-                Assert.AreEqual("A\t3\t8\td\t2", lines[4]);
+                Assert.AreEqual("ids\tcatannot\ttextannot\ttextannot2\tnumannot", lines[0]);
+                Assert.AreEqual("#!{Type}\tCategorical\tText\tText\tNumerical", lines[1]);
+                Assert.AreEqual("0;3\ta;b;c\t1\t4\t0", lines[2]);
+                Assert.AreEqual("4\t\t2\t5;6\t1", lines[3]);
+                Assert.AreEqual("A\td\t3\t8\t2", lines[4]);
                 Assert.AreEqual("", lines[5]);
             }
         }

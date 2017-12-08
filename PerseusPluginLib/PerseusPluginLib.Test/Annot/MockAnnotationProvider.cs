@@ -16,8 +16,8 @@ namespace PerseusPluginLib.Test.Annot
         public string[] textannot;
         public string[] textannot2;
         public string[][] catannot;
+        public string[][] catannot2;
         public double[] numannot;
-        private string[][] annots;
 
         public MockAnnotationProvider()
         {
@@ -25,8 +25,8 @@ namespace PerseusPluginLib.Test.Annot
             textannot = new[] { "a; b", "c", "", "b;e", "f" };
             textannot2 = new[] { "a;b", "c", "", "e", "f" };
             catannot = new[] { new[] { "x", "y" }, new[] { "z" }, new string[0], new[] { "z" }, new[] { "z" } };
+            catannot2 = new[] { new[] { "x", "y" }, new[] { "z" }, new string[0], new[] { "z" }, new[] { "z" } };
             numannot = new[] { 0.0, -1, 1, 0.0, 0.1 };
-            annots = new[] { idCol, textannot, textannot2, catannot.Select(cats => string.Join(";", cats)).ToArray(), numannot.Select(d => $"{d}").ToArray() };
             string result;
             using (var stream = new MemoryStream())
             using (var writer = new StreamWriter(stream))

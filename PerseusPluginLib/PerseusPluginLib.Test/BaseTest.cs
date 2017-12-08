@@ -1,26 +1,24 @@
 ﻿using System;
 using System.Reflection;
+using BaseLibS.Param;
 using NUnit.Framework;
+using PerseusApi.Document;
 using PerseusApi.Generic;
+using PerseusApi.Matrix;
 
 namespace PerseusPluginLib.Test
 {
-    public class BaseTest
+    public static class BaseTest
     {
-        [SetUp]
-        public void Initialize()
+        public static ProcessInfo ProcessData(this IMatrixProcessing processing, IMatrixData mdata, Parameters parameters)
         {
-            Assembly assembly = Assembly.GetAssembly(GetType());
-
-            AppDomainManager manager = new AppDomainManager();
-            FieldInfo entryAssemblyfield = manager.GetType().GetField("m_entryAssembly", BindingFlags.Instance | BindingFlags.NonPublic);
-            entryAssemblyfield.SetValue(manager, assembly);
-
-            AppDomain domain = AppDomain.CurrentDomain;
-            FieldInfo domainManagerField = domain.GetType().GetField("_domainManager", BindingFlags.Instance | BindingFlags.NonPublic);
-            domainManagerField.SetValue(domain, manager);
+            var pInfo = CreateProcessInfo();
+            IMatrixData[] suppl = null;
+            IDocumentData[] supplDocs = null;
+            processing.ProcessData(mdata, parameters, ref suppl, ref supplDocs, pInfo);
+            return pInfo;
         }
-
+        
         public static ProcessInfo CreateProcessInfo()
         {
             return new ProcessInfo(new Settings(), s => { }, i => { }, 1, i => { });

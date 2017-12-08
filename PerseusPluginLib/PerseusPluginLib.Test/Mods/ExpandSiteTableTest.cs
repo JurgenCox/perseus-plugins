@@ -10,7 +10,7 @@ using PerseusPluginLib.Mods;
 namespace PerseusPluginLib.Test.Mods
 {
 	[TestFixture]
-	public class ExpandSiteTableTest : BaseTest
+	public class ExpandSiteTableTest
     {
 	    [Test]
 	    public void TestSmallExample()
@@ -33,7 +33,7 @@ namespace PerseusPluginLib.Test.Mods
             ExpandSiteTable expand = new ExpandSiteTable();
 	        IMatrixData[] supplData = null;
 	        IDocumentData[] docs = null;
-            expand.ProcessData(mdata, new Parameters(), ref supplData, ref docs, CreateProcessInfo());
+            expand.ProcessData(mdata, new Parameters(), ref supplData, ref docs, BaseTest.CreateProcessInfo());
             Assert.AreEqual(2, mdata.ColumnCount); 
             CollectionAssert.AreEqual(new [] {"No expand", "Col"}, mdata.ColumnNames.ToArray());
             Assert.AreEqual(2, mdata.ColumnDescriptions.Count);

@@ -8,7 +8,7 @@ using PerseusApi.Utils;
 
 namespace PerseusPluginLib.Test.PerseusApi {
 	[TestFixture]
-	public class PerseusUtilsTest : BaseTest {
+	public class PerseusUtilsTest {
 		[Test]
 		public void GetAvailableAnnotsTest()
 		{
