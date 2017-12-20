@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using BaseLib.Graphic;
 using BaseLibS.Num;
+using BaseLibS.Util;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusPluginLib.Utils;
@@ -25,7 +26,7 @@ namespace PerseusPluginLib.Manual{
 		private void RemoveSelectedRowsButton_OnClick(object sender, EventArgs e){
 			int[] sel = tableView1.GetSelectedRows();
 			if (sel.Length == 0){
-				MessageBox.Show("Please select some rows.");
+				MessageBox.Show(Loc.PleaseSelectSomeRows);
 			}
 			IMatrixData mx = (IMatrixData) mdata.Clone();
 			mx.ExtractRows(ArrayUtils.Complement(sel, tableView1.RowCount));
@@ -35,7 +36,7 @@ namespace PerseusPluginLib.Manual{
 		private void KeepSelectedRowsButton_OnClick(object sender, EventArgs e){
 			int[] sel = tableView1.GetSelectedRows();
 			if (sel.Length == 0){
-				MessageBox.Show("Please select some rows.");
+				MessageBox.Show(Loc.PleaseSelectSomeRows);
 			}
 			IMatrixData mx = (IMatrixData) mdata.Clone();
 			mx.ExtractRows(sel);
