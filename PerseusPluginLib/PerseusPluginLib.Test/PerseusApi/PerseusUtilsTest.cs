@@ -49,7 +49,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 			}
 
 			IMatrixData mdata2 = PerseusFactory.CreateMatrixData();
-			PerseusUtils.ReadMatrix(mdata2, new ProcessInfo(new Settings(), status => { }, progress => { }, 1, i => { }), () => {
+			PerseusUtils.ReadMatrix(mdata2, new ProcessInfo(new Settings(), status => { }, progress => { }, 1), () => {
 				StreamReader tmpStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(mdataStr)));
 				return tmpStream;
 			}, "matrix1", '\t');
@@ -86,7 +86,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 				mdataStr = Encoding.UTF8.GetString(memstream.ToArray());
 			}
 			IMatrixData mdata3 = PerseusFactory.CreateMatrixData();
-			PerseusUtils.ReadMatrix(mdata3, new ProcessInfo(new Settings(), status => { }, progress => { }, 1, i => { }),
+			PerseusUtils.ReadMatrix(mdata3, new ProcessInfo(new Settings(), status => { }, progress => { }, 1),
 				() => {
 					StreamReader tmpStream = new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(mdataStr)));
 					return tmpStream;

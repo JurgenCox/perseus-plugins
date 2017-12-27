@@ -21,7 +21,7 @@ namespace PerseusPluginLib.Test
         
         public static ProcessInfo CreateProcessInfo()
         {
-            return new ProcessInfo(new Settings(), s => { }, i => { }, 1, i => { });
+            return new ProcessInfo(new Settings(), s => { }, i => { }, 1);
         }
     }
 }

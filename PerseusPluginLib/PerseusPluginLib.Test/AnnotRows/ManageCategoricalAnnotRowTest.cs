@@ -25,7 +25,7 @@ namespace PerseusPluginLib.Test.AnnotRows
             IMatrixData[] suppl = null;
             IDocumentData[] suppld = null;
             processing.ProcessData(mdata, parameters, ref suppl, ref suppld, new ProcessInfo(new Settings(), s => { },
-                i => { }, 1, i => { }));
+                i => { }, 1));
             Assert.AreEqual("Experiment", mdata.CategoryRowNames[0]);
             CollectionAssert.AreEquivalent(new [] {"a", "b"}, mdata.GetCategoryRowValuesAt(0));
             CollectionAssert.AreEqual(new [] {"a"}, mdata.GetCategoryRowEntryAt(0,0));
