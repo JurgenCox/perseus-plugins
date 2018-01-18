@@ -69,6 +69,7 @@
     <Compile Include="AnnotRows\ManageCategoricalAnnotRowTest.cs" />
     <Compile Include="Annot\AnnotationProviderTest.cs" />
     <Compile Include="Annot\AnnotationFormatTest.cs" />
+    <Compile Include="Annot\CombineAnnotationColumnsTest.cs" />
     <Compile Include="Annot\Examples.cs" />
     <Compile Include="Annot\MockAnnotationProvider.cs" />
     <Compile Include="Filter\FilterDuplicateRowsTest.cs" />
