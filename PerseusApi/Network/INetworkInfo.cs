@@ -42,10 +42,5 @@ namespace PerseusApi.Network{
         /// <param name="errString"></param>
         /// <returns></returns>
 	    bool IsConsistent(out string errString);
-        
-        /// <summary>
-        /// Contains arbitrary meta-data for the networks.
-        /// </summary>
-        Dictionary<string, object> MetaData { get; set; }
 	}
 }

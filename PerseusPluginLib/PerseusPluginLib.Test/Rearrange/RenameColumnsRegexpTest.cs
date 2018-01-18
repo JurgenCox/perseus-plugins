@@ -51,7 +51,8 @@ namespace PerseusPluginLib.Test.Rearrange{
 			matrix.Setup(m => m.ColumnNames).Returns(colnames);
 			string err = "";
 			Parameters param = renamer.GetParameters(matrix.Object, ref err);
-			param.GetParam<Tuple<Regex, string>>("Regex").Value = Tuple.Create(new Regex(pattern), replacement);
+            param.GetParamWithSubParams<int>("Column type").GetSubParameters()
+                .GetParam<Tuple<Regex, string>>("Regex").Value = Tuple.Create(new Regex(pattern), replacement);
 			IMatrixData[] supplTables = null;
 			IDocumentData[] documents = null;
 			renamer.ProcessData(matrix.Object, param, ref supplTables, ref documents, null);

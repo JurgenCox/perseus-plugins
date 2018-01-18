@@ -61,6 +61,7 @@
     <Compile Include="AnnotCols\AnnotationProvider\StreamAnnotationProvider.cs" />
     <Compile Include="AnnotCols\AverageCategories.cs" />
     <Compile Include="AnnotCols\BackToBaseIdentifiers.cs" />
+    <Compile Include="AnnotCols\CombineAnnotationColumns.cs" />
     <Compile Include="AnnotCols\CategoryCounting.cs" />
     <Compile Include="AnnotCols\AnnotationProvider\ConfFolderAnnotationProvider.cs" />
     <Compile Include="AnnotCols\CountingResult.cs" />
