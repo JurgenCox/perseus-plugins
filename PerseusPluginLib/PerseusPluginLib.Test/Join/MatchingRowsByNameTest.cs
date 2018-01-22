@@ -62,7 +62,7 @@ namespace PerseusPluginLib.Test.Join
 	        matching = new MatchingRowsByName();
 	        string err = string.Empty;
 	        parameters = matching.GetParameters(new[] {expand, proteinMain}, ref err);
-            
+            parameters.GetParam<int>("Matching column in matrix 2").Value = 0;
         }
 
         [Test]
@@ -95,7 +95,7 @@ namespace PerseusPluginLib.Test.Join
 	    [Test]
 	    public void TestSmallExample2()
 	    {
-	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Main columns");
+	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Copy main columns");
 	        mainColParam.Value = new[] {0};
 	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
             CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());
@@ -114,7 +114,7 @@ namespace PerseusPluginLib.Test.Join
         [Test]
 	    public void TestSmallExample3()
 	    {
-	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Main columns");
+	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Copy main columns");
 	        mainColParam.Value = new[] {0};
 	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
             CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());

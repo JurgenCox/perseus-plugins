@@ -49,76 +49,52 @@ namespace PerseusPluginLib.Join{
 		public Parameters GetParameters(IMatrixData[] inputData, ref string errString){
 			IMatrixData matrixData1 = inputData[0];
 			IMatrixData matrixData2 = inputData[1];
-			List<string> controlChoice1 = matrixData1.StringColumnNames;
-			int index1 = 0;
-			for (int i = 0; i < controlChoice1.Count; i++){
-				if (controlChoice1[i].ToLower().Contains("uniprot")){
-					index1 = i;
-					break;
-				}
-			}
-			List<string> controlChoice2 = matrixData2.StringColumnNames;
-			int index2 = 0;
-			for (int i = 0; i < controlChoice2.Count; i++){
-				if (controlChoice2[i].ToLower().Contains("uniprot")){
-					index2 = i;
-					break;
-				}
-			}
-			List<string> numCol = matrixData2.NumericColumnNames;
-			int[] numSel = new int[0];
-			List<string> catCol = matrixData2.CategoryColumnNames;
-			int[] catSel = new int[0];
-			List<string> textCol = matrixData2.StringColumnNames;
-			int[] textSel = new int[0];
-			List<string> exCol = matrixData2.ColumnNames;
-			int[] exSel = new int[0];
 			return
 				new Parameters(new SingleChoiceParam("Matching column in matrix 1"){
-					Values = controlChoice1,
-					Value = index1,
+					Values = matrixData1.StringColumnNames,
+					Value = matrixData1.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
 					Help = "The column in the first matrix that is used for matching rows."
 				}, new SingleChoiceParam("Matching column in matrix 2"){
-					Values = controlChoice2,
-					Value = index2,
+					Values = matrixData2.StringColumnNames,
+					Value = matrixData2.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
 					Help = "The column in the second matrix that is used for matching rows."
 				}, new BoolWithSubParams("Use additional column pair"){
 					SubParamsTrue =
 						new Parameters(new SingleChoiceParam("Additional column in matrix 1"){
-							Values = controlChoice1,
-							Value = index1,
+                            Values = matrixData1.StringColumnNames,
+                            Value = matrixData1.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
 							Help = "Additional column in the first matrix that is used for matching rows."
 						}, new SingleChoiceParam("Additional column in matrix 2"){
-							Values = controlChoice2,
-							Value = index2,
+                            Values = matrixData2.StringColumnNames,
+                            Value = matrixData2.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
 							Help = "Additional column in the second matrix that is used for matching rows."
 						})
-				}, new BoolParam("Indicator"){
+				}, new BoolParam("Add indicator"){
 					Help =
 						"If checked, a categorical column will be added in which it is indicated by a '+' if at least one row of the second " +
 						"matrix matches."
-				}, new MultiChoiceParam("Main columns"){
-					Value = exSel,
-					Values = exCol,
+				}, new MultiChoiceParam("Copy main columns"){
+					Values = matrixData2.ColumnNames,
+					Value = new int[0],
 					Help = "Main columns of the second matrix that should be added to the first matrix."
-				}, new SingleChoiceParam("Combine main values"){
+				}, new SingleChoiceParam("Combine copied main values"){
 					Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum"},
 					Help =
 						"In case multiple rows of the second matrix match to a row of the first matrix, how should multiple " +
 						"values be combined?"
-				}, new MultiChoiceParam("Categorical columns"){
-					Values = catCol,
-					Value = catSel,
+				}, new MultiChoiceParam("Copy categorical columns"){
+					Values = matrixData2.CategoryColumnNames,
+					Value = new int[0],
 					Help = "Categorical columns of the second matrix that should be added to the first matrix."
-				}, new MultiChoiceParam("Text columns"){
-					Values = textCol,
-					Value = textSel,
+				}, new MultiChoiceParam("Copy text columns"){
+					Values = matrixData2.StringColumnNames,
+					Value = new int[0],
 					Help = "Text columns of the second matrix that should be added to the first matrix."
-				}, new MultiChoiceParam("Numerical columns"){
-					Values = numCol,
-					Value = numSel,
+				}, new MultiChoiceParam("Copy numerical columns"){
+					Values = matrixData2.NumericColumnNames,
+					Value = new int[0],
 					Help = "Numerical columns of the second matrix that should be added to the first matrix."
-				}, new SingleChoiceParam("Combine numerical values"){
+				}, new SingleChoiceParam("Combine copied numerical values"){
 					Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum", "Keep separate"},
 					Help =
 						"In case multiple rows of the second matrix match to a row of the first matrix, how should multiple " +
@@ -132,7 +108,7 @@ namespace PerseusPluginLib.Join{
 			IMatrixData mdata1 = inputData[0];
 			IMatrixData mdata2 = inputData[1];
 			int[][] indexMap = GetIndexMap(mdata1, mdata2, parameters, separator);
-		    var exColInds = parameters.GetParam<int[]>("Main columns").Value;
+		    var exColInds = parameters.GetParam<int[]>("Copy main columns").Value;
 			IMatrixData result = GetResult(mdata1, mdata2, parameters, indexMap, exColInds);
 		    AddMainColumns(mdata1, mdata2, parameters, indexMap, result, exColInds);
 			AddNumericColumns(mdata1, mdata2, parameters, indexMap, result);
@@ -146,9 +122,10 @@ namespace PerseusPluginLib.Join{
 		{
 			IMatrixData result = (IMatrixData) mdata1.Clone();
 			SetAnnotationRows(result, mdata1, mdata2, exColInds);
-			bool indicator = parameters.GetParam<bool>("Indicator").Value;
-			if (indicator){
-				string[][] indicatorCol = new string[indexMap.Count][];
+            bool indicator = parameters.GetParam<bool>("Add indicator").Value;
+            if (indicator)
+            {
+                string[][] indicatorCol = new string[indexMap.Count][];
 				for (int i = 0; i < indexMap.Count; i++){
 					indicatorCol[i] = indexMap[i].Length > 0 ? new[]{"+"} : new string[0];
 				}
@@ -160,7 +137,7 @@ namespace PerseusPluginLib.Join{
 
 		private static void AddMainColumns(IDataWithAnnotationColumns mdata1, IMatrixData mdata2, Parameters parameters,
 			IList<int[]> indexMap, IMatrixData result, int[] exColInds){
-			Func<double[], double> avExpression = GetAveraging(parameters.GetParam<int>("Combine main values").Value);
+			Func<double[], double> avExpression = GetAveraging(parameters.GetParam<int>("Combine copied main values").Value);
 		    if (exColInds.Length > 0){
 				double[,] newExColumns = new double[mdata1.RowCount, exColInds.Length];
 				double[,] newQuality = new double[mdata1.RowCount, exColInds.Length];
@@ -201,8 +178,8 @@ namespace PerseusPluginLib.Join{
 
 		private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
 			Parameters parameters, IList<int[]> indexMap, IDataWithAnnotationColumns result){
-			Func<double[], double> avNumerical = GetAveraging(parameters.GetParam<int>("Combine numerical values").Value);
-			int[] numCols = parameters.GetParam<int[]>("Numerical columns").Value;
+			Func<double[], double> avNumerical = GetAveraging(parameters.GetParam<int>("Combine copied numerical values").Value);
+			int[] numCols = parameters.GetParam<int[]>("Copy numerical columns").Value;
 			if (avNumerical != null){
 				double[][] newNumericalColumns = new double[numCols.Length][];
 				string[] newNumColNames = new string[numCols.Length];
@@ -252,7 +229,7 @@ namespace PerseusPluginLib.Join{
 
 		private static void AddCategoricalColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
 			Parameters parameters, IList<int[]> indexMap, IDataWithAnnotationColumns result){
-			int[] catCols = parameters.GetParam<int[]>("Categorical columns").Value;
+			int[] catCols = parameters.GetParam<int[]>("Copy categorical columns").Value;
 			string[][][] newCatColumns = new string[catCols.Length][][];
 			string[] newCatColNames = new string[catCols.Length];
 			for (int i = 0; i < catCols.Length; i++){
@@ -280,7 +257,7 @@ namespace PerseusPluginLib.Join{
 
 		private static void AddStringColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
 			Parameters parameters, IList<int[]> indexMap, IDataWithAnnotationColumns result){
-			int[] stringCols = parameters.GetParam<int[]>("Text columns").Value;
+			int[] stringCols = parameters.GetParam<int[]>("Copy text columns").Value;
 			string[][] newStringColumns = new string[stringCols.Length][];
 			string[] newStringColNames = new string[stringCols.Length];
 			for (int i = 0; i < stringCols.Length; i++){
