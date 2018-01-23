@@ -77,8 +77,8 @@ namespace PerseusPluginLib.Test.Join
 	    [Test]
 	    public void TestSmallExample()
 	    {
-	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
-            CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());
+	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in table 1");
+            CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs", "pep_Intensity"}, matchColParam1.Values.ToArray());
 	        matchColParam1.Value = 1;
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
@@ -96,8 +96,8 @@ namespace PerseusPluginLib.Test.Join
 	    {
 	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Copy main columns");
 	        mainColParam.Value = new[] {0};
-	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
-            CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());
+	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in table 1");
+            CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs", "pep_Intensity"}, matchColParam1.Values.ToArray());
 	        matchColParam1.Value = 1;
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
@@ -115,8 +115,8 @@ namespace PerseusPluginLib.Test.Join
 	    {
 	        Parameter<int[]> mainColParam = parameters.GetParam<int[]>("Copy main columns");
 	        mainColParam.Value = new[] {0};
-	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in matrix 1");
-            CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs"}, matchColParam1.Values.ToArray());
+	        SingleChoiceParam matchColParam1 = (SingleChoiceParam) parameters.GetParam<int>("Matching column in table 1");
+            CollectionAssert.AreEqual(new [] {"pep_id", "pep_Protein group IDs", "pep_Intensity"}, matchColParam1.Values.ToArray());
 	        matchColParam1.Value = 1;
             Assert.AreEqual("pep_Protein group IDs", matchColParam1.StringValue);
 	        IMatrixData[] supplTables = null;
