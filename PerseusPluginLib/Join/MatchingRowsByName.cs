@@ -49,24 +49,25 @@ namespace PerseusPluginLib.Join{
 		public Parameters GetParameters(IMatrixData[] inputData, ref string errString){
 			IMatrixData matrixData1 = inputData[0];
 			IMatrixData matrixData2 = inputData[1];
+		    int FindUniprot(IDataWithAnnotationColumns data) => Math.Max(0, data.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")));
 			return
 				new Parameters(new SingleChoiceParam("Matching column in matrix 1"){
 					Values = matrixData1.StringColumnNames,
-					Value = matrixData1.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
+					Value = FindUniprot(matrixData1),
 					Help = "The column in the first matrix that is used for matching rows."
 				}, new SingleChoiceParam("Matching column in matrix 2"){
 					Values = matrixData2.StringColumnNames,
-					Value = matrixData2.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
+					Value = FindUniprot(matrixData2),
 					Help = "The column in the second matrix that is used for matching rows."
 				}, new BoolWithSubParams("Use additional column pair"){
 					SubParamsTrue =
 						new Parameters(new SingleChoiceParam("Additional column in matrix 1"){
                             Values = matrixData1.StringColumnNames,
-                            Value = matrixData1.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
+                            Value = FindUniprot(matrixData1),
 							Help = "Additional column in the first matrix that is used for matching rows."
 						}, new SingleChoiceParam("Additional column in matrix 2"){
                             Values = matrixData2.StringColumnNames,
-                            Value = matrixData2.StringColumnNames.FindIndex(col => col.ToLower().Contains("uniprot")),
+                            Value = FindUniprot(matrixData2),
 							Help = "Additional column in the second matrix that is used for matching rows."
 						})
 				}, new BoolParam("Add indicator"){
@@ -107,23 +108,29 @@ namespace PerseusPluginLib.Join{
 			const string separator = "!§$%";
 			IMatrixData mdata1 = inputData[0];
 			IMatrixData mdata2 = inputData[1];
-			int[][] indexMap = GetIndexMap(mdata1, mdata2, parameters, separator);
+			ParameterWithSubParams<bool> p = parameters.GetParamWithSubParams<bool>("Use additional column pair");
+		    Parameters subPar = p.GetSubParameters();
+			bool secondColumn = p.Value;
+		    int? additionalColumnInMatrix2 = secondColumn ? subPar.GetParam<int>("Additional column in matrix 2").Value : (int?) null;
+		    int? additionalColumnInMatrix1 = secondColumn ? subPar.GetParam<int>("Additional column in matrix 1").Value : (int?) null;
+		    int matchingColumnInMatrix1 = parameters.GetParam<int>("Matching column in matrix 1").Value;
+		    int matchingColumnInMatrix2 = parameters.GetParam<int>("Matching column in matrix 2").Value;
+		    int[][] indexMap = GetIndexMap(mdata1, mdata2, separator, matchingColumnInMatrix1, matchingColumnInMatrix2,
+		        additionalColumnInMatrix1, additionalColumnInMatrix2);
 		    var exColInds = parameters.GetParam<int[]>("Copy main columns").Value;
-			IMatrixData result = GetResult(mdata1, mdata2, parameters, indexMap, exColInds);
-		    AddMainColumns(mdata1, mdata2, parameters, indexMap, result, exColInds);
-			AddNumericColumns(mdata1, mdata2, parameters, indexMap, result);
-			AddCategoricalColumns(mdata1, mdata2, parameters, indexMap, result);
-			AddStringColumns(mdata1, mdata2, parameters, indexMap, result);
+			IMatrixData result = GetResult(mdata1, mdata2, indexMap, exColInds, parameters.GetParam<bool>("Add indicator").Value);
+		    AddMainColumns(mdata1, mdata2, indexMap, result, exColInds, GetAveraging(parameters.GetParam<int>("Combine copied main values").Value));
+			AddNumericColumns(mdata1, mdata2, indexMap, result, parameters.GetParam<int[]>("Copy numerical columns").Value, GetAveraging(parameters.GetParam<int>("Combine copied numerical values").Value));
+			AddCategoricalColumns(mdata1, mdata2, indexMap, result, parameters.GetParam<int[]>("Copy categorical columns").Value);
+			AddStringColumns(mdata1, mdata2, indexMap, result, parameters.GetParam<int[]>("Copy text columns").Value);
 			return result;
 		}
 
-		private static IMatrixData GetResult(IMatrixData mdata1, IMatrixData mdata2,
-			Parameters parameters, IList<int[]> indexMap, int[] exColInds)
+		private static IMatrixData GetResult(IMatrixData mdata1, IMatrixData mdata2, IList<int[]> indexMap, int[] exColInds, bool addIndicator)
 		{
 			IMatrixData result = (IMatrixData) mdata1.Clone();
 			SetAnnotationRows(result, mdata1, mdata2, exColInds);
-            bool indicator = parameters.GetParam<bool>("Add indicator").Value;
-            if (indicator)
+		    if (addIndicator)
             {
                 string[][] indicatorCol = new string[indexMap.Count][];
 				for (int i = 0; i < indexMap.Count; i++){
@@ -135,9 +142,8 @@ namespace PerseusPluginLib.Join{
 			return result;
 		}
 
-		private static void AddMainColumns(IDataWithAnnotationColumns mdata1, IMatrixData mdata2, Parameters parameters,
-			IList<int[]> indexMap, IMatrixData result, int[] exColInds){
-			Func<double[], double> avExpression = GetAveraging(parameters.GetParam<int>("Combine copied main values").Value);
+		private static void AddMainColumns(IDataWithAnnotationColumns mdata1, IMatrixData mdata2,
+			IList<int[]> indexMap, IMatrixData result, int[] exColInds, Func<double[], double> avExpression){
 		    if (exColInds.Length > 0){
 				double[,] newExColumns = new double[mdata1.RowCount, exColInds.Length];
 				double[,] newQuality = new double[mdata1.RowCount, exColInds.Length];
@@ -176,16 +182,13 @@ namespace PerseusPluginLib.Join{
 			}
 		}
 
-		private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
-			Parameters parameters, IList<int[]> indexMap, IDataWithAnnotationColumns result){
-			Func<double[], double> avNumerical = GetAveraging(parameters.GetParam<int>("Combine copied numerical values").Value);
-			int[] numCols = parameters.GetParam<int[]>("Copy numerical columns").Value;
-			if (avNumerical != null){
-				double[][] newNumericalColumns = new double[numCols.Length][];
-				string[] newNumColNames = new string[numCols.Length];
-				for (int i = 0; i < numCols.Length; i++){
-					double[] oldCol = mdata2.NumericColumns[numCols[i]];
-					newNumColNames[i] = mdata2.NumericColumnNames[numCols[i]];
+		private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, IDataWithAnnotationColumns result, int[] copyNumericalColumns, Func<double[], double> avNumerical){
+		    if (avNumerical != null){
+				double[][] newNumericalColumns = new double[copyNumericalColumns.Length][];
+				string[] newNumColNames = new string[copyNumericalColumns.Length];
+				for (int i = 0; i < copyNumericalColumns.Length; i++){
+					double[] oldCol = mdata2.NumericColumns[copyNumericalColumns[i]];
+					newNumColNames[i] = mdata2.NumericColumnNames[copyNumericalColumns[i]];
 					newNumericalColumns[i] = new double[mdata1.RowCount];
 					for (int j = 0; j < mdata1.RowCount; j++){
 						int[] inds = indexMap[j];
@@ -199,15 +202,15 @@ namespace PerseusPluginLib.Join{
 						newNumericalColumns[i][j] = values.Count == 0 ? double.NaN : avNumerical(values.ToArray());
 					}
 				}
-				for (int i = 0; i < numCols.Length; i++){
+				for (int i = 0; i < copyNumericalColumns.Length; i++){
 					result.AddNumericColumn(newNumColNames[i], "", newNumericalColumns[i]);
 				}
 			} else{
-				double[][][] newMultiNumericalColumns = new double[numCols.Length][][];
-				string[] newMultiNumColNames = new string[numCols.Length];
-				for (int i = 0; i < numCols.Length; i++){
-					double[] oldCol = mdata2.NumericColumns[numCols[i]];
-					newMultiNumColNames[i] = mdata2.NumericColumnNames[numCols[i]];
+				double[][][] newMultiNumericalColumns = new double[copyNumericalColumns.Length][][];
+				string[] newMultiNumColNames = new string[copyNumericalColumns.Length];
+				for (int i = 0; i < copyNumericalColumns.Length; i++){
+					double[] oldCol = mdata2.NumericColumns[copyNumericalColumns[i]];
+					newMultiNumColNames[i] = mdata2.NumericColumnNames[copyNumericalColumns[i]];
 					newMultiNumericalColumns[i] = new double[mdata1.RowCount][];
 					for (int j = 0; j < mdata1.RowCount; j++){
 						int[] inds = indexMap[j];
@@ -221,20 +224,18 @@ namespace PerseusPluginLib.Join{
 						newMultiNumericalColumns[i][j] = values.ToArray();
 					}
 				}
-				for (int i = 0; i < numCols.Length; i++){
+				for (int i = 0; i < copyNumericalColumns.Length; i++){
 					result.AddMultiNumericColumn(newMultiNumColNames[i], "", newMultiNumericalColumns[i]);
 				}
 			}
 		}
 
-		private static void AddCategoricalColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
-			Parameters parameters, IList<int[]> indexMap, IDataWithAnnotationColumns result){
-			int[] catCols = parameters.GetParam<int[]>("Copy categorical columns").Value;
-			string[][][] newCatColumns = new string[catCols.Length][][];
-			string[] newCatColNames = new string[catCols.Length];
-			for (int i = 0; i < catCols.Length; i++){
-				string[][] oldCol = mdata2.GetCategoryColumnAt(catCols[i]);
-				newCatColNames[i] = mdata2.CategoryColumnNames[catCols[i]];
+		private static void AddCategoricalColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, IDataWithAnnotationColumns result, int[] copyCatColumns){
+		    string[][][] newCatColumns = new string[copyCatColumns.Length][][];
+			string[] newCatColNames = new string[copyCatColumns.Length];
+			for (int i = 0; i < copyCatColumns.Length; i++){
+				string[][] oldCol = mdata2.GetCategoryColumnAt(copyCatColumns[i]);
+				newCatColNames[i] = mdata2.CategoryColumnNames[copyCatColumns[i]];
 				newCatColumns[i] = new string[mdata1.RowCount][];
 				for (int j = 0; j < mdata1.RowCount; j++){
 					int[] inds = indexMap[j];
@@ -250,19 +251,17 @@ namespace PerseusPluginLib.Join{
 						: ArrayUtils.UniqueValues(ArrayUtils.Concat(values.ToArray()));
 				}
 			}
-			for (int i = 0; i < catCols.Length; i++){
+			for (int i = 0; i < copyCatColumns.Length; i++){
 				result.AddCategoryColumn(newCatColNames[i], "", newCatColumns[i]);
 			}
 		}
 
-		private static void AddStringColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
-			Parameters parameters, IList<int[]> indexMap, IDataWithAnnotationColumns result){
-			int[] stringCols = parameters.GetParam<int[]>("Copy text columns").Value;
-			string[][] newStringColumns = new string[stringCols.Length][];
-			string[] newStringColNames = new string[stringCols.Length];
-			for (int i = 0; i < stringCols.Length; i++){
-				string[] oldCol = mdata2.StringColumns[stringCols[i]];
-				newStringColNames[i] = mdata2.StringColumnNames[stringCols[i]];
+		private static void AddStringColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, IDataWithAnnotationColumns result, int[] copyTextColumns){
+		    string[][] newStringColumns = new string[copyTextColumns.Length][];
+			string[] newStringColNames = new string[copyTextColumns.Length];
+			for (int i = 0; i < copyTextColumns.Length; i++){
+				string[] oldCol = mdata2.StringColumns[copyTextColumns[i]];
+				newStringColNames[i] = mdata2.StringColumnNames[copyTextColumns[i]];
 				newStringColumns[i] = new string[mdata1.RowCount];
 				for (int j = 0; j < mdata1.RowCount; j++){
 					int[] inds = indexMap[j];
@@ -276,14 +275,13 @@ namespace PerseusPluginLib.Join{
 					newStringColumns[i][j] = values.Count == 0 ? "" : StringUtils.Concat(";", values.ToArray());
 				}
 			}
-			for (int i = 0; i < stringCols.Length; i++){
+			for (int i = 0; i < copyTextColumns.Length; i++){
 				result.AddStringColumn(newStringColNames[i], "", newStringColumns[i]);
 			}
 		}
 
-		private static string[][] GetColumnSplitBySemicolon(IDataWithAnnotationColumns mdata, Parameters parameters,
-			string colName){
-			string[] matchingColumn2 = mdata.StringColumns[parameters.GetParam<int>(colName).Value];
+		private static string[][] GetColumnSplitBySemicolon(IDataWithAnnotationColumns mdata, int matchingColumn){
+			string[] matchingColumn2 = mdata.StringColumns[matchingColumn];
 			string[][] w = new string[matchingColumn2.Length][];
 			for (int i = 0; i < matchingColumn2.Length; i++){
 				string r = matchingColumn2[i].Trim();
@@ -293,9 +291,9 @@ namespace PerseusPluginLib.Join{
 			return w;
 		}
 
-		private static Dictionary<string, List<int>> GetIdToColsSingle(IDataWithAnnotationColumns mdata2,
-			Parameters parameters){
-			string[][] matchCol2 = GetColumnSplitBySemicolon(mdata2, parameters, "Matching column in matrix 2");
+		private static Dictionary<string, List<int>> GetIdToColsSingle(IDataWithAnnotationColumns mdata2, int matchingColumnInMatrix2)
+		{
+		    string[][] matchCol2 = GetColumnSplitBySemicolon(mdata2, matchingColumnInMatrix2);
 			Dictionary<string, List<int>> idToCols2 = new Dictionary<string, List<int>>();
 			for (int i = 0; i < matchCol2.Length; i++){
 				foreach (string s in matchCol2[i]){
@@ -308,10 +306,9 @@ namespace PerseusPluginLib.Join{
 			return idToCols2;
 		}
 
-		private static Dictionary<string, List<int>> GetIdToColsPair(IDataWithAnnotationColumns mdata2, Parameters parameters,
-			Parameters subPar, string separator){
-			string[][] matchCol = GetColumnSplitBySemicolon(mdata2, parameters, "Matching column in matrix 2");
-			string[][] matchColAddtl = GetColumnSplitBySemicolon(mdata2, subPar, "Additional column in matrix 2");
+		private static Dictionary<string, List<int>> GetIdToColsPair(IDataWithAnnotationColumns mdata2, string separator, int matchingColumnInMatrix2, int additionalColumnInMatrix2){
+			string[][] matchCol = GetColumnSplitBySemicolon(mdata2, matchingColumnInMatrix2);
+			string[][] matchColAddtl = GetColumnSplitBySemicolon(mdata2, additionalColumnInMatrix2);
 			Dictionary<string, List<int>> idToCols2 = new Dictionary<string, List<int>>();
 			for (int i = 0; i < matchCol.Length; i++){
 				foreach (string s1 in matchCol[i]){
@@ -328,15 +325,19 @@ namespace PerseusPluginLib.Join{
 		}
 
 		private static int[][] GetIndexMap(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
-			Parameters parameters, string separator){
-			ParameterWithSubParams<bool> p = parameters.GetParamWithSubParams<bool>("Use additional column pair");
-			bool addtlCol = p.Value;
-			Dictionary<string, List<int>> idToCols2 = addtlCol
-				? GetIdToColsPair(mdata2, parameters, p.GetSubParameters(), separator)
-				: GetIdToColsSingle(mdata2, parameters);
-			string[][] matchCol1 = addtlCol
-				? GetColumnPair(mdata1, parameters, p.GetSubParameters(), separator)
-				: GetColumnSplitBySemicolon(mdata1, parameters, "Matching column in matrix 1");
+		    string separator, int matchingColumnInMatrix1, int matchingColumnInMatrix2, int? additionalColumnInMatrix1, int? additionalColumnInMatrix2){
+		    Dictionary<string, List<int>> idToCols2;
+		    string[][] matchCol1;
+		    if (additionalColumnInMatrix2 != null && additionalColumnInMatrix1 != null)
+		    {
+                idToCols2 = GetIdToColsPair(mdata2, separator, matchingColumnInMatrix2, (int) additionalColumnInMatrix2);
+                matchCol1 = GetColumnPair(mdata1, separator, matchingColumnInMatrix1, (int) additionalColumnInMatrix1);
+		    }
+		    else
+		    {
+                idToCols2 = GetIdToColsSingle(mdata2, matchingColumnInMatrix2);
+                matchCol1 = GetColumnSplitBySemicolon(mdata1, matchingColumnInMatrix1);
+		    }
 			int[][] indexMap = new int[matchCol1.Length][];
 			for (int i = 0; i < matchCol1.Length; i++){
 				List<int> q = new List<int>();
@@ -350,10 +351,10 @@ namespace PerseusPluginLib.Join{
 			return indexMap;
 		}
 
-		private static string[][] GetColumnPair(IDataWithAnnotationColumns mdata1, Parameters parameters, Parameters subPar,
-			string separator){
-			string[][] matchCol = GetColumnSplitBySemicolon(mdata1, parameters, "Matching column in matrix 1");
-			string[][] matchColAddtl = GetColumnSplitBySemicolon(mdata1, subPar, "Additional column in matrix 1");
+		private static string[][] GetColumnPair(IDataWithAnnotationColumns mdata1,
+			string separator, int matchingColumnInMatrix1, int additionalColumnInMatrix1){
+		    string[][] matchCol = GetColumnSplitBySemicolon(mdata1, matchingColumnInMatrix1);
+			string[][] matchColAddtl = GetColumnSplitBySemicolon(mdata1, additionalColumnInMatrix1);
 			string[][] result = new string[matchCol.Length][];
 			for (int i = 0; i < result.Length; i++){
 				result[i] = Combine(matchCol[i], matchColAddtl[i], separator);

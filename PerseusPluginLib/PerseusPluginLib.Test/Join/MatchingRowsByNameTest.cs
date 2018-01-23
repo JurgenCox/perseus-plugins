@@ -62,7 +62,6 @@ namespace PerseusPluginLib.Test.Join
 	        matching = new MatchingRowsByName();
 	        string err = string.Empty;
 	        parameters = matching.GetParameters(new[] {expand, proteinMain}, ref err);
-            parameters.GetParam<int>("Matching column in matrix 2").Value = 0;
         }
 
         [Test]
