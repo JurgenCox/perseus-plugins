@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using PerseusApi.Utils;
+using PerseusPluginLib.Utils;
 
-namespace PerseusPluginLib.Test
+namespace PerseusPluginLib.Test.Utils
 {
     [TestFixture]
     public class PerseusUtilsTest
@@ -34,5 +31,6 @@ namespace PerseusPluginLib.Test
             }, "test", '\t');
             Assert.AreEqual(0, data.RowCount);
         }
+
     }
 }

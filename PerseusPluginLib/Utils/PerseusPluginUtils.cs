@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using BaseLibS.Graph;
 using BaseLibS.Graph.Image;
@@ -460,28 +461,64 @@ namespace PerseusPluginLib.Utils{
 			return result;
 		}
 
-		public static string[][] CalcBenjaminiHochbergFdr(double[] pvals, double threshold, int n, out double[] fdrs){
-			fdrs = new double[pvals.Length];
-			int[] o = ArrayUtils.Order(pvals);
-			int lastind = -1;
-			for (int i = 0; i < n; i++){
-				double fdr = Math.Min(1, pvals[o[i]]*n/(1.0 + i));
-				fdrs[o[i]] = fdr;
-				if (fdr <= threshold){
-					lastind = i;
-				}
+
+        /// <summary>
+        /// Calculate FDR with Benjamini-Hochberg method.
+        /// </summary>
+        /// <param name="pvaluesUnsorted"></param>
+        /// <param name="threshold"></param>
+        /// <param name="fdrsUnsorted"></param>
+        /// <returns></returns>
+		public static string[][] CalcBenjaminiHochbergFdr(double[] pvaluesUnsorted, double threshold, out double[] fdrsUnsorted){
+			fdrsUnsorted = new double[pvaluesUnsorted.Length];
+		    if (fdrsUnsorted.Length < 1)
+		    {
+                return new string[0][];
+		    }
+			int[] order = ArrayUtils.Order(pvaluesUnsorted);
+		    var sortedValid = order.Select(o => pvaluesUnsorted[o]).Where(p => !double.IsNaN(p)).ToArray();
+            var n = sortedValid.Length;
+            var fdrsRaw = new double[n];
+		    for (int i = 0; i < n; i++)
+            {
+                fdrsRaw[i] = sortedValid[i]*n/(1.0 + i);
 			}
-			string[][] result = new string[pvals.Length][];
-			for (int i = 0; i < result.Length; i++){
-				result[i] = new string[0];
-			}
-			for (int i = 0; i <= lastind; i++){
-				result[o[i]] = new[]{"+"};
+            var fdrs = new double[n];
+		    double previousFdr = fdrsRaw[n - 1];
+            fdrs[n-1] = previousFdr;
+		    for (int i = n - 2; i > -1; i--)
+		    {
+		        var currentFdr = fdrsRaw[i];
+		        if (previousFdr > currentFdr)
+		        {
+		            previousFdr = currentFdr;
+		        }
+                fdrs[i] = previousFdr;
+		    }
+	        int validIndex = 0;
+		    foreach (var unsortedIndex in order)
+		    {
+		        if (!double.IsNaN(pvaluesUnsorted[unsortedIndex]))
+		        {
+		            fdrsUnsorted[unsortedIndex] = fdrs[validIndex];
+		            validIndex++;
+		        }
+		        else
+		        {
+		            fdrsUnsorted[unsortedIndex] = double.NaN;
+		        }
+		    }
+			string[][] result = new string[pvaluesUnsorted.Length][];
+		    string[] notSignificant = new string[0];
+		    string[] significant = {"+"};
+			for (int i = 0; i < result.Length; i++)
+			{
+			    result[i] = fdrsUnsorted[i] < threshold ? significant : notSignificant;
 			}
 			return result;
 		}
 
-		public static Bitmap2 GetImage(string file){
+	    public static Bitmap2 GetImage(string file){
 			Assembly thisExe = Assembly.GetExecutingAssembly();
 			Stream file1 = thisExe.GetManifestResourceStream("PerseusPluginLib.img." + file);
 			if (file1 == null){
