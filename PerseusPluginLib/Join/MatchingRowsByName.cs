@@ -80,7 +80,7 @@ namespace PerseusPluginLib.Join{
                 Value = new int[0],
                 Help = "Main columns of the second matrix that should be added to the first matrix."
             }, new SingleChoiceParam("Combine copied main values"){
-                Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum"},
+                Values = new[]{"Median", "Mean", "Minimum", "Maximum", "Sum", "Keep separate"},
                 Help = "In case multiple rows of the second matrix match to a row of the first matrix, how should multiple " +
                         "values be combined?"
             }, new MultiChoiceParam("Copy categorical columns"){
@@ -197,94 +197,158 @@ namespace PerseusPluginLib.Join{
 	    }
 
 		private static void AddMainColumns(IMatrixData mdata1, IMatrixData mdata2,
-			IList<int[]> indexMap, IMatrixData result, int[] exColInds, Func<double[], double> avExpression){
-		    if (exColInds.Length > 0){
-				double[,] newExColumns = new double[mdata1.RowCount, exColInds.Length];
-				double[,] newQuality = new double[mdata1.RowCount, exColInds.Length];
-				bool[,] newIsImputed = new bool[mdata1.RowCount, exColInds.Length];
-				string[] newExColNames = new string[exColInds.Length];
-				for (int i = 0; i < exColInds.Length; i++){
-					newExColNames[i] = mdata2.ColumnNames[exColInds[i]];
-					for (int j = 0; j < mdata1.RowCount; j++){
-						int[] inds = indexMap[j];
-						List<double> values = new List<double>();
-						List<double> qual = new List<double>();
-						List<bool> imp = new List<bool>();
-						foreach (int ind in inds){
-							double v = mdata2.Values.Get(ind, exColInds[i]);
-							if (!double.IsNaN(v) && !double.IsInfinity(v)){
-								values.Add(v);
-								if (mdata2.Quality.IsInitialized()){
-									double qx = mdata2.Quality.Get(ind, exColInds[i]);
-									if (!double.IsNaN(qx) && !double.IsInfinity(qx)){
-										qual.Add(qx);
-									}
-								}
-								if (mdata2.IsImputed != null){
-									bool isi = mdata2.IsImputed[ind, exColInds[i]];
-									imp.Add(isi);
-								}
-							}
-						}
-						newExColumns[j, i] = values.Count == 0 ? double.NaN : avExpression(values.ToArray());
-						newQuality[j, i] = qual.Count == 0 ? double.NaN : avExpression(qual.ToArray());
-						newIsImputed[j, i] = imp.Count != 0 && AvImp(imp.ToArray());
-					}
-				}
-				MakeNewNames(newExColNames, result.ColumnNames);
-				AddMainColumns(result, newExColNames, newExColumns, newQuality, newIsImputed);
-			}
+			IList<int[]> indexMap, IMatrixData result, int[] exColInds, Func<double[], double> avExpression)
+		{
+		    if (avExpression != null)
+		    {
+                var columns = exColInds.Select(i =>
+                {
+                    var name = mdata2.ColumnNames[i];
+                    var values = mdata2.Values.GetColumn(i).Unpack();
+                    var quality = mdata2.HasQuality ? mdata2.Quality.GetColumn(i).Unpack() : null;
+                    var isImputed = mdata2.IsImputed.IsInitialized() ? mdata2.IsImputed.GetColumn(i) : null;
+                    return (name, values, quality, isImputed);
+                }).ToArray();
+                AddMainColumns(mdata1,  indexMap, result, columns, avExpression);
+		    }
+		    else
+		    {
+                var columns = exColInds.Select(i =>
+                {
+                    var name = mdata2.ColumnNames[i];
+                    var values = mdata2.Values.GetColumn(i).Unpack();
+                    return (name, values);
+                }).ToArray();
+                AddMultiNumericColumns(result,  indexMap, columns);
+		    }
 		}
 
-		private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, int[] copyNumericalColumns, Func<double[], double> avNumerical){
-		    if (avNumerical != null){
-				double[][] newNumericalColumns = new double[copyNumericalColumns.Length][];
-				string[] newNumColNames = new string[copyNumericalColumns.Length];
-				for (int i = 0; i < copyNumericalColumns.Length; i++){
-					double[] oldCol = mdata2.NumericColumns[copyNumericalColumns[i]];
-					newNumColNames[i] = mdata2.NumericColumnNames[copyNumericalColumns[i]];
-					newNumericalColumns[i] = new double[mdata1.RowCount];
-					for (int j = 0; j < mdata1.RowCount; j++){
-						int[] inds = indexMap[j];
-						List<double> values = new List<double>();
-						foreach (int ind in inds){
-							double v = oldCol[ind];
-							if (!double.IsNaN(v)){
-								values.Add(v);
-							}
-						}
-						newNumericalColumns[i][j] = values.Count == 0 ? double.NaN : avNumerical(values.ToArray());
-					}
-				}
-				for (int i = 0; i < copyNumericalColumns.Length; i++){
-					mdata1.AddNumericColumn(newNumColNames[i], "", newNumericalColumns[i]);
-				}
-			} else{
-				double[][][] newMultiNumericalColumns = new double[copyNumericalColumns.Length][][];
-				string[] newMultiNumColNames = new string[copyNumericalColumns.Length];
-				for (int i = 0; i < copyNumericalColumns.Length; i++){
-					double[] oldCol = mdata2.NumericColumns[copyNumericalColumns[i]];
-					newMultiNumColNames[i] = mdata2.NumericColumnNames[copyNumericalColumns[i]];
-					newMultiNumericalColumns[i] = new double[mdata1.RowCount][];
-					for (int j = 0; j < mdata1.RowCount; j++){
-						int[] inds = indexMap[j];
-						List<double> values = new List<double>();
-						foreach (int ind in inds){
-							double v = oldCol[ind];
-							if (!double.IsNaN(v)){
-								values.Add(v);
-							}
-						}
-						newMultiNumericalColumns[i][j] = values.ToArray();
-					}
-				}
-				for (int i = 0; i < copyNumericalColumns.Length; i++){
-					mdata1.AddMultiNumericColumn(newMultiNumColNames[i], "", newMultiNumericalColumns[i]);
-				}
-			}
+	    private static void AddMainColumns(IMatrixData mdata1, IList<int[]> indexMap, IMatrixData result,
+	        (string name, double[] values, double[] quality, bool[] isImputed)[] columns, Func<double[], double> avExpression)
+	    {
+	        if (columns.Length > 0)
+	        {
+	            double[,] newExColumns = new double[mdata1.RowCount, columns.Length];
+	            double[,] newQuality = new double[mdata1.RowCount, columns.Length];
+	            bool[,] newIsImputed = new bool[mdata1.RowCount, columns.Length];
+	            string[] newExColNames = new string[columns.Length];
+	            for (int i = 0; i < columns.Length; i++)
+	            {
+	                var (name, oldValues, quality, isImputed) = columns[i];
+	                newExColNames[i] = name;
+	                for (int j = 0; j < mdata1.RowCount; j++)
+	                {
+	                    int[] inds = indexMap[j];
+	                    List<double> values = new List<double>();
+	                    List<double> qual = new List<double>();
+	                    List<bool> imp = new List<bool>();
+	                    foreach (int ind in inds)
+	                    {
+	                        double v = oldValues[ind];
+	                        if (!double.IsNaN(v) && !double.IsInfinity(v))
+	                        {
+	                            values.Add(v);
+	                            if (quality != null)
+	                            {
+	                                double qx = quality[ind];
+	                                if (!double.IsNaN(qx) && !double.IsInfinity(qx))
+	                                {
+	                                    qual.Add(qx);
+	                                }
+	                            }
+	                            if (isImputed != null)
+	                            {
+	                                bool isi = isImputed[ind];
+	                                imp.Add(isi);
+	                            }
+	                        }
+	                    }
+
+	                    newExColumns[j, i] = values.Count == 0 ? double.NaN : avExpression(values.ToArray());
+	                    newQuality[j, i] = qual.Count == 0 ? double.NaN : avExpression(qual.ToArray());
+	                    newIsImputed[j, i] = imp.Count != 0 && AvImp(imp.ToArray());
+	                }
+	            }
+
+	            MakeNewNames(newExColNames, result.ColumnNames);
+	            AddMainColumns(result, newExColNames, newExColumns, newQuality, newIsImputed);
+	        }
+	    }
+
+	    private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, int[] copyNumericalColumns, Func<double[], double> avNumerical){
+            var columns = copyNumericalColumns.Select(i => (mdata2.NumericColumnNames[i], mdata2.NumericColumns[i])).ToArray();
+		    if (avNumerical != null)
+		    {
+		        AddNumericColumns(mdata1, mdata2, indexMap, columns, avNumerical);
+		    } else
+		    {
+                AddMultiNumericColumns(mdata1, indexMap, columns);
+		    }
 		}
 
-		private static void AddCategoricalColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, int[] copyCatColumns){
+	    private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
+	        IList<int[]> indexMap, (string name, double[] values)[] columns, Func<double[], double> avNumerical)
+	    {
+	        double[][] newNumericalColumns = new double[columns.Length][];
+	        string[] newNumColNames = new string[columns.Length];
+	        for (int i = 0; i < columns.Length; i++)
+	        {
+	            (string name, double[] oldCol) = columns[i];
+	            newNumColNames[i] = name;
+	            newNumericalColumns[i] = new double[mdata1.RowCount];
+	            for (int j = 0; j < mdata1.RowCount; j++)
+	            {
+	                int[] inds = indexMap[j];
+	                List<double> values = new List<double>();
+	                foreach (int ind in inds)
+	                {
+	                    double v = oldCol[ind];
+	                    if (!double.IsNaN(v))
+	                    {
+	                        values.Add(v);
+	                    }
+	                }
+	                newNumericalColumns[i][j] = values.Count == 0 ? double.NaN : avNumerical(values.ToArray());
+	            }
+	        }
+	        for (int i = 0; i < columns.Length; i++)
+	        {
+	            mdata1.AddNumericColumn(newNumColNames[i], "", newNumericalColumns[i]);
+	        }
+	    }
+
+	    private static void AddMultiNumericColumns(IDataWithAnnotationColumns mdata1, IList<int[]> indexMap, (string name, double[] values)[] numericalColumns)
+	    {
+	        double[][][] newMultiNumericalColumns = new double[numericalColumns.Length][][];
+	        string[] newMultiNumColNames = new string[numericalColumns.Length];
+	        for (int i = 0; i < numericalColumns.Length; i++)
+	        {
+	            (string name, double[] oldCol) = numericalColumns[i];
+	            newMultiNumColNames[i] = name;
+	            newMultiNumericalColumns[i] = new double[mdata1.RowCount][];
+	            for (int j = 0; j < mdata1.RowCount; j++)
+	            {
+	                int[] inds = indexMap[j];
+	                List<double> values = new List<double>();
+	                foreach (int ind in inds)
+	                {
+	                    double v = oldCol[ind];
+	                    if (!double.IsNaN(v))
+	                    {
+	                        values.Add(v);
+	                    }
+	                }
+
+	                newMultiNumericalColumns[i][j] = values.ToArray();
+	            }
+	        }
+	        for (int i = 0; i < numericalColumns.Length; i++)
+	        {
+	            mdata1.AddMultiNumericColumn(newMultiNumColNames[i], "", newMultiNumericalColumns[i]);
+	        }
+	    }
+
+	    private static void AddCategoricalColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, int[] copyCatColumns){
 		    string[][][] newCatColumns = new string[copyCatColumns.Length][][];
 			string[] newCatColNames = new string[copyCatColumns.Length];
 			for (int i = 0; i < copyCatColumns.Length; i++){
