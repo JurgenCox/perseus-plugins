@@ -113,7 +113,7 @@ namespace PerseusPluginLib.Filter{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
             return
-				new Parameters(PerseusPluginUtils.GetMinValuesParam(true), new SingleChoiceWithSubParams("Mode"){
+				new Parameters(PerseusPluginUtils.GetMinValuesParam(mdata, true), new SingleChoiceWithSubParams("Mode"){
 					Values = new[]{"In total", "In each group", "In at least one group"},
 					SubParams =new[]{
 						new Parameters(new Parameter[0]),

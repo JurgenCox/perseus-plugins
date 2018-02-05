@@ -239,12 +239,14 @@ namespace PerseusPluginLib.Utils{
 			return count >= minValids;
 		}
 
-		public static Parameter GetMinValuesParam(bool rows){
+		public static Parameter GetMinValuesParam(IMatrixData mdata, bool rows)
+		{
+		    var maxValue = rows ? mdata.ColumnCount : mdata.RowCount;
 			return new SingleChoiceWithSubParams("Min. valids"){
 				Values = new[]{"Number", "Percentage"},
 				SubParams =
 					new[]{
-						new Parameters(new IntParam("Min. number of values", 3){
+						new Parameters(new IntParam("Min. number of values", Math.Min(maxValue, 3)){
 							Help =
 								"If a " + (rows ? "row" : "column") +
 								" has less than the specified number of valid values it will be discarded in the output."
