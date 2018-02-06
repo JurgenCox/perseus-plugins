@@ -57,7 +57,7 @@ namespace PerseusPluginLib.Filter{
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
-				new Parameters(PerseusPluginUtils.GetMinValuesParam(false), new SingleChoiceWithSubParams("Mode"){
+				new Parameters(PerseusPluginUtils.GetMinValuesParam(mdata, false), new SingleChoiceWithSubParams("Mode"){
 					Values = new[]{"In total"},
 					SubParams ={new Parameters(new Parameter[0])},
 					ParamNameWidth = 50,

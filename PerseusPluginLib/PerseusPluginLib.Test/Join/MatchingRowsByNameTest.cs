@@ -7,8 +7,6 @@ using PerseusApi.Matrix;
 using PerseusApi.Utils;
 using PerseusPluginLib.Join;
 using PerseusPluginLib.Rearrange;
-using Assert = NUnit.Framework.Assert;
-using CollectionAssert = NUnit.Framework.CollectionAssert;
 
 namespace PerseusPluginLib.Test.Join
 {
@@ -24,7 +22,7 @@ namespace PerseusPluginLib.Test.Join
         [SetUp]
         public void TestInitialize()
         {
-            double[,] peptidesValues = new[,] {{9.0}};
+            double[,] peptidesValues = {{9.0}};
             peptides = PerseusFactory.CreateMatrixData(peptidesValues, new List<string> {"pep_MS/MS Count"});
             peptides.AddNumericColumn("pep_Intensity", "", new [] {0.0});
             peptides.AddStringColumn("pep_id", "", new []{"35"});
@@ -39,8 +37,7 @@ namespace PerseusPluginLib.Test.Join
             IDocumentData[] docs = null;
             multiNum.ProcessData(peptides, parameters2, ref suppl, ref docs, BaseTest.CreateProcessInfo());
 
-	        double[,] proteinMainValues = new[,]
-	        {
+	        double[,] proteinMainValues = {
 	            {166250000.0},
                 {8346000.0}
 	        };
@@ -48,8 +45,7 @@ namespace PerseusPluginLib.Test.Join
 	        proteinMain.Name = "protein main";
             proteinMain.AddStringColumn("prot_id", "", new [] {"13", "21"});
             proteinMain.AddStringColumn("prot_gene name", "", new [] {"geneA", "geneB"});
-	        double[,] expandValues = new[,]
-	        {
+	        double[,] expandValues = {
 	            {9.0},
                 {9.0}
 	        };
@@ -129,5 +125,26 @@ namespace PerseusPluginLib.Test.Join
             Assert.AreEqual(2, matched.ColumnCount);
             Assert.AreEqual(1, matched.NumericColumnCount);
 	    }
+
+        [Test]
+        public void TestConvertNumericToMultiNumeric()
+        {
+            var mBase = PerseusFactory.CreateMatrixData();
+            mBase.AddStringColumn("Id", "", new []{"n1;n2", "n3"});
+            var mdata = PerseusFactory.CreateMatrixData(new[,] {{0.0}, {1.0}, {2.0}});
+            mdata.AddStringColumn("Id", "", new []{"n1", "n2", "n3"});
+            var match = new MatchingRowsByName();
+            var errString = string.Empty;
+            var param = match.GetParameters(new []{mBase, mdata}, ref errString);
+	        param.GetParam<int[]>("Copy main columns").Value = new[] {0};
+            param.GetParam<int>("Combine copied main values").Value = 5; 
+	        IMatrixData[] supplTables = null;
+	        IDocumentData[] documents = null;
+            var result = match.ProcessData(new[] {mBase, mdata}, param, ref supplTables, ref documents,
+                BaseTest.CreateProcessInfo());
+            Assert.AreEqual(result.MultiNumericColumnCount, 1); 
+            CollectionAssert.AreEqual(new [] {0.0, 1.0}, result.MultiNumericColumns[0][0]);
+            CollectionAssert.AreEqual(new [] {2.0}, result.MultiNumericColumns[0][1]);
+        }
 	}
 }
