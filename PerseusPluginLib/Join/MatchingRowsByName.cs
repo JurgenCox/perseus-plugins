@@ -146,8 +146,7 @@ namespace PerseusPluginLib.Join{
             
 		    var (main, text, numeric, category) = ParseCopyParameters(parameters);
 			SetAnnotationRows(result, mdata1, mdata2, main.copy);
-		    AddMainColumns(mdata1, mdata2, indexMap, result, main.copy, GetAveraging(main.combine));
-
+		    AddMainColumns(result, mdata2, indexMap, main.copy, GetAveraging(main.combine));
 		    AddAnnotationColumns(result, mdata2, indexMap, text, numeric, category);
 		    return result;
 		}
@@ -196,8 +195,8 @@ namespace PerseusPluginLib.Join{
 	        AddStringColumns(result, mdata2, indexMap, copyTextColumns);
 	    }
 
-		private static void AddMainColumns(IMatrixData mdata1, IMatrixData mdata2,
-			IList<int[]> indexMap, IMatrixData result, int[] exColInds, Func<double[], double> avExpression)
+		private static void AddMainColumns(IMatrixData result, IMatrixData mdata2,
+		    IList<int[]> indexMap, int[] exColInds, Func<double[], double> avExpression)
 		{
 		    if (avExpression != null)
 		    {
@@ -209,7 +208,7 @@ namespace PerseusPluginLib.Join{
                     var isImputed = mdata2.IsImputed.IsInitialized() ? mdata2.IsImputed.GetColumn(i) : null;
                     return (name, values, quality, isImputed);
                 }).ToArray();
-                AddMainColumns(mdata1,  indexMap, result, columns, avExpression);
+                AddMainColumns(result, indexMap, columns, avExpression);
 		    }
 		    else
 		    {
@@ -223,20 +222,22 @@ namespace PerseusPluginLib.Join{
 		    }
 		}
 
-	    private static void AddMainColumns(IMatrixData mdata1, IList<int[]> indexMap, IMatrixData result,
-	        (string name, double[] values, double[] quality, bool[] isImputed)[] columns, Func<double[], double> avExpression)
+	    private static void AddMainColumns(IMatrixData result, IList<int[]> indexMap,
+	        (string name, double[] values, double[] quality, bool[] isImputed)[] columns,
+	        Func<double[], double> avExpression)
 	    {
+	        var n = result.RowCount;
 	        if (columns.Length > 0)
 	        {
-	            double[,] newExColumns = new double[mdata1.RowCount, columns.Length];
-	            double[,] newQuality = new double[mdata1.RowCount, columns.Length];
-	            bool[,] newIsImputed = new bool[mdata1.RowCount, columns.Length];
+	            double[,] newExColumns = new double[n, columns.Length];
+	            double[,] newQuality = new double[n, columns.Length];
+	            bool[,] newIsImputed = new bool[n, columns.Length];
 	            string[] newExColNames = new string[columns.Length];
 	            for (int i = 0; i < columns.Length; i++)
 	            {
 	                var (name, oldValues, quality, isImputed) = columns[i];
 	                newExColNames[i] = name;
-	                for (int j = 0; j < mdata1.RowCount; j++)
+	                for (int j = 0; j < n; j++)
 	                {
 	                    int[] inds = indexMap[j];
 	                    List<double> values = new List<double>();
@@ -275,18 +276,18 @@ namespace PerseusPluginLib.Join{
 	        }
 	    }
 
-	    private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, int[] copyNumericalColumns, Func<double[], double> avNumerical){
+	    private static void AddNumericColumns(IDataWithAnnotationColumns result, IDataWithAnnotationColumns mdata2, IList<int[]> indexMap, int[] copyNumericalColumns, Func<double[], double> avNumerical){
             var columns = copyNumericalColumns.Select(i => (mdata2.NumericColumnNames[i], mdata2.NumericColumns[i])).ToArray();
 		    if (avNumerical != null)
 		    {
-		        AddNumericColumns(mdata1, mdata2, indexMap, columns, avNumerical);
+		        AddNumericColumns(result, indexMap, columns, avNumerical);
 		    } else
 		    {
-                AddMultiNumericColumns(mdata1, indexMap, columns);
+                AddMultiNumericColumns(result, indexMap, columns);
 		    }
 		}
 
-	    private static void AddNumericColumns(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
+	    private static void AddNumericColumns(IDataWithAnnotationColumns result,
 	        IList<int[]> indexMap, (string name, double[] values)[] columns, Func<double[], double> avNumerical)
 	    {
 	        double[][] newNumericalColumns = new double[columns.Length][];
@@ -295,8 +296,8 @@ namespace PerseusPluginLib.Join{
 	        {
 	            (string name, double[] oldCol) = columns[i];
 	            newNumColNames[i] = name;
-	            newNumericalColumns[i] = new double[mdata1.RowCount];
-	            for (int j = 0; j < mdata1.RowCount; j++)
+	            newNumericalColumns[i] = new double[result.RowCount];
+	            for (int j = 0; j < result.RowCount; j++)
 	            {
 	                int[] inds = indexMap[j];
 	                List<double> values = new List<double>();
@@ -313,11 +314,11 @@ namespace PerseusPluginLib.Join{
 	        }
 	        for (int i = 0; i < columns.Length; i++)
 	        {
-	            mdata1.AddNumericColumn(newNumColNames[i], "", newNumericalColumns[i]);
+	            result.AddNumericColumn(newNumColNames[i], "", newNumericalColumns[i]);
 	        }
 	    }
 
-	    private static void AddMultiNumericColumns(IDataWithAnnotationColumns mdata1, IList<int[]> indexMap, (string name, double[] values)[] numericalColumns)
+	    private static void AddMultiNumericColumns(IDataWithAnnotationColumns result, IList<int[]> indexMap, (string name, double[] values)[] numericalColumns)
 	    {
 	        double[][][] newMultiNumericalColumns = new double[numericalColumns.Length][][];
 	        string[] newMultiNumColNames = new string[numericalColumns.Length];
@@ -325,8 +326,8 @@ namespace PerseusPluginLib.Join{
 	        {
 	            (string name, double[] oldCol) = numericalColumns[i];
 	            newMultiNumColNames[i] = name;
-	            newMultiNumericalColumns[i] = new double[mdata1.RowCount][];
-	            for (int j = 0; j < mdata1.RowCount; j++)
+	            newMultiNumericalColumns[i] = new double[result.RowCount][];
+	            for (int j = 0; j < result.RowCount; j++)
 	            {
 	                int[] inds = indexMap[j];
 	                List<double> values = new List<double>();
@@ -344,7 +345,7 @@ namespace PerseusPluginLib.Join{
 	        }
 	        for (int i = 0; i < numericalColumns.Length; i++)
 	        {
-	            mdata1.AddMultiNumericColumn(newMultiNumColNames[i], "", newMultiNumericalColumns[i]);
+	            result.AddMultiNumericColumn(newMultiNumColNames[i], "", newMultiNumericalColumns[i]);
 	        }
 	    }
 
