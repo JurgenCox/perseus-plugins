@@ -19,7 +19,7 @@ namespace PerseusApi.Network
         /// <summary>
         /// Unique key
         /// </summary>
-        public Guid Guid { get; }
+        public Guid Guid { get; protected set; }
 
         protected Identifiable(Guid guid)
         {
