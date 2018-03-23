@@ -168,7 +168,7 @@ namespace PerseusPluginLib.Join{
 			}
 			for (int i = 0; i < catColNames.Length; i++){
 				if (dic1.ContainsKey(catColNames[i])){
-					int ind = dic1[stringColNames[i]];
+					int ind = dic1[catColNames[i]];
 					for (int j = 0; j < nrows1; j++){
 						catCols[i][j] = mdata1.GetCategoryColumnEntryAt(ind, j);
 					}
