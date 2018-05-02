@@ -60,37 +60,42 @@ namespace PerseusPluginLib.DESeq2
             return groupids;
         }
 
-        public string ExtractCountAndSample(string experiments, Dictionary<string, int> samples,
-            Dictionary<string, string> counts, string[][] cats, IMatrixData mdata,
+        public void ExtractCountAndSample(string experiments, Dictionary<string, int> samples,
+            Dictionary<string, string> counts, bool importCount, string[][] cats, IMatrixData mdata,
             HashSet<string> value, List<string> pair)
         {
             for (int i = 0; i < cats.Length; i++)
             {
                 for (int j = 0; j < cats[i].Length; j++)
                 {
+                    if (importCount == true)
+                    {
+                        if (samples.ContainsKey(cats[i][j])) samples[cats[i][j]] = samples[cats[i][j]] + 1;
+                        else samples.Add(cats[i][j], 1);
+                    }
                     if (value.Contains(cats[i][j]))
                     {
                         if (experiments.Length == 0) experiments = mdata.ColumnNames[i];
                         else experiments = experiments + "\t" + mdata.ColumnNames[i];
-                        if (samples.ContainsKey(cats[i][j])) samples[cats[i][j]] = samples[cats[i][j]] + 1;
-                        else samples.Add(cats[i][j], 1);
                         if (!pair.Contains(cats[i][j])) pair.Add(cats[i][j]);
-                        int len = i * cats[i].Length + j;
-                        int num = 1;
-                        foreach (var k in mdata.Values.GetColumn(len))
-                        {
-                            string geneID = "GENE" + num.ToString();
-                            if (counts.ContainsKey(geneID)) counts[geneID] = counts[geneID] + "\t" + k.ToString();
-                            else counts.Add(geneID, k.ToString());
-                            num++;
-                        }
                     }
                 }
             }
             if (experiments.Split('\t').Length <= 1)
                 MessageBox.Show("Experiments without replicates. It is only used for data exploration, " +
                     "but for generating precisely differential expression, biological replicates are mandatory. ");
-            return experiments;
+            if (importCount == true)
+            {
+                for (int i = 0; i < mdata.RowCount; i++)
+                {
+                    for (int j = 0; j < mdata.ColumnCount; j++)
+                    {
+                        string geneID = "GENE" + i.ToString();
+                        if (counts.ContainsKey(geneID)) counts[geneID] = counts[geneID] + "\t" + mdata.Values.Get(i, j).ToString();
+                        else counts.Add(geneID, mdata.Values.Get(i, j).ToString());
+                    }
+                }
+            }
         }
 
         public void CheckSignificant(string[][] sigCol, string[] info, ParameterWithSubParams<bool> fdrValid, 
@@ -196,12 +201,12 @@ namespace PerseusPluginLib.DESeq2
                     {
                         double.TryParse(entry.Value[i], out double p);
                         if (p == 0)
-                            t[i] = Math.Log10(1 / Double.MaxValue);
+                            t[i] = Math.Log10(1 / Double.MaxValue) * -1;
                         else
-                            t[i] = Math.Log10(p);
+                            t[i] = Math.Log10(p) * -1;
                     }
-                    mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_log10" + entry.Key,
-                    pair1 + "_vs_" + pair2 + "_log10" + entry.Key, t);
+                    mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_-log10" + entry.Key,
+                    pair1 + "_vs_" + pair2 + "_-log10" + entry.Key, t);
                 }
             }
             mdata.AddCategoryColumn(pair1 + "_vs_" + pair2 + "_Valid",
@@ -350,11 +355,19 @@ namespace PerseusPluginLib.DESeq2
             List<string> pairs1 = new List<string>();
             List<string> pairs2 = new List<string>();
             Dictionary<string, string> counts = new Dictionary<string, string>();
-            experiments1 = ExtractCountAndSample(experiments1, samples, counts,
+            ExtractCountAndSample(experiments1, samples, counts, true,
                 cats, mdata, value1, pairs1);
-            experiments2 = ExtractCountAndSample(experiments2, samples, counts,
+            ExtractCountAndSample(experiments2, samples, counts, false,
                 cats, mdata, value2, pairs2);
-            tw.WriteLine(experiments1 + "\t" + experiments2);
+            string experiments = "";
+            foreach (string exp in mdata.ColumnNames)
+            {
+                if (experiments.Length == 0)
+                    experiments = exp;
+                else
+                    experiments = experiments + "\t" + exp;
+            }
+            tw.WriteLine(experiments);
             foreach (KeyValuePair<string, string> entry in counts)
             {
                 tw.WriteLine(entry.Key + "\t" + entry.Value);
@@ -403,14 +416,14 @@ namespace PerseusPluginLib.DESeq2
                 }, new BoolWithSubParams("Log2 Fold Change") {
                     Help = "The Log2 Fold Change threshold of the significant features.",
                     Value = true,
-                    SubParamsTrue = new Parameters(new DoubleParam("Up-regluation", 1),
-                        new DoubleParam("Down-regluation", -1)),
+                    SubParamsTrue = new Parameters(new DoubleParam("Up-regluation", 1.5),
+                        new DoubleParam("Down-regluation", -1.5)),
                     ParamNameWidth = 90,
                     TotalWidth = 731
                 }, new BoolWithSubParams("FDR") {
                     Help = "The FDR threshold of the significant features.",
                     Value = true,
-                    SubParamsTrue = new Parameters(new DoubleParam("Max. FDR", 0.1)),
+                    SubParamsTrue = new Parameters(new DoubleParam("Max. FDR", 0.05)),
                     ParamNameWidth = 90,
                     TotalWidth = 731
                 }, new BoolWithSubParams("P-value")
