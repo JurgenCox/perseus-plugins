@@ -171,6 +171,7 @@
     <Compile Include="Rearrange\Transpose.cs" />
     <Compile Include="Rearrange\UniqueValues.cs" />
     <Compile Include="Utils\RowNameInfo.cs" />
+    <Compile Include="Utils\TwoSampleTestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
