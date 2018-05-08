@@ -109,9 +109,9 @@ namespace PerseusPluginLib.DESeq2
                 if (fdr <= maxFDR)
                 {
                     if (lfc > 0)
-                        sigCol[lineNum - 1][0] = "Up-regulation";
+                        sigCol[lineNum - 1][0] = "Up-regulated";
                     else if (lfc < 0)
-                        sigCol[lineNum - 1][0] = "Down-regulation";
+                        sigCol[lineNum - 1][0] = "Down-regulated";
                     else
                         sigCol[lineNum - 1][0] = "Equal";
                 }
