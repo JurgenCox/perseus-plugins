@@ -94,89 +94,112 @@ namespace PerseusPluginLib.DESeq2
             else return false;
         }
 
-        public void ModeAtLeastOneGroup(IMatrixData mdata, Dictionary<string, List<string>> samples,
-            double minValid)
+        public void ExtractValues(IMatrixData mdata, Dictionary<string, List<string>> samples,
+            double minValid, Dictionary<string, int> minValidAmount, int type)
         {
             List<int> validRows = new List<int>();
-            for (int i = 0; i < mdata.RowCount; i++)
+            Dictionary<string, int> validNum = new Dictionary<string, int>();
+            foreach (KeyValuePair<string, List<string>> entry in samples)
             {
-                bool validNum = false;
-                for (int j = 0; j < mdata.ColumnCount; j++)
-                {
-                    foreach (KeyValuePair<string, List<string>> entry in samples)
-                    {
-                        if (entry.Value.Contains(mdata.ColumnNames[j]))
-                            if (mdata.Values.Get(i, j) >= minValid)
-                                validNum = true;
-                    }
-                }
-                if (validNum)
-                {
-                    validRows.Add(i);
-                }
+                validNum.Add(entry.Key, 0);
             }
-            mdata.ExtractRows(validRows.ToArray());
-        }
-
-        public void ModeAllGroup(IMatrixData mdata, Dictionary<string, List<string>> samples,
-            double minValid)
-        {
-            List<int> validRows = new List<int>();
             for (int i = 0; i < mdata.RowCount; i++)
             {
-                Dictionary<string, int> detectNum = new Dictionary<string, int>();
+                int totalValids = 0;
+                foreach (KeyValuePair<string, List<string>> entry in samples)
+                {
+                    validNum[entry.Key] = 0;
+                }
                 for (int j = 0; j < mdata.ColumnCount; j++)
                 {
-                    string preKey = "";
-                    bool validNum = false;
                     foreach (KeyValuePair<string, List<string>> entry in samples)
                     {
-                        if (!detectNum.ContainsKey(entry.Key))
-                            detectNum.Add(entry.Key, 0);
                         if (entry.Value.Contains(mdata.ColumnNames[j]))
                         {
-                            if (preKey == "")
-                                preKey = entry.Key;
-                            else if (preKey != "" && preKey != entry.Key)
-                            {
-                                if (validNum)
-                                {
-                                    detectNum[entry.Key]++;
-                                    validNum = false;
-                                }
-                            }
                             if (mdata.Values.Get(i, j) >= minValid)
-                                validNum = true;
-                            preKey = entry.Key;
+                            {
+                                validNum[entry.Key]++;
+                            }
                         }
                     }
-                    if (validNum)
-                        detectNum[preKey]++;
                 }
-                bool fail = false;
-                foreach (KeyValuePair<string, int> entry in detectNum)
+                foreach (KeyValuePair<string, int> entry in validNum)
                 {
-                    if (entry.Value == 0)
-                        fail = true;
+                    if (validNum[entry.Key] >= minValidAmount[entry.Key])
+                        totalValids++;
                 }
-                if (!fail)
+                if ((type == 0) && (totalValids > 0))
+                    validRows.Add(i);
+                else if ((type == 1) && (totalValids == samples.Count))
                     validRows.Add(i);
             }
             mdata.ExtractRows(validRows.ToArray());
         }
 
-            public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
+        public bool CheckGroup(ParameterWithSubParams<int> p, ProcessInfo processInfo)
+        {
+            if (p.Value < 0)
+            {
+                processInfo.ErrString = "No categorical rows available.";
+                return false;
+            }
+            else
+                return true;
+        }
+
+        public bool ImportMinAmount(ParameterWithSubParams<int> va, Dictionary<string, List<string>> samples,
+            Dictionary<string, int> minValidAmount, ProcessInfo processInfo)
+        {
+            if (va.Value == 0)
+            {
+                int minNum = va.GetSubParameters().GetParam<int>("Min. number of samples").Value;
+                foreach (KeyValuePair<string, List<string>> entry in samples)
+                {
+                    if (minNum > entry.Value.Count)
+                    {
+                        processInfo.ErrString = "Min. number of samples can not be larger than the number of samples.";
+                        return false;
+                    }
+                    else if (minNum <= 0)
+                    {
+                        processInfo.ErrString = "Min. number of samples can not be negative values or zero.";
+                        return false;
+                    }
+                    minValidAmount.Add(entry.Key, va.GetSubParameters().GetParam<int>("Min. number of samples").Value);
+                }
+            }
+            else
+            {
+                int minValidPercentage = va.GetSubParameters().GetParam<int>("Min. percentage of samples").Value;
+                foreach (KeyValuePair<string, List<string>> entry in samples)
+                {
+                    if (minValidPercentage > 100)
+                    {
+                        processInfo.ErrString = "Min. percentage of samples can not be larger than 100.";
+                        return false;
+                    }
+                    else if (minValidPercentage <= 0)
+                    {
+                        processInfo.ErrString = "Min. percentage of samples can not negative value or zero.";
+                        return false;
+                    }
+                    minValidAmount.Add(entry.Key, entry.Value.Count * minValidPercentage / 100);
+                }
+            }
+            return true;
+        }
+        public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
             ref IDocumentData[] documents, ProcessInfo processInfo)
         {
             double minValid = Convert.ToDouble(param.GetParam<string>("Min. expression value").Value);
             Parameter<int> m = param.GetParam<int>("Mode");
-            ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Group");
-            int colInd = p.Value;
-            if (colInd < 0)
-            {
-                processInfo.ErrString = "No categorical rows available.";
+            ParameterWithSubParams<int> va = param.GetParamWithSubParams<int>("Min. valid samples in a group");
+            if (CheckGroup(va, processInfo) == false)
                 return;
-            }
+            ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Group");
+            if (CheckGroup(p, processInfo) == false)
+                return;
+            int colInd = p.Value;
             string[] groupids = ExtractGroup(mdata, p, processInfo, colInd);
             bool Unvalid = CheckGroupIDsValid(groupids, processInfo, m.Value);
             if (Unvalid) return;
@@ -198,14 +221,11 @@ namespace PerseusPluginLib.DESeq2
                     }
                 }
             }
-            if (m.Value == 0)
-            {
-                ModeAtLeastOneGroup(mdata, samples, minValid);
-            }
-            else if (m.Value == 1)
-            {
-                ModeAllGroup(mdata, samples, minValid);
-            }
+            Dictionary<string, int> minValidAmount = new Dictionary<string, int>();
+            bool import = ImportMinAmount(va, samples, minValidAmount, processInfo);
+            if (import == false)
+                return;
+            ExtractValues(mdata, samples, minValid, minValidAmount, m.Value);
         }
 
         public Parameters GetParameters(IMatrixData mdata, ref string errorString)
@@ -227,8 +247,7 @@ namespace PerseusPluginLib.DESeq2
                 new Parameters(
                     new StringParam("Min. expression value")
                     {
-                        Help = "The minimum expression value for filtering the rows of the table. " +
-                        "At least one entry of a row needs to be higher than this given value.",
+                        Help = "The minimum expression value for filtering the rows of the table. ",
                         Value = "20",
                     }, new SingleChoiceParam("Mode")
                     {
@@ -237,7 +256,25 @@ namespace PerseusPluginLib.DESeq2
                             "If 'At least one group' is selected, the row will be kept if at least one selected group can fit the 'Min. expression value.'" +
                             "If 'All groups' is selected, the row will be kept if all selected groups can fit the 'Min. expression value.'.",
                         Value = 0
-                    }, new SingleChoiceWithSubParams("Group")
+                    },
+                    new SingleChoiceWithSubParams("Min. valid samples in a group")
+                    {
+                        Help = "The minimum number of values in one row are higher than minimum expression value. ",
+                        Values = new[] { "Number", "Percentage" },
+                        SubParams = new[]{
+                        new Parameters(new IntParam("Min. number of samples", Math.Min(mdata.RowCount, 1)){
+                            Help =
+                                "If a row has less than the specified number of valid values it will be discarded in the output.",
+                        }),
+                        new Parameters(new IntParam("Min. percentage of samples", 25){
+                            Help =
+                                "If a row has less than the specified percentage of valid values it will be discarded in the output."
+                        }),
+                        },
+                        ParamNameWidth = 50,
+                        TotalWidth = 731
+                    },
+                    new SingleChoiceWithSubParams("Group")
                     {
                         Values = mdata.CategoryRowNames,
                         SubParams = subParams,
