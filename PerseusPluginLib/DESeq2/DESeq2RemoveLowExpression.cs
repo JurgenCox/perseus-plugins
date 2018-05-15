@@ -157,15 +157,15 @@ namespace PerseusPluginLib.DESeq2
                 {
                     if (minNum > entry.Value.Count)
                     {
-                        processInfo.ErrString = "Min. number of samples can not be larger than the number of samples.";
-                        return false;
+                        minValidAmount.Add(entry.Key, entry.Value.Count);
                     }
                     else if (minNum <= 0)
                     {
                         processInfo.ErrString = "Min. number of samples can not be negative values or zero.";
                         return false;
                     }
-                    minValidAmount.Add(entry.Key, va.GetSubParameters().GetParam<int>("Min. number of samples").Value);
+                    else
+                        minValidAmount.Add(entry.Key, va.GetSubParameters().GetParam<int>("Min. number of samples").Value);
                 }
             }
             else
