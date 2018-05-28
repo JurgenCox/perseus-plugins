@@ -430,7 +430,7 @@ namespace PerseusApi.Utils {
 			{
 				var (wordList, word) = acc;
 				var hasUnbalancedQuotes = token.Count(x => x == '\"') % 2 != 0;
-				if (token.StartsWith("\"") && hasUnbalancedQuotes)
+				if (string.IsNullOrEmpty(word) && hasUnbalancedQuotes)
 				{
 					word = token;
 				}

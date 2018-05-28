@@ -47,15 +47,17 @@ namespace PerseusPluginLib.Test.Utils
 				"1.0\t\"Actin family, ARP subfamily\";Actin family\t4",
 				"2.0\t\"Regular quoted text\"\t4",
 				"3.0\t\"Escaped\tseparator\"with extra\t4",
+				"4.0\t\"Quote between separators\t\"\t4",
+				"4.0\tQuote \"in\tthe\" middle\t4",
 			};
 			var bytes = Encoding.UTF8.GetBytes(string.Join("\n", lines));
 			PerseusUtils.ReadMatrix(mdata, processInfo, () => new StreamReader(new MemoryStream(bytes)), "name", '\t');
 			Assert.AreEqual("Col", mdata.ColumnNames.Single());
 			Assert.AreEqual("StringCol", mdata.StringColumnNames.Single());
 			Assert.AreEqual("NumCol", mdata.NumericColumnNames.Single());
-			CollectionAssert.AreEqual(new [] {-1.0, 1.0, 2.0, 3.0}, mdata.Values.GetColumn(0).ToArray());
-			CollectionAssert.AreEqual(new [] {"hello", "\"Actin family, ARP subfamily\";Actin family", "Regular quoted text", "\"Escaped\tseparator\"with extra"}, mdata.StringColumns.Single());
-			CollectionAssert.AreEqual(new [] {12, 4, 4, 4}, mdata.NumericColumns.Single());
+			CollectionAssert.AreEqual(new [] {-1.0, 1.0, 2.0, 3.0, 4.0, 4.0}, mdata.Values.GetColumn(0).ToArray());
+			CollectionAssert.AreEqual(new [] {"hello", "\"Actin family, ARP subfamily\";Actin family", "Regular quoted text", "\"Escaped\tseparator\"with extra", "Quote between separators", "Quote \"in\tthe\" middle"}, mdata.StringColumns.Single());
+			CollectionAssert.AreEqual(new [] {12, 4, 4, 4, 4, 4}, mdata.NumericColumns.Single());
 
 		}
 
