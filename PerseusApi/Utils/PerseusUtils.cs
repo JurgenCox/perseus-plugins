@@ -423,37 +423,44 @@ namespace PerseusApi.Utils {
 			return result;
 		}
 
-		private static string[] SplitLine(string line, char separator) {
-			line = line.Trim(' ');
-			bool inQuote = false;
-			List<int> sepInds = new List<int>();
-			for (int i = 0; i < line.Length; i++) {
-				char c = line[i];
-				if (c == '\"') {
-					if (inQuote) {
-						if (i == line.Length - 1 || line[i + 1] == separator) {
-							inQuote = false;
-						}
-					} else {
-						if (i == 0 || line[i - 1] == separator) {
-							inQuote = true;
-						}
-					}
-				} else if (c == separator && !inQuote) {
-					sepInds.Add(i);
+		private static string[] SplitLine(string line, char separator)
+		{
+			var tokens = line.Split(separator);
+			var words = tokens.Aggregate((words: new List<string>(), word: string.Empty), (acc, token) =>
+			{
+				var (wordList, word) = acc;
+				var hasUnbalancedQuotes = token.Count(x => x == '\"') % 2 != 0;
+				if (string.IsNullOrEmpty(word) && hasUnbalancedQuotes)
+				{
+					word = token;
 				}
-			}
-			string[] w = StringUtils.SplitAtIndices(line, sepInds);
-			for (int i = 0; i < w.Length; i++) {
-				string s = w[i].Trim();
-				if (s.Length > 1) {
-					if (s[0] == '\"' && s[s.Length - 1] == '\"') {
-						s = s.Substring(1, s.Length - 2);
+				else
+				{
+					if (string.IsNullOrEmpty(word)) // quotation not used
+					{
+						wordList.Add(token);
+					}
+					else if (hasUnbalancedQuotes) // end of quotation regardless of \" position
+					{
+						wordList.Add(String.Join(separator.ToString(), word, token));
+						word = string.Empty;
+					}
+					else // token still quoted
+					{
+						word = string.Join(separator.ToString(), word, token);
 					}
 				}
-				w[i] = s;
-			}
-			return w;
+				return (wordList, word);
+			}, acc =>
+			{
+				var (wordList, word) = acc;
+				if (!string.IsNullOrEmpty(word))
+				{
+					throw new ArgumentException($"Line {line} contains unbalanced quotation marks.");
+				}
+				return wordList.ToArray();
+			});
+			return words;
 		}
 
 		/// <summary>

@@ -65,20 +65,35 @@ namespace PerseusPluginLib.Rearrange{
                         mdata.CategoryColumnNames[i] = pattern.Replace(mdata.CategoryColumnNames[i], replacementStr);
                     }
                     break;
+                case 4:
+                    for (int i = 0; i < mdata.CategoryColumnCount; i++)
+                    {
+                        mdata.MultiNumericColumnNames[i] = pattern.Replace(mdata.MultiNumericColumnNames[i], replacementStr);
+                    }
+                    break;
             }
+	        if (mdata.ColumnNames.Count > mdata.ColumnNames.Distinct().Count()
+	            || mdata.StringColumnNames.Count > mdata.StringColumnNames.Distinct().Count()
+	            || mdata.NumericColumnNames.Count > mdata.NumericColumnNames.Distinct().Count()
+	            || mdata.CategoryColumnNames.Count > mdata.CategoryColumnNames.Distinct().Count()
+	            || mdata.MultiNumericColumnNames.Count > mdata.MultiNumericColumnNames.Distinct().Count())
+	        {
+		        processInfo.ErrString = "Column naming not unique. Please change the pattern accordingly.";
+	        }
 		}
 
         public Parameters GetParameters(IMatrixData mdata, ref string errorString)
         {
             var parameter = new SingleChoiceWithSubParams("Column type")
             {
-                Values = new [] {"Main", "Text", "Numeric", "Category"},
+                Values = new [] {"Main", "Text", "Numeric", "Category", "Multi numeric"},
                 SubParams = new []
                 {
                 new RegexReplaceParam("Regex", new Regex("Column (.*)"), "$1", mdata.ColumnNames),
                 new RegexReplaceParam("Regex", new Regex("Column (.*)"), "$1", mdata.StringColumnNames),
                 new RegexReplaceParam("Regex", new Regex("Column (.*)"), "$1", mdata.NumericColumnNames),
                 new RegexReplaceParam("Regex", new Regex("Column (.*)"), "$1", mdata.CategoryColumnNames),
+                new RegexReplaceParam("Regex", new Regex("Column (.*)"), "$1", mdata.MultiNumericColumnNames),
                 }.Select(param => new Parameters(param)).ToArray()
             };
             return new Parameters(parameter);
