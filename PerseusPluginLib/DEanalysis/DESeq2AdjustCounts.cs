@@ -21,7 +21,7 @@ namespace PerseusPluginLib.DESeq2
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
         public string Name => "Adjust values";
-        public string Heading => "DESeq2";
+        public string Heading => "DE analysis";
         public bool IsActive => true;
         public float DisplayRank => 100;
         public string[] HelpDocuments => new string[0];

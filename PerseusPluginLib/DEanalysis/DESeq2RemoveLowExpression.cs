@@ -24,7 +24,7 @@ namespace PerseusPluginLib.DESeq2
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
         public string Name => "Remove low expressed genes";
-        public string Heading => "DESeq2";
+        public string Heading => "DE analysis";
         public bool IsActive => true;
         public float DisplayRank => 100;
         public string[] HelpDocuments => new string[0];
@@ -95,8 +95,27 @@ namespace PerseusPluginLib.DESeq2
         }
 
         public void ExtractValues(IMatrixData mdata, Dictionary<string, List<string>> samples,
-            double minValid, Dictionary<string, int> minValidAmount, int type)
+            ParameterWithSubParams<int> minValidType, Dictionary<string, int> minValidAmount, int type)
         {
+            int minValid = -1;
+            List<int> totalCount = new List<int>();
+            if (minValidType.Value == 0)
+            {
+                minValid = minValidType.GetSubParameters().GetParam<int>("Min. raw counts").Value;
+            }
+            else
+            {
+                minValid = minValidType.GetSubParameters().GetParam<int>("Min. cpm").Value;
+                for (int j = 0; j < mdata.ColumnCount; j++)
+                {
+                    int Count = 0;
+                    foreach (int c in mdata.Values.GetColumn(j))
+                    {
+                        Count = Count + c;
+                    }
+                    totalCount.Add(Count);
+                }
+            }
             List<int> validRows = new List<int>();
             Dictionary<string, int> validNum = new Dictionary<string, int>();
             foreach (KeyValuePair<string, List<string>> entry in samples)
@@ -116,9 +135,16 @@ namespace PerseusPluginLib.DESeq2
                     {
                         if (entry.Value.Contains(mdata.ColumnNames[j]))
                         {
-                            if (mdata.Values.Get(i, j) >= minValid)
+                            if (minValidType.Value == 0)
                             {
-                                validNum[entry.Key]++;
+                                if (mdata.Values.Get(i, j) >= minValid)
+                                    validNum[entry.Key]++;
+                            }
+                            else
+                            {
+                                double cpm = (mdata.Values.Get(i, j) / totalCount[j]) * 1000000;
+                                if (cpm >= minValid)
+                                    validNum[entry.Key]++;
                             }
                         }
                     }
@@ -132,6 +158,16 @@ namespace PerseusPluginLib.DESeq2
                     validRows.Add(i);
                 else if ((type == 1) && (totalValids == samples.Count))
                     validRows.Add(i);
+                else if (type == 2)
+                {
+                    int detectSample = 0;
+                    foreach (KeyValuePair<string, int> entry in validNum)
+                    {
+                        detectSample = detectSample + validNum[entry.Key];
+                    }
+                    if (detectSample >= minValidAmount["total"])
+                        validRows.Add(i);
+                }
             }
             mdata.ExtractRows(validRows.ToArray());
         }
@@ -148,13 +184,15 @@ namespace PerseusPluginLib.DESeq2
         }
 
         public bool ImportMinAmount(ParameterWithSubParams<int> va, Dictionary<string, List<string>> samples,
-            Dictionary<string, int> minValidAmount, ProcessInfo processInfo)
+            Dictionary<string, int> minValidAmount, ProcessInfo processInfo, int minMode)
         {
+            int totalSample = 0;
             if (va.Value == 0)
             {
                 int minNum = va.GetSubParameters().GetParam<int>("Min. number of samples").Value;
                 foreach (KeyValuePair<string, List<string>> entry in samples)
                 {
+                    totalSample = entry.Value.Count + totalSample;
                     if (minNum > entry.Value.Count)
                     {
                         minValidAmount.Add(entry.Key, entry.Value.Count);
@@ -167,12 +205,20 @@ namespace PerseusPluginLib.DESeq2
                     else
                         minValidAmount.Add(entry.Key, va.GetSubParameters().GetParam<int>("Min. number of samples").Value);
                 }
+                if (minMode == 2)
+                {
+                    if (minNum > totalSample)
+                        minValidAmount.Add("total", totalSample);
+                    else
+                        minValidAmount.Add("total", minNum);
+                }
             }
             else
             {
                 int minValidPercentage = va.GetSubParameters().GetParam<int>("Min. percentage of samples").Value;
                 foreach (KeyValuePair<string, List<string>> entry in samples)
                 {
+                    totalSample = entry.Value.Count + totalSample;
                     if (minValidPercentage > 100)
                     {
                         processInfo.ErrString = "Min. percentage of samples can not be larger than 100.";
@@ -185,13 +231,20 @@ namespace PerseusPluginLib.DESeq2
                     }
                     minValidAmount.Add(entry.Key, entry.Value.Count * minValidPercentage / 100);
                 }
+                if (minMode == 2)
+                {
+                    minValidAmount.Add("total", totalSample * minValidPercentage / 100);
+                }
             }
             return true;
         }
         public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
             ref IDocumentData[] documents, ProcessInfo processInfo)
         {
-            double minValid = Convert.ToDouble(param.GetParam<string>("Min. expression value").Value);
+            //            double minValid = Convert.ToDouble(param.GetParam<string>("Min. expression value").Value);
+            ParameterWithSubParams<int> minValidType = param.GetParamWithSubParams<int>("Min. expression value");
+            if (CheckGroup(minValidType, processInfo) == false)
+                return;
             Parameter<int> m = param.GetParam<int>("Mode");
             ParameterWithSubParams<int> va = param.GetParamWithSubParams<int>("Min. valid samples in a group");
             if (CheckGroup(va, processInfo) == false)
@@ -222,10 +275,10 @@ namespace PerseusPluginLib.DESeq2
                 }
             }
             Dictionary<string, int> minValidAmount = new Dictionary<string, int>();
-            bool import = ImportMinAmount(va, samples, minValidAmount, processInfo);
+            bool import = ImportMinAmount(va, samples, minValidAmount, processInfo, m.Value);
             if (import == false)
                 return;
-            ExtractValues(mdata, samples, minValid, minValidAmount, m.Value);
+            ExtractValues(mdata, samples, minValidType, minValidAmount, m.Value);
         }
 
         public Parameters GetParameters(IMatrixData mdata, ref string errorString)
@@ -245,16 +298,32 @@ namespace PerseusPluginLib.DESeq2
             }
             return
                 new Parameters(
-                    new StringParam("Min. expression value")
+                    new SingleChoiceWithSubParams("Min. expression value")
                     {
                         Help = "The minimum expression value for filtering the rows of the table. ",
-                        Value = "20",
+                        Values = new[] { "Raw counts", "cpm" },
+                        SubParams = new[]{
+                        new Parameters(new IntParam("Min. raw counts", Math.Min(mdata.RowCount, 20)){
+                            Help =
+                                "The minimum value of raw count for filtering the low expressed genes/proteins.",
+                        }),
+                        new Parameters(new IntParam("Min. cpm", 1){
+                            Help =
+                                "The minimum value of cpm for filtering the low expressed genes/proteins."
+                        }),
+                        },
+                        ParamNameWidth = 50,
+                        TotalWidth = 731
                     }, new SingleChoiceParam("Mode")
                     {
-                        Values = new[] { "At least one group", "All groups" },
+                        Values = new[] { "At least one group", "All groups", "Total" },
                         Help =
-                            "If 'At least one group' is selected, the row will be kept if at least one selected group can fit the 'Min. expression value.'" +
-                            "If 'All groups' is selected, the row will be kept if all selected groups can fit the 'Min. expression value.'.",
+                            "If 'At least one group' is selected, the row will be kept if at least one selected group can fit the " +
+                            "'Min. expression value' with the number of 'Min.valid samples in a group'." +
+                            "If 'All groups' is selected, the row will be kept if all selected groups can fit the " +
+                            "'Min. expression value' with the number of 'Min.valid samples in a group'." +
+                            "If 'Total' is selected, the row will be kept if the samples (without considering group) can fit the " +
+                            "'Min. expression value' with the number of 'Min.valid samples in a group'.",
                         Value = 0
                     },
                     new SingleChoiceWithSubParams("Min. valid samples in a group")

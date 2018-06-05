@@ -25,8 +25,8 @@ namespace PerseusPluginLib.DESeq2
         public string HelpOutput => "Running differential expression analysis";
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
-        public string Name => "Differential analysis";
-        public string Heading => "DESeq2";
+        public string Name => "Run DE analysis";
+        public string Heading => "DE analysis";
         public bool IsActive => true;
         public float DisplayRank => 100;
         public string[] HelpDocuments => new string[0];
@@ -90,7 +90,7 @@ namespace PerseusPluginLib.DESeq2
                 {
                     for (int j = 0; j < mdata.ColumnCount; j++)
                     {
-                        string geneID = "GENE" + i.ToString();
+                        string geneID = i.ToString();
                         if (counts.ContainsKey(geneID)) counts[geneID] = counts[geneID] + "\t" + mdata.Values.Get(i, j).ToString();
                         else counts.Add(geneID, mdata.Values.Get(i, j).ToString());
                     }
@@ -98,14 +98,15 @@ namespace PerseusPluginLib.DESeq2
             }
         }
 
-        public void CheckSignificant(string[][] sigCol, string[] info, ParameterWithSubParams<bool> fdrValid, 
-            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, int lineNum)
+        public void CheckSignificant(string[][] sigCol, string FDR_value, string LogFC, string Pvalue,
+            ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid, 
+            ParameterWithSubParams<bool> lfcValid, int lineNum)
         {
             if (fdrValid.Value)
             {
-                double maxFDR = fdrValid.Value ? fdrValid.GetSubParameters().GetParam<double>("Max. FDR").Value : 0;
-                double.TryParse(info[6], out double fdr);
-                double.TryParse(info[2], out double lfc);
+                double maxFDR = fdrValid.Value ? fdrValid.GetSubParameters().GetParam<double>("Max. Adjusted p-value (FDR)").Value : 0;
+                double.TryParse(FDR_value, out double fdr);
+                double.TryParse(LogFC, out double lfc);
                 if (fdr <= maxFDR)
                 {
                     if (lfc > 0)
@@ -122,7 +123,7 @@ namespace PerseusPluginLib.DESeq2
             {
                 double ulfc = lfcValid.Value ? lfcValid.GetSubParameters().GetParam<double>("Up-regluation").Value : 0;
                 double dlfc = lfcValid.Value ? lfcValid.GetSubParameters().GetParam<double>("Down-regluation").Value : 0;
-                double.TryParse(info[2], out double lfc);
+                double.TryParse(LogFC, out double lfc);
                 if (lfc > 0 && lfc < ulfc)
                     sigCol[lineNum - 1][0] = "Insignificant";
                 else if (lfc < 0 && lfc > dlfc)
@@ -131,10 +132,106 @@ namespace PerseusPluginLib.DESeq2
             if (pValid.Value)
             {
                 double maxP = pValid.Value ? pValid.GetSubParameters().GetParam<double>("Max. p-value").Value : 0;
-                double.TryParse(info[5], out double p);
+                double.TryParse(Pvalue, out double p);
                 if (p > maxP)
                     sigCol[lineNum - 1][0] = "Insignificant";
             }
+        }
+
+        public Dictionary<string, string[]> SetInitDict(IMatrixData mdata, string method)
+        {
+            if (method == "EdgeR")
+            {
+                return new Dictionary<string, string[]>
+                    {
+                        { "LR", new string[mdata.Values.RowCount] },
+                        { "log2FoldChange", new string[mdata.Values.RowCount] },
+                        { "logCPM", new string[mdata.Values.RowCount] },
+                        { "p-value", new string[mdata.Values.RowCount] },
+                        { "FDR", new string[mdata.Values.RowCount] }
+                    };
+            }
+            else
+            {
+                return new Dictionary<string, string[]>
+                    {
+                        { "baseMean", new string[mdata.Values.RowCount] },
+                        { "log2FoldChange", new string[mdata.Values.RowCount] },
+                        { "lfcSE", new string[mdata.Values.RowCount] },
+                        { "stat", new string[mdata.Values.RowCount] },
+                        { "p-value", new string[mdata.Values.RowCount] },
+                        { "padj", new string[mdata.Values.RowCount] }
+                    };
+            }
+        }
+
+        public void ImportResult(Dictionary<string, string[]> results, IMatrixData mdata,
+            string pair1, string pair2, string[][] validCol, string[][] sigCol, string method)
+        {
+            foreach (KeyValuePair<string, string[]> entry in results)
+            {
+                mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_" + entry.Key,
+                    pair1 + "_vs_" + pair2 + "_" + entry.Key,
+                    Array.ConvertAll(entry.Value, Double.Parse));
+                double[] t = new double[entry.Value.Length];
+                if (((entry.Key == "p-value" || entry.Key == "padj") && method == "DESeq2") ||
+                    ((entry.Key == "p-value" || entry.Key == "FDR") && method == "EdgeR"))
+                {
+                    for (int i = 0; i < entry.Value.Length; i++)
+                    {
+                        double.TryParse(entry.Value[i], out double p);
+                        if (p == 0)
+                            t[i] = Math.Log10(1 / Double.MaxValue) * -1;
+                        else
+                            t[i] = Math.Log10(p) * -1;
+                    }
+                    mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_-log10" + entry.Key,
+                    pair1 + "_vs_" + pair2 + "_-log10" + entry.Key, t);
+                }
+            }
+            if (method == "DESeq2")
+            {
+                mdata.AddCategoryColumn(pair1 + "_vs_" + pair2 + "_Valid",
+                    pair1 + "_vs_" + pair2 + "_Valid",
+                    validCol);
+            }
+            mdata.AddCategoryColumn(pair1 + "_vs_" + pair2 + "_Significant",
+                pair1 + "_vs_" + pair2 + "_Significant",
+                sigCol);
+        }
+
+        public void ExtractEdgeRResults(IMatrixData mdata, string pair1, string pair2,
+            ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid,
+            ParameterWithSubParams<bool> lfcValid)
+        {
+            StreamReader reader = new StreamReader(File.OpenRead("results.csv"));
+            Dictionary<string, string[]> results = SetInitDict(mdata, "EdgeR");
+            int lineNum = 0;
+            string[][] sigCol = new string[mdata.Values.RowCount][];
+            string[][] validCol = new string[mdata.Values.RowCount][];
+            while (!reader.EndOfStream)
+            {
+                string line = reader.ReadLine();
+                if (!String.IsNullOrWhiteSpace(line))
+                {
+                    line = line.Replace("\"", "");
+                    string[] info = line.Split(',');
+                    if (lineNum != 0)
+                    {
+                        sigCol[lineNum - 1] = new string[] { "Insignificant" };
+                        CheckSignificant(sigCol, info[5], info[1],info[4], fdrValid, 
+                            pValid, lfcValid, lineNum);
+                        results["log2FoldChange"][lineNum - 1] = info[1];
+                        results["logCPM"][lineNum - 1] = info[2];
+                        results["LR"][lineNum - 1] = info[3];
+                        results["p-value"][lineNum - 1] = info[4];
+                        results["FDR"][lineNum - 1] = info[5];
+                    }
+                }
+                lineNum++;
+            }
+            reader.Close();
+            ImportResult(results, mdata, pair1, pair2, validCol, sigCol, "EdgeR");
         }
 
         public void ExtractDESeq2Results(IMatrixData mdata, string pair1, string pair2, 
@@ -145,15 +242,7 @@ namespace PerseusPluginLib.DESeq2
             int lineNum = 0;
             string[][] validCol = new string[mdata.Values.RowCount][];
             string[][] sigCol = new string[mdata.Values.RowCount][];
-            Dictionary<string, string[]> results = new Dictionary<string, string[]>
-                    {
-                        { "baseMean", new string[mdata.Values.RowCount] },
-                        { "log2FoldChange", new string[mdata.Values.RowCount] },
-                        { "lfcSE", new string[mdata.Values.RowCount] },
-                        { "stat", new string[mdata.Values.RowCount] },
-                        { "p-value", new string[mdata.Values.RowCount] },
-                        { "padj", new string[mdata.Values.RowCount] }
-                    };
+            Dictionary<string, string[]> results = SetInitDict(mdata, "DESeq2");
             while (!reader.EndOfStream)
             {
                 string line = reader.ReadLine();
@@ -177,7 +266,8 @@ namespace PerseusPluginLib.DESeq2
                             }
                         }
                         if (validCol[lineNum - 1][0] == "+")
-                            CheckSignificant(sigCol, info, fdrValid, pValid, lfcValid, lineNum);
+                            CheckSignificant(sigCol, info[6], info[2], info[5], fdrValid,
+                                pValid, lfcValid, lineNum);
                         results["baseMean"][lineNum - 1] = info[1];
                         results["log2FoldChange"][lineNum - 1] = info[2];
                         results["lfcSE"][lineNum - 1] = info[3];
@@ -189,32 +279,7 @@ namespace PerseusPluginLib.DESeq2
                 lineNum++;
             }
             reader.Close();
-            foreach (KeyValuePair<string, string[]> entry in results)
-            {
-                mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_" + entry.Key,
-                    pair1 + "_vs_" + pair2 + "_" + entry.Key,
-                    Array.ConvertAll(entry.Value, Double.Parse));
-                double[] t = new double[entry.Value.Length];
-                if (entry.Key == "p-value" || entry.Key == "padj")
-                {
-                    for (int i = 0; i < entry.Value.Length; i++)
-                    {
-                        double.TryParse(entry.Value[i], out double p);
-                        if (p == 0)
-                            t[i] = Math.Log10(1 / Double.MaxValue) * -1;
-                        else
-                            t[i] = Math.Log10(p) * -1;
-                    }
-                    mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_-log10" + entry.Key,
-                    pair1 + "_vs_" + pair2 + "_-log10" + entry.Key, t);
-                }
-            }
-            mdata.AddCategoryColumn(pair1 + "_vs_" + pair2 + "_Valid",
-                pair1 + "_vs_" + pair2 + "_Valid",
-                validCol);
-            mdata.AddCategoryColumn(pair1 + "_vs_" + pair2 + "_Significant",
-                pair1 + "_vs_" + pair2 + "_Significant",
-                sigCol);
+            ImportResult(results, mdata, pair1, pair2, validCol, sigCol, "DESeq2");
         }
 
         public void RunDESeq2(Dictionary<string, int> samples, List<string> pairs1, List<string> pairs2,
@@ -257,16 +322,103 @@ namespace PerseusPluginLib.DESeq2
             }
         }
 
-        public void CheckAndInstallDESeq2(REngine engine)
+        public string ImportContrast(List<string> indexs, string pair1, string pair2)
+        {
+            string contrast = "";
+            foreach (string index in indexs)
+            {
+                if (contrast.Length == 0)
+                {
+                    if (index == pair1)
+                        contrast = "1";
+                    else if (index == pair2)
+                        contrast = "-1";
+                    else
+                        contrast = "0";
+                }
+                else
+                {
+                    if (index == pair1)
+                        contrast = contrast + ", 1";
+                    else if (index == pair2)
+                        contrast = contrast + ", -1";
+                    else
+                        contrast = contrast + ", 0";
+                }
+            }
+            return contrast;
+        }
+
+        public void RunEdgeR(Dictionary<string, int> samples, List<string> pairs1, List<string> pairs2,
+            IMatrixData mdata, REngine engine, ParameterWithSubParams<bool> fdrValid,
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, string experiments)
+        {
+            engine.Evaluate("library(edgeR)");
+            engine.Evaluate("data_raw <- read.table('Count_table.txt', header = TRUE)");
+            string repString = "";
+            foreach (KeyValuePair<string, int> entry in samples)
+            {
+                if (repString.Length == 0)
+                    repString = String.Format("rep('{0}', {1})", entry.Key, entry.Value.ToString());
+                else
+                    repString = String.Format("{0}, rep('{1}', {2})", repString, entry.Key, entry.Value.ToString());
+            }
+            string commandLine = String.Format("mobDataGroups <- c({0})", repString);
+            engine.Evaluate(commandLine);
+            engine.Evaluate("d <- DGEList(counts = data_raw, group = factor(mobDataGroups))");
+            engine.Evaluate("d <- calcNormFactors(d)");
+            engine.Evaluate("design.mat <- model.matrix(~0 + d$samples$group)");
+            engine.Evaluate("colnames(design.mat) <- levels(d$samples$group)");
+            engine.Evaluate("write.table(design.mat, file = 'group.txt', sep = '\t', quote=FALSE)");
+            engine.Evaluate("d2 <- estimateGLMCommonDisp(d, design.mat)");
+            engine.Evaluate("d2 <- estimateGLMTrendedDisp(d2,design.mat)");
+            engine.Evaluate("d2 <- estimateGLMTagwiseDisp(d2,design.mat)");
+            engine.Evaluate("fit <- glmFit(d2, design.mat)");
+            List<string> indexs = new List<string>();
+            foreach (string line in File.ReadLines("group.txt"))
+            {
+                string[] groupIndexs = line.Split('\t');
+                foreach (string index in groupIndexs)
+                    indexs.Add(index);
+                break;
+            }
+            foreach (string pair1 in pairs1)
+            {
+                foreach (string pair2 in pairs2)
+                {
+                    if (pair1 != pair2)
+                    {
+                        string contrastLine = String.Format("lrt <- glmLRT(fit, contrast = c({0}))", 
+                            ImportContrast(indexs, pair1, pair2));
+                        engine.Evaluate(contrastLine);
+                        engine.Evaluate("result <- topTags(lrt, n = Inf)");
+                        engine.Evaluate("result_table <- as.data.frame(result)");
+                        engine.Evaluate("sort_result <- result_table[order(as.numeric(row.names(result_table))), ]");
+                        engine.Evaluate("write.csv(sort_result, file = 'results.csv')");
+                        ExtractEdgeRResults(mdata, pair1, pair2, fdrValid, pValid, lfcValid);
+                    }
+                }
+            }
+        }
+
+        public void CheckAndInstallation(REngine engine, int program)
         {
             engine.Evaluate("is.installed <-function(mypkg) is.element(mypkg, installed.packages()[, 1])").AsFunction();
-            engine.Evaluate("write(is.installed('DESeq2'), file='packages')");
+            if (program == 0)
+                engine.Evaluate("write(is.installed('DESeq2'), file='packages')");
+            else
+                engine.Evaluate("write(is.installed('edgeR'), file='packages')");
             StreamReader reader = new StreamReader(File.OpenRead("packages"));
             string line = reader.ReadLine();
-            if (line == "FALSE")
+            if ((line == "FALSE") && (program == 0))
             {
                 engine.Evaluate("source('https://bioconductor.org/biocLite.R')");
                 engine.Evaluate("biocLite('DESeq2')");
+            }
+            else if ((line == "FALSE") && (program == 1))
+            {
+                engine.Evaluate("source('https://bioconductor.org/biocLite.R')");
+                engine.Evaluate("biocLite('edgeR', dependencies = TRUE)");
             }
             reader.Close();
         }
@@ -331,9 +483,10 @@ namespace PerseusPluginLib.DESeq2
             ref IDocumentData[] documents, ProcessInfo processInfo)
         {
             string curPath = Directory.GetCurrentDirectory();
-            string[] fileNames = new string[] { "packages", "Count_table.txt", "results.csv", "test.txt" };
+            int program = param.GetParam<int>("Program").Value;
+            string[] fileNames = new string[] { "packages", "group.txt", "results.csv", "test.txt", "Count_table.txt" };
             ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Group");
-            ParameterWithSubParams<bool> fdrValid = param.GetParamWithSubParams<bool>("FDR");
+            ParameterWithSubParams<bool> fdrValid = param.GetParamWithSubParams<bool>("Adjusted p-value (FDR)");
             ParameterWithSubParams<bool> pValid = param.GetParamWithSubParams<bool>("P-value");
             ParameterWithSubParams<bool> lfcValid = param.GetParamWithSubParams<bool>("Log2 Fold Change");
             int colInd = p.Value;
@@ -375,14 +528,17 @@ namespace PerseusPluginLib.DESeq2
             tw.Close();
             REngine.SetEnvironmentVariables();
             REngine engine = REngine.GetInstance();
-            CheckAndInstallDESeq2(engine);
+            CheckAndInstallation(engine, program);
             bool unValid = CheckUnvaildNum(mdata, processInfo);
             if (unValid)
             {
                 DeleteTempFiles(fileNames);
                 return;
             }
-            RunDESeq2(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid);
+            if (program == 0)
+                RunDESeq2(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid);
+            else
+                RunEdgeR(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid, experiments);
             DeleteTempFiles(fileNames);
             Directory.SetCurrentDirectory(@curPath);
         }
@@ -406,7 +562,13 @@ namespace PerseusPluginLib.DESeq2
                     });
             }
             return
-                new Parameters(new SingleChoiceWithSubParams("Group")
+                new Parameters(new SingleChoiceParam("Program")
+                {
+                    Values = new[] { "DESeq2", "EdgeR" },
+                    Help =
+                            "The program for doing differential expression analysis.",
+                    Value = 0
+                }, new SingleChoiceWithSubParams("Group")
                 {
                     Values = mdata.CategoryRowNames,
                     SubParams = subParams,
@@ -420,10 +582,10 @@ namespace PerseusPluginLib.DESeq2
                         new DoubleParam("Down-regluation", -1.5)),
                     ParamNameWidth = 90,
                     TotalWidth = 731
-                }, new BoolWithSubParams("FDR") {
-                    Help = "The FDR threshold of the significant features.",
+                }, new BoolWithSubParams("Adjusted p-value (FDR)") {
+                    Help = "The Adjusted p-value (FDR) threshold of the significant features.",
                     Value = true,
-                    SubParamsTrue = new Parameters(new DoubleParam("Max. FDR", 0.05)),
+                    SubParamsTrue = new Parameters(new DoubleParam("Max. Adjusted p-value (FDR)", 0.05)),
                     ParamNameWidth = 90,
                     TotalWidth = 731
                 }, new BoolWithSubParams("P-value")
