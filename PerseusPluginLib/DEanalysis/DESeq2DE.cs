@@ -60,7 +60,7 @@ namespace PerseusPluginLib.DESeq2
             return groupids;
         }
 
-        public void ExtractCountAndSample(string experiments, Dictionary<string, int> samples,
+        public string ExtractCountAndSample(string experiments, Dictionary<string, List<string>> samples,
             Dictionary<string, string> counts, bool importCount, string[][] cats, IMatrixData mdata,
             HashSet<string> value, List<string> pair)
         {
@@ -70,32 +70,39 @@ namespace PerseusPluginLib.DESeq2
                 {
                     if (importCount == true)
                     {
-                        if (samples.ContainsKey(cats[i][j])) samples[cats[i][j]] = samples[cats[i][j]] + 1;
-                        else samples.Add(cats[i][j], 1);
+                        if (!samples.ContainsKey(cats[i][j]))
+                        {
+                            samples.Add(cats[i][j], new List<string>());
+                        }
+                        samples[cats[i][j]].Add(mdata.ColumnNames[i]);
                     }
                     if (value.Contains(cats[i][j]))
                     {
-                        if (experiments.Length == 0) experiments = mdata.ColumnNames[i];
-                        else experiments = experiments + "\t" + mdata.ColumnNames[i];
                         if (!pair.Contains(cats[i][j])) pair.Add(cats[i][j]);
                     }
                 }
             }
-            if (experiments.Split('\t').Length <= 1)
-                MessageBox.Show("Experiments without replicates. It is only used for data exploration, " +
-                    "but for generating precisely differential expression, biological replicates are mandatory. ");
             if (importCount == true)
             {
-                for (int i = 0; i < mdata.RowCount; i++)
+                foreach (KeyValuePair<string, List<string>> entry in samples)
                 {
-                    for (int j = 0; j < mdata.ColumnCount; j++)
+                    for (int i = 0; i < mdata.ColumnCount; i++)
                     {
-                        string geneID = i.ToString();
-                        if (counts.ContainsKey(geneID)) counts[geneID] = counts[geneID] + "\t" + mdata.Values.Get(i, j).ToString();
-                        else counts.Add(geneID, mdata.Values.Get(i, j).ToString());
+                        if (entry.Value.Contains(mdata.ColumnNames[i]))
+                        {
+                            if (experiments.Length == 0) experiments = mdata.ColumnNames[i];
+                            else experiments = experiments + "\t" + mdata.ColumnNames[i];
+                            for (int j = 0; j < mdata.RowCount; j++)
+                            {
+                                string geneID = j.ToString();
+                                if (counts.ContainsKey(geneID)) counts[geneID] = counts[geneID] + "\t" + mdata.Values.Get(j, i).ToString();
+                                else counts.Add(geneID, mdata.Values.Get(j, i).ToString());
+                            }
+                        }
                     }
                 }
             }
+            return experiments;
         }
 
         public void CheckSignificant(string[][] sigCol, string FDR_value, string LogFC, string Pvalue,
@@ -128,13 +135,33 @@ namespace PerseusPluginLib.DESeq2
                     sigCol[lineNum - 1][0] = "Insignificant";
                 else if (lfc < 0 && lfc > dlfc)
                     sigCol[lineNum - 1][0] = "Insignificant";
+                if (!fdrValid.Value)
+                {
+                    if (lfc >= ulfc)
+                        sigCol[lineNum - 1][0] = "Up-regulated";
+                    else if (lfc <= dlfc)
+                        sigCol[lineNum - 1][0] = "Down-regulated";
+                }
             }
             if (pValid.Value)
             {
                 double maxP = pValid.Value ? pValid.GetSubParameters().GetParam<double>("Max. p-value").Value : 0;
                 double.TryParse(Pvalue, out double p);
+                double.TryParse(LogFC, out double lfc);
                 if (p > maxP)
                     sigCol[lineNum - 1][0] = "Insignificant";
+                if ((!fdrValid.Value) && (!fdrValid.Value))
+                {
+                    if (p <= maxP)
+                    {
+                        if (lfc > 0)
+                            sigCol[lineNum - 1][0] = "Up-regulated";
+                        else if (lfc < 0)
+                            sigCol[lineNum - 1][0] = "Down-regulated";
+                        else
+                            sigCol[lineNum - 1][0] = "Equal";
+                    }
+                }
             }
         }
 
@@ -166,13 +193,19 @@ namespace PerseusPluginLib.DESeq2
         }
 
         public void ImportResult(Dictionary<string, string[]> results, IMatrixData mdata,
-            string pair1, string pair2, string[][] validCol, string[][] sigCol, string method)
+            string pair1, string pair2, string[][] validCol, string[][] sigCol, string method,
+            bool replicate)
         {
             foreach (KeyValuePair<string, string[]> entry in results)
             {
-                mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_" + entry.Key,
-                    pair1 + "_vs_" + pair2 + "_" + entry.Key,
-                    Array.ConvertAll(entry.Value, Double.Parse));
+                if ((entry.Key == "LR") && (!replicate))
+                { }
+                else
+                {
+                    mdata.AddNumericColumn(pair1 + "_vs_" + pair2 + "_" + entry.Key,
+                        pair1 + "_vs_" + pair2 + "_" + entry.Key,
+                        Array.ConvertAll(entry.Value, Double.Parse));
+                }
                 double[] t = new double[entry.Value.Length];
                 if (((entry.Key == "p-value" || entry.Key == "padj") && method == "DESeq2") ||
                     ((entry.Key == "p-value" || entry.Key == "FDR") && method == "EdgeR"))
@@ -199,12 +232,27 @@ namespace PerseusPluginLib.DESeq2
                 pair1 + "_vs_" + pair2 + "_Significant",
                 sigCol);
         }
+        
+        public void StoreResult(Dictionary<string, string[]> results, string[][] sigCol,
+            int lineNum, ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid,
+            ParameterWithSubParams<bool> lfcValid, string logFC, string logCPM, string pV, 
+            string FDR, string LR)
+        {
+            sigCol[lineNum - 1] = new string[] { "Insignificant" };
+            CheckSignificant(sigCol, FDR, logFC, pV, fdrValid,
+                pValid, lfcValid, lineNum);
+            results["log2FoldChange"][lineNum - 1] = logFC;
+            results["logCPM"][lineNum - 1] = logCPM;
+            results["LR"][lineNum - 1] = LR;
+            results["p-value"][lineNum - 1] = pV;
+            results["FDR"][lineNum - 1] = FDR;
+        }
 
         public void ExtractEdgeRResults(IMatrixData mdata, string pair1, string pair2,
             ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid,
-            ParameterWithSubParams<bool> lfcValid)
+            ParameterWithSubParams<bool> lfcValid, bool replicate, string resultName)
         {
-            StreamReader reader = new StreamReader(File.OpenRead("results.csv"));
+            StreamReader reader = new StreamReader(File.OpenRead(resultName));
             Dictionary<string, string[]> results = SetInitDict(mdata, "EdgeR");
             int lineNum = 0;
             string[][] sigCol = new string[mdata.Values.RowCount][];
@@ -218,25 +266,27 @@ namespace PerseusPluginLib.DESeq2
                     string[] info = line.Split(',');
                     if (lineNum != 0)
                     {
-                        sigCol[lineNum - 1] = new string[] { "Insignificant" };
-                        CheckSignificant(sigCol, info[5], info[1],info[4], fdrValid, 
-                            pValid, lfcValid, lineNum);
-                        results["log2FoldChange"][lineNum - 1] = info[1];
-                        results["logCPM"][lineNum - 1] = info[2];
-                        results["LR"][lineNum - 1] = info[3];
-                        results["p-value"][lineNum - 1] = info[4];
-                        results["FDR"][lineNum - 1] = info[5];
+                        if (replicate)
+                        {
+                            StoreResult(results, sigCol, lineNum, fdrValid, pValid, lfcValid,
+                                info[1], info[2], info[4], info[5], info[3]);
+                        }
+                        else
+                        {
+                            StoreResult(results, sigCol, lineNum, fdrValid, pValid, lfcValid,
+                                info[1], info[2], info[3], info[4], "NA");
+                        }
                     }
                 }
                 lineNum++;
             }
             reader.Close();
-            ImportResult(results, mdata, pair1, pair2, validCol, sigCol, "EdgeR");
+            ImportResult(results, mdata, pair1, pair2, validCol, sigCol, "EdgeR", replicate);
         }
 
         public void ExtractDESeq2Results(IMatrixData mdata, string pair1, string pair2, 
             ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid, 
-            ParameterWithSubParams<bool> lfcValid)
+            ParameterWithSubParams<bool> lfcValid, bool replicate)
         {
             StreamReader reader = new StreamReader(File.OpenRead("results.csv"));
             int lineNum = 0;
@@ -279,34 +329,52 @@ namespace PerseusPluginLib.DESeq2
                 lineNum++;
             }
             reader.Close();
-            ImportResult(results, mdata, pair1, pair2, validCol, sigCol, "DESeq2");
+            ImportResult(results, mdata, pair1, pair2, validCol, sigCol, "DESeq2", replicate);
         }
 
-        public void RunDESeq2(Dictionary<string, int> samples, List<string> pairs1, List<string> pairs2,
+        public void RunDESeq2(Dictionary<string, List<string>> samples, List<string> pairs1, List<string> pairs2,
             IMatrixData mdata, REngine engine, ParameterWithSubParams<bool> fdrValid, 
-            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid)
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, string fitType)
         {
             engine.Evaluate("library(DESeq2)");
+            bool replicate = true;
+            foreach (KeyValuePair<string, List<string>> entry in samples)
+            {
+                if (entry.Value.Count <= 1)
+                {
+                    replicate = false;
+                }
+            }
             engine.Evaluate("counts <- read.delim('Count_table.txt')");
             string keys = "", values = "";
-            foreach (KeyValuePair<string, int> entry in samples)
+            foreach (KeyValuePair<string, List<string>> entry in samples)
             {
                 if (keys.Length == 0)
                 {
                     keys = "'" + entry.Key + "'";
-                    values = entry.Value.ToString();
+                    values = entry.Value.Count.ToString();
                 }
                 else
                 {
                     keys = keys + ", " + "'" + entry.Key + "'";
-                    values = values + ", " + entry.Value.ToString();
+                    values = values + ", " + entry.Value.Count.ToString(); ;
                 }
             }
             string commandLine = String.Format("sample<-data.frame(groups = rep(c({0}), time = c({1})))", keys, values);
             engine.Evaluate(commandLine);
             engine.Evaluate("ds<-DESeqDataSetFromMatrix(countData = counts, colData = sample, design = ~groups)");
             engine.Evaluate("colnames(ds)<-colnames(counts)");
-            engine.Evaluate("ds<-DESeq(ds)");
+            if (replicate)
+            {
+                engine.Evaluate("ds<-DESeq(ds)");
+            }
+            else
+            {
+                MessageBox.Show("Experiments without replicates. It is only used for data exploration, " +
+                        "but for generating precisely differential expression, biological replicates are mandatory. ");
+                string repString = String.Format("ds<-DESeq(ds, fitType='{0}')", fitType);
+                engine.Evaluate(repString);
+            }
             foreach (string pair1 in pairs1)
             {
                 foreach (string pair2 in pairs2)
@@ -316,7 +384,7 @@ namespace PerseusPluginLib.DESeq2
                         commandLine = String.Format("res<-results(ds, c('groups', '{0}', '{1}'))", pair1, pair2);
                         engine.Evaluate(commandLine);
                         engine.Evaluate("write.csv(res, file = 'results.csv')");
-                        ExtractDESeq2Results(mdata, pair1, pair2, fdrValid, pValid, lfcValid);
+                        ExtractDESeq2Results(mdata, pair1, pair2, fdrValid, pValid, lfcValid, replicate);
                     }
                 }
             }
@@ -349,19 +417,18 @@ namespace PerseusPluginLib.DESeq2
             return contrast;
         }
 
-        public void RunEdgeR(Dictionary<string, int> samples, List<string> pairs1, List<string> pairs2,
-            IMatrixData mdata, REngine engine, ParameterWithSubParams<bool> fdrValid,
-            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, string experiments)
+        public void RunEdgeRWithReplicates(REngine engine, Dictionary<string, List<string>> samples,
+            List<string> pairs1, List<string> pairs2, IMatrixData mdata, ParameterWithSubParams<bool> fdrValid,
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid)
         {
-            engine.Evaluate("library(edgeR)");
             engine.Evaluate("data_raw <- read.table('Count_table.txt', header = TRUE)");
             string repString = "";
-            foreach (KeyValuePair<string, int> entry in samples)
+            foreach (KeyValuePair<string, List<string>> entry in samples)
             {
                 if (repString.Length == 0)
-                    repString = String.Format("rep('{0}', {1})", entry.Key, entry.Value.ToString());
+                    repString = String.Format("rep('{0}', {1})", entry.Key, entry.Value.Count.ToString());
                 else
-                    repString = String.Format("{0}, rep('{1}', {2})", repString, entry.Key, entry.Value.ToString());
+                    repString = String.Format("{0}, rep('{1}', {2})", repString, entry.Key, entry.Value.Count.ToString());
             }
             string commandLine = String.Format("mobDataGroups <- c({0})", repString);
             engine.Evaluate(commandLine);
@@ -388,16 +455,106 @@ namespace PerseusPluginLib.DESeq2
                 {
                     if (pair1 != pair2)
                     {
-                        string contrastLine = String.Format("lrt <- glmLRT(fit, contrast = c({0}))", 
+                        string contrastLine = String.Format("lrt <- glmLRT(fit, contrast = c({0}))",
                             ImportContrast(indexs, pair1, pair2));
                         engine.Evaluate(contrastLine);
                         engine.Evaluate("result <- topTags(lrt, n = Inf)");
                         engine.Evaluate("result_table <- as.data.frame(result)");
                         engine.Evaluate("sort_result <- result_table[order(as.numeric(row.names(result_table))), ]");
                         engine.Evaluate("write.csv(sort_result, file = 'results.csv')");
-                        ExtractEdgeRResults(mdata, pair1, pair2, fdrValid, pValid, lfcValid);
+                        ExtractEdgeRResults(mdata, pair1, pair2, fdrValid, pValid, lfcValid, true, "results.csv");
                     }
                 }
+            }
+        }
+
+        public void WritePairCount(string pair, Dictionary<string, List<string>> samples,
+            IMatrixData mdata, Dictionary<string, string> counts, List<string> cats)
+        {
+            for (int i = 0; i < mdata.ColumnCount; i++)
+            {
+                if (samples[pair].Contains(mdata.ColumnNames[i]))
+                {
+                    if (!cats.Contains(mdata.ColumnNames[i]))
+                        cats.Add(mdata.ColumnNames[i]);
+                    for (int j = 0; j < mdata.RowCount; j++)
+                    {
+                        string geneID = j.ToString();
+                        if (counts.ContainsKey(geneID)) counts[geneID] = counts[geneID] + "\t" + mdata.Values.Get(j, i).ToString();
+                        else counts.Add(geneID, mdata.Values.Get(j, i).ToString());
+                    }
+                }
+            }
+        }
+
+        public void RunEdgeRWithoutReplicates(REngine engine, Dictionary<string, List<string>> samples,
+            List<string> pairs1, List<string> pairs2, IMatrixData mdata, ParameterWithSubParams<bool> fdrValid,
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, double dispersion)
+        {
+            foreach (string pair1 in pairs1)
+            {
+                foreach (string pair2 in pairs2)
+                {
+                    if (pair1 != pair2)
+                    {
+                        Dictionary<string, string> counts = new Dictionary<string, string>();
+                        List<string> cats = new List<string>();
+                        string fileName = "Count_table_" + pair1 + "_" + pair2 + ".txt";
+                        TextWriter tw = new StreamWriter(fileName);
+                        WritePairCount(pair1, samples, mdata, counts, cats);
+                        WritePairCount(pair2, samples, mdata, counts, cats);
+                        tw.WriteLine(String.Join("\t", cats));
+                        foreach (KeyValuePair<string, string> entry in counts)
+                        {
+                            tw.WriteLine(entry.Key + "\t" + entry.Value);
+                        }
+                        tw.Close();
+                        string fileLine = String.Format("data_raw <- read.table('{0}', header = TRUE)", fileName);
+                        engine.Evaluate(fileLine);
+                        string repString = String.Format("rep('{0}', {1}), rep('{2}', {3})", 
+                            pair1, samples[pair1].Count.ToString(), pair2, samples[pair2].Count.ToString());
+                        string commandLine = String.Format("mobDataGroups <- c({0})", repString);
+                        engine.Evaluate(commandLine);
+                        engine.Evaluate("d <- DGEList(counts = data_raw, group = factor(mobDataGroups))");
+                        engine.Evaluate("d <- calcNormFactors(d)");
+                        string dispersionLine = String.Format("d$common.dispersion <- {0}", dispersion.ToString());
+                        engine.Evaluate(dispersionLine);
+                        engine.Evaluate("de <- exactTest(d)");
+                        engine.Evaluate("result <- topTags(de, n = Inf)");
+                        engine.Evaluate("result_table <- as.data.frame(result)");
+                        engine.Evaluate("sort_result <- result_table[order(as.numeric(row.names(result_table))), ]");
+                        string resultName = "results_" + pair1 + "_" + pair2 + ".csv";
+                        string resultString = String.Format("write.csv(sort_result, file = '{0}')", resultName);
+                        engine.Evaluate(resultString);
+                        ExtractEdgeRResults(mdata, pair1, pair2, fdrValid, pValid, lfcValid, false, resultName);
+                    }
+                }
+            }
+        }
+
+        public void RunEdgeR(Dictionary<string, List<string>> samples, List<string> pairs1, List<string> pairs2,
+            IMatrixData mdata, REngine engine, ParameterWithSubParams<bool> fdrValid,
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, 
+            double dispersion)
+        {
+            engine.Evaluate("library(edgeR)");
+            bool replicate = true;
+            foreach (KeyValuePair<string, List<string>> entry in samples)
+            {
+                if (entry.Value.Count <= 1)
+                    replicate = false;
+            }
+            if (replicate)
+            {
+                RunEdgeRWithReplicates(engine, samples, pairs1, pairs2, mdata, fdrValid,
+                    pValid, lfcValid);
+            }
+            else
+            {
+                MessageBox.Show("Experiments without replicates. It is only used for data exploration, " +
+                        "but for generating precisely differential expression, biological replicates are mandatory. ");
+                RunEdgeRWithoutReplicates(engine, samples, pairs1, pairs2, mdata, fdrValid,
+                    pValid, lfcValid, dispersion);
             }
         }
 
@@ -423,11 +580,18 @@ namespace PerseusPluginLib.DESeq2
             reader.Close();
         }
 
-        public void DeleteTempFiles(string[] fileNames)
+        public void DeleteTempFiles(string[] fileNames, string curPath, string[] multiFileNames)
         {
             foreach (string fileName in fileNames)
             {
                 if (File.Exists(fileName)) File.Delete(fileName);
+            }
+            foreach (string mfileName in multiFileNames)
+            {
+                foreach (string f in Directory.EnumerateFiles(curPath, mfileName))
+                {
+                    File.Delete(f);
+                }
             }
         }
 
@@ -483,8 +647,10 @@ namespace PerseusPluginLib.DESeq2
             ref IDocumentData[] documents, ProcessInfo processInfo)
         {
             string curPath = Directory.GetCurrentDirectory();
-            int program = param.GetParam<int>("Program").Value;
+            ParameterWithSubParams<int> programInd = param.GetParamWithSubParams<int>("Program");
+            int program = programInd.Value;
             string[] fileNames = new string[] { "packages", "group.txt", "results.csv", "test.txt", "Count_table.txt" };
+            string[] multiFileNames = new string[] { "Count_table*.txt", "results*.csv" };
             ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Group");
             ParameterWithSubParams<bool> fdrValid = param.GetParamWithSubParams<bool>("Adjusted p-value (FDR)");
             ParameterWithSubParams<bool> pValid = param.GetParamWithSubParams<bool>("P-value");
@@ -503,23 +669,15 @@ namespace PerseusPluginLib.DESeq2
             HashSet<string> value2 = new HashSet<string>(groupids2);
             TextWriter tw = new StreamWriter("Count_table.txt");
             string[][] cats = mdata.GetCategoryRowAt(colInd);
-            string experiments1 = "", experiments2 = "";
-            Dictionary<string, int> samples = new Dictionary<string, int>();
+            Dictionary<string, List<string>> samples = new Dictionary<string, List<string>>();
             List<string> pairs1 = new List<string>();
             List<string> pairs2 = new List<string>();
-            Dictionary<string, string> counts = new Dictionary<string, string>();
-            ExtractCountAndSample(experiments1, samples, counts, true,
-                cats, mdata, value1, pairs1);
-            ExtractCountAndSample(experiments2, samples, counts, false,
-                cats, mdata, value2, pairs2);
             string experiments = "";
-            foreach (string exp in mdata.ColumnNames)
-            {
-                if (experiments.Length == 0)
-                    experiments = exp;
-                else
-                    experiments = experiments + "\t" + exp;
-            }
+            Dictionary<string, string> counts = new Dictionary<string, string>();
+            experiments = ExtractCountAndSample(experiments, samples, counts, true,
+                cats, mdata, value1, pairs1);
+            experiments = ExtractCountAndSample(experiments, samples, counts, false,
+                cats, mdata, value2, pairs2);
             tw.WriteLine(experiments);
             foreach (KeyValuePair<string, string> entry in counts)
             {
@@ -532,14 +690,25 @@ namespace PerseusPluginLib.DESeq2
             bool unValid = CheckUnvaildNum(mdata, processInfo);
             if (unValid)
             {
-                DeleteTempFiles(fileNames);
+                DeleteTempFiles(fileNames, curPath, multiFileNames);
                 return;
             }
             if (program == 0)
-                RunDESeq2(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid);
+            {
+                int fitTypeInd = programInd.GetSubParameters().GetParam<int>("FitType").Value;
+                string fitType = "parametric";
+                if (fitTypeInd == 1)
+                    fitType = "local";
+                else if (fitTypeInd == 2)
+                    fitType = "mean";
+                RunDESeq2(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid, fitType);
+            }
             else
-                RunEdgeR(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid, experiments);
-            DeleteTempFiles(fileNames);
+            {
+                double dispersion = programInd.GetSubParameters().GetParam<double>("Dispersion (without replicates)").Value;
+                RunEdgeR(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid, dispersion);
+            }
+            DeleteTempFiles(fileNames, curPath, multiFileNames);
             Directory.SetCurrentDirectory(@curPath);
         }
 
@@ -562,12 +731,20 @@ namespace PerseusPluginLib.DESeq2
                     });
             }
             return
-                new Parameters(new SingleChoiceParam("Program")
+                new Parameters(new SingleChoiceWithSubParams("Program")
                 {
                     Values = new[] { "DESeq2", "EdgeR" },
-                    Help =
-                            "The program for doing differential expression analysis.",
-                    Value = 0
+                    SubParams = new[]{
+                        new Parameters(new Parameter[] { new SingleChoiceParam("FitType"){
+                            Values = new[] { "parametric", "local", "mean" },
+                            Help = "This fitType for running DESeq2. If your dataset without replicates, please use local or mean.",
+                            } }),
+                        new Parameters(new Parameter[]{ new DoubleParam("Dispersion (without replicates)", 0.04){
+                            Help = "This dispersion value of EdgeR for the dataset without replicates." } })
+                    },
+                    Help = "The program for doing differential expression analysis.",
+                    ParamNameWidth = 170,
+                    TotalWidth = 731
                 }, new SingleChoiceWithSubParams("Group")
                 {
                     Values = mdata.CategoryRowNames,
