@@ -755,8 +755,8 @@ namespace PerseusPluginLib.DESeq2
                 }, new BoolWithSubParams("Log2 Fold Change") {
                     Help = "The Log2 Fold Change threshold of the significant features.",
                     Value = true,
-                    SubParamsTrue = new Parameters(new DoubleParam("Up-regluation", 1.5),
-                        new DoubleParam("Down-regluation", -1.5)),
+                    SubParamsTrue = new Parameters(new DoubleParam("Up-regluation", 2),
+                        new DoubleParam("Down-regluation", -2)),
                     ParamNameWidth = 90,
                     TotalWidth = 731
                 }, new BoolWithSubParams("Adjusted p-value (FDR)") {
