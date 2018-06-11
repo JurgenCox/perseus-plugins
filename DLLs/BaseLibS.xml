@@ -1126,6 +1126,12 @@
             <param name="yp1">derivative at <code>x[0]</code> </param>
             <param name="ypn">derivative at <code>x[x.Length - 1]</code> </param>
         </member>
+        <member name="M:BaseLibS.Num.CubicSpline.Interpolate(System.Double)">
+            <summary>
+            Be aware that the function is assumed to be constant outside of the range of x values. That means in particular that
+            the functio is not differentiable at x[0] and x[n-1].
+            </summary>
+        </member>
         <member name="T:BaseLibS.Num.MatrixUtils">
             <summary>
             A collection of primitive operation on matrices.
@@ -1382,7 +1388,21 @@
             <param name="xs"></param>
             <param name="ys"></param>
         </member>
-        <member name="M:BaseLibS.Num.Test.Univariate.NSamples.KruskalWallisTest.TestImpl(System.Double[][],System.Double@)">
+        <member name="M:BaseLibS.Num.Test.PermBasedFdrUtil.BalancedPermutationsSubgroups(System.Int32[][][],System.Int32[][]@,BaseLibS.Num.Random2)">
+            <summary>
+            Creates permutations of group memberships of data points while preserving subgroup structures. 
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Num.Test.PermBasedFdrUtil.BalancedPermutations(System.Int32[][],System.Int32[][]@,BaseLibS.Num.Random2)">
+            <summary>
+            Creates permutations of group memberships of data points. 
+            </summary>
+            <param name="inds">Original group memberships. Length = number of groups. Each sub-array contains indices 
+            of original group members.</param>
+            <param name="indsOut">Scrambled groups</param>
+            <param name="r2">Random number generator used for creating the permutations</param>
+        </member>
+        <member name="M:BaseLibS.Num.Test.Univariate.NSample.KruskalWallisTest.TestImpl(System.Double[][],System.Double@)">
             <summary>
             Kruskal Wallis test is the extention of the Wilcoxon U test to more than two group
             Another words it is designed to test the equakity of medians of multiple sample
@@ -2227,7 +2247,7 @@
             </code>
             </summary>
         </member>
-        <member name="M:BaseLibS.Util.LockFile.#ctor(System.String)">
+        <member name="M:BaseLibS.Util.LockFile.#ctor(System.String,System.Random)">
             <summary>
             Constructs a new instance of a lock-file in the given path. After this the actual lock-file will not
             have been created, which needs to be done with a call to <see cref="M:BaseLibS.Util.LockFile.Lock"/>. When the directory does
