@@ -5,6 +5,7 @@ using NUnit.Framework;
 using PerseusApi.Document;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
+using PerseusLibS.Data;
 using PerseusPluginLib.Join;
 using PerseusPluginLib.Rearrange;
 
@@ -145,6 +146,29 @@ namespace PerseusPluginLib.Test.Join
             Assert.AreEqual(result.MultiNumericColumnCount, 1); 
             CollectionAssert.AreEqual(new [] {0.0, 1.0}, result.MultiNumericColumns[0][0]);
             CollectionAssert.AreEqual(new [] {2.0}, result.MultiNumericColumns[0][1]);
+        }
+
+        [Test]
+        public void TestUnion()
+        {
+            var mBase = PerseusFactory.CreateMatrixData();
+            mBase.AddStringColumn("Id", "", new []{"n1;n2", "n3", "n5"});
+            var mdata = PerseusFactory.CreateMatrixData(new[,] {{0.0}, {1.0}, {2.0}, {3.0}});
+            mdata.AddStringColumn("Id", "", new []{"n1", "n2", "n3", "n4"});
+            var match = new MatchingRowsByName();
+            var errString = string.Empty;
+            var param = match.GetParameters(new []{mBase, mdata}, ref errString);
+	        param.GetParam<int[]>("Copy main columns").Value = new[] {0};
+	        param.GetParam<int[]>("Copy text columns").Value = new[] {0};
+	        param.GetParam<bool>("Union").Value = true;
+			param.GetParam<bool>("Add indicator").Value = true;
+	        IMatrixData[] supplTables = null;
+	        IDocumentData[] documents = null;
+            var result = match.ProcessData(new[] {mBase, mdata}, param, ref supplTables, ref documents,
+                BaseTest.CreateProcessInfo());
+			Assert.IsTrue(result.IsConsistent(out string consistent), consistent);
+			CollectionAssert.AreEqual(new [] {"n1;n2", "n3", "", "n4"}, result.GetStringColumn("Id_"));
+			CollectionAssert.AreEqual(new [] {"n1;n2", "n3", "n5", ""}, result.GetStringColumn("Id"));
         }
 	}
 }
