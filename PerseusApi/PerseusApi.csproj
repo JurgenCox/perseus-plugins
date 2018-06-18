@@ -75,6 +75,7 @@
     <Compile Include="Generic\IExport.cs" />
     <Compile Include="Generic\IFromMatrix.cs" />
     <Compile Include="Generic\IMergeWithMatrix.cs" />
+    <Compile Include="Generic\IMultiActivity.cs" />
     <Compile Include="Generic\IMultiAnalysis.cs" />
     <Compile Include="Generic\IMultiProcessing.cs" />
     <Compile Include="Generic\IProcessing.cs" />

@@ -2,7 +2,7 @@
 using PerseusApi.Generic;
 
 namespace PerseusApi.Matrix {
-	public interface IMatrixMultiAnalysis {
+	public interface IMatrixMultiAnalysis : IMatrixActivity, IMultiAnalysis {
 		IAnalysisResult AnalyzeData(IMatrixData[] mdata, Parameters param, ProcessInfo processInfo);
 
 		/// <summary>
