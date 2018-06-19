@@ -63,27 +63,16 @@ namespace PerseusPluginLib.Join{
 
 		    var matchColumnNames = matrixData1.StringColumnNames.Concat(matrixData1.NumericColumnNames).ToList();
 		    var matchColumnNames2 = matrixData2.StringColumnNames.Concat(matrixData2.NumericColumnNames).ToList();
-			var matchType = new Parameter[]
-			{
-				new BoolParam("Union", false)
-				{
-					Help = "Add unmatched columns from the second matrix."
-				},
-				new BoolParam("Add indicator")
-				{
-					Help = "If checked, a categorical column will be added in" +
-					       " which it is indicated by a '+' if at least one row of the second " +
-					       "matrix matches."
-				}
-			};
 		    return
 				new Parameters(CreateMatchParameters(matchColumnNames, matchColumnNames2)
-				              .Concat(matchType)
-				              .Concat(CreateCopyParameters(matrixData2))
-				              .ToArray());
+				    .Concat(new Parameter[] {new BoolParam("Add indicator"){
+					Help =
+						"If checked, a categorical column will be added in which it is indicated by a '+' if at least one row of the second " +
+						"matrix matches."
+				}}).Concat(CreateCopyParameters(matrixData2)).ToArray());
 		}
 
-		public static Parameter[] CreateCopyParameters(IMatrixData matrixData2)
+	    public static Parameter[] CreateCopyParameters(IMatrixData matrixData2)
 	    {
 	        return new Parameter[]{
             new MultiChoiceParam("Copy main columns"){
@@ -145,8 +134,7 @@ namespace PerseusPluginLib.Join{
 			IMatrixData mdata1 = inputData[0];
 			IMatrixData mdata2 = inputData[1];
 		    var matching = ParseMatchingColumns(parameters);
-			var union = parameters.GetParam<bool>("Union").Value;
-		    int[][] indexMap = GetIndexMap(mdata1, mdata2, matching.first, matching.second, union);
+		    int[][] indexMap = GetIndexMap(mdata1, mdata2, matching.first, matching.second);
 
 		    var result = (IMatrixData) mdata1.Clone();
 		    result.Origin = "Combination";
@@ -155,28 +143,11 @@ namespace PerseusPluginLib.Join{
 	        {
                 AddIndicator(result, mdata2, indexMap);
             }
+            
 		    var (main, text, numeric, category) = ParseCopyParameters(parameters);
 			SetAnnotationRows(result, mdata1, mdata2, main.copy);
 		    AddMainColumns(result, mdata2, indexMap, main.copy, GetAveraging(main.combine));
 		    AddAnnotationColumns(result, mdata2, indexMap, text, numeric, category);
-			if (union)
-			{
-				for (int i = 0; i < result.StringColumnCount; i++)
-				{
-					var column = result.StringColumns[i];
-					result.StringColumns[i] = column.Concat(Enumerable.Repeat(string.Empty, indexMap.Length - column.Length)).ToArray();
-				}
-				for (int i = 0; i < result.NumericColumnCount; i++)
-				{
-					var column = result.NumericColumns[i];
-					result.NumericColumns[i] = column.Concat(Enumerable.Repeat(double.NaN, indexMap.Length - column.Length)).ToArray();
-				}
-				for (int i = 0; i < result.CategoryColumnCount; i++)
-				{
-					var column = result.GetCategoryColumnAt(i);
-					result.SetCategoryColumnAt(column.Concat(Enumerable.Repeat(new string[0], indexMap.Length - column.Length)).ToArray(), i);
-				}
-			}
 		    return result;
 		}
 
@@ -255,7 +226,7 @@ namespace PerseusPluginLib.Join{
 	        (string name, double[] values, double[] quality, bool[] isImputed)[] columns,
 	        Func<double[], double> avExpression)
 	    {
-	        var n = indexMap.Count;
+	        var n = result.RowCount;
 	        if (columns.Length > 0)
 	        {
 	            double[,] newExColumns = new double[n, columns.Length];
@@ -385,7 +356,7 @@ namespace PerseusPluginLib.Join{
 				string[][] oldCol = mdata2.GetCategoryColumnAt(copyCatColumns[i]);
 				newCatColNames[i] = mdata2.CategoryColumnNames[copyCatColumns[i]];
 				newCatColumns[i] = new string[mdata1.RowCount][];
-				for (int j = 0; j < indexMap.Count; j++){
+				for (int j = 0; j < mdata1.RowCount; j++){
 					int[] inds = indexMap[j];
 					List<string[]> values = new List<string[]>();
 					foreach (int ind in inds){
@@ -410,8 +381,8 @@ namespace PerseusPluginLib.Join{
 			for (int i = 0; i < copyTextColumns.Length; i++){
 				string[] oldCol = mdata2.StringColumns[copyTextColumns[i]];
 				newStringColNames[i] = mdata2.StringColumnNames[copyTextColumns[i]];
-				newStringColumns[i] = new string[indexMap.Count];
-				for (int j = 0; j < indexMap.Count; j++){
+				newStringColumns[i] = new string[mdata1.RowCount];
+				for (int j = 0; j < mdata1.RowCount; j++){
 					int[] inds = indexMap[j];
 					List<string> values = new List<string>();
 					foreach (int ind in inds){
@@ -486,8 +457,13 @@ namespace PerseusPluginLib.Join{
 	    /// <summary>
 	    /// Create index map for mapping between two tables. Indices refer to text + numeric columns.
 	    /// </summary>
+	    /// <param name="mdata1"></param>
+	    /// <param name="mdata2"></param>
+	    /// <param name="first">First-level mapping</param>
+	    /// <param name="second">Second-level mapping</param>
+	    /// <returns></returns>
 	    public static int[][] GetIndexMap(IDataWithAnnotationColumns mdata1, IDataWithAnnotationColumns mdata2,
-	        (int m1, int m2) first, (int m1, int m2)? second, bool union) {
+	        (int m1, int m2) first, (int m1, int m2)? second) {
 		    Dictionary<string, List<int>> idToCols2;
 		    string[][] matchCol1;
 		    if (second.HasValue)
@@ -504,18 +480,12 @@ namespace PerseusPluginLib.Join{
 			for (int i = 0; i < matchCol1.Length; i++){
 				List<int> q = new List<int>();
 				foreach (string s in matchCol1[i]){
-					if (idToCols2.TryGetValue(s, out var value))
-					{
-						q.AddRange(value);
+					if (idToCols2.ContainsKey(s)){
+						q.AddRange(idToCols2[s]);
 					}
 				}
 				indexMap[i] = ArrayUtils.UniqueValues(q.ToArray());
 			}
-		    var unmatchedIndices = Enumerable.Range(0, mdata2.RowCount).Except(indexMap.SelectMany(i => i));
-		    if (union)
-		    {
-			    indexMap = indexMap.Concat(unmatchedIndices.Select(i => new[] {i})).ToArray();
-		    }
 			return indexMap;
 		}
 
