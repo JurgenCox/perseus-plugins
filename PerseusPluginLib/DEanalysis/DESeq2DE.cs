@@ -107,7 +107,7 @@ namespace PerseusPluginLib.DESeq2
 
         public void CheckSignificant(string[][] sigCol, string FDR_value, string LogFC, string Pvalue,
             ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid, 
-            ParameterWithSubParams<bool> lfcValid, int lineNum)
+            ParameterWithSubParams<int> lfcValid, int lineNum, double[] fcs)
         {
             if (fdrValid.Value)
             {
@@ -126,20 +126,18 @@ namespace PerseusPluginLib.DESeq2
                 else
                     sigCol[lineNum - 1][0] = "Insignificant";
             }
-            if (lfcValid.Value)
+            if (lfcValid.Value != 2)
             {
-                double ulfc = lfcValid.Value ? lfcValid.GetSubParameters().GetParam<double>("Up-regluation").Value : 0;
-                double dlfc = lfcValid.Value ? lfcValid.GetSubParameters().GetParam<double>("Down-regluation").Value : 0;
                 double.TryParse(LogFC, out double lfc);
-                if (lfc > 0 && lfc < ulfc)
+                if (lfc > 0 && lfc < fcs[0])
                     sigCol[lineNum - 1][0] = "Insignificant";
-                else if (lfc < 0 && lfc > dlfc)
+                else if (lfc < 0 && lfc > fcs[1])
                     sigCol[lineNum - 1][0] = "Insignificant";
                 if (!fdrValid.Value)
                 {
-                    if (lfc >= ulfc)
+                    if (lfc >= fcs[0])
                         sigCol[lineNum - 1][0] = "Up-regulated";
-                    else if (lfc <= dlfc)
+                    else if (lfc <= fcs[1])
                         sigCol[lineNum - 1][0] = "Down-regulated";
                 }
             }
@@ -235,12 +233,12 @@ namespace PerseusPluginLib.DESeq2
         
         public void StoreResult(Dictionary<string, string[]> results, string[][] sigCol,
             int lineNum, ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid,
-            ParameterWithSubParams<bool> lfcValid, string logFC, string logCPM, string pV, 
-            string FDR, string LR)
+            ParameterWithSubParams<int> lfcValid, string logFC, string logCPM, string pV, 
+            string FDR, string LR, double[] fcs)
         {
             sigCol[lineNum - 1] = new string[] { "Insignificant" };
             CheckSignificant(sigCol, FDR, logFC, pV, fdrValid,
-                pValid, lfcValid, lineNum);
+                pValid, lfcValid, lineNum, fcs);
             results["log2FoldChange"][lineNum - 1] = logFC;
             results["logCPM"][lineNum - 1] = logCPM;
             results["LR"][lineNum - 1] = LR;
@@ -250,8 +248,9 @@ namespace PerseusPluginLib.DESeq2
 
         public void ExtractEdgeRResults(IMatrixData mdata, string pair1, string pair2,
             ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid,
-            ParameterWithSubParams<bool> lfcValid, bool replicate, string resultName)
+            ParameterWithSubParams<int> lfcValid, bool replicate, string resultName)
         {
+            double[] fcs = GetCutoffLogFC(lfcValid, resultName, "EdgeR");
             StreamReader reader = new StreamReader(File.OpenRead(resultName));
             Dictionary<string, string[]> results = SetInitDict(mdata, "EdgeR");
             int lineNum = 0;
@@ -269,12 +268,12 @@ namespace PerseusPluginLib.DESeq2
                         if (replicate)
                         {
                             StoreResult(results, sigCol, lineNum, fdrValid, pValid, lfcValid,
-                                info[1], info[2], info[4], info[5], info[3]);
+                                info[1], info[2], info[4], info[5], info[3], fcs);
                         }
                         else
                         {
                             StoreResult(results, sigCol, lineNum, fdrValid, pValid, lfcValid,
-                                info[1], info[2], info[3], info[4], "NA");
+                                info[1], info[2], info[3], info[4], "NA", fcs);
                         }
                     }
                 }
@@ -284,10 +283,53 @@ namespace PerseusPluginLib.DESeq2
             ImportResult(results, mdata, pair1, pair2, validCol, sigCol, "EdgeR", replicate);
         }
 
+        public double[] GetCutoffLogFC(ParameterWithSubParams<int> lfcValid, string resultName, string method)
+        {
+            double[] fcs = new double[] {0, 0};
+            if (lfcValid.Value == 0)
+            {
+                fcs[0] = lfcValid.GetSubParameters().GetParam<double>("Up-regluation").Value;
+                fcs[1] = lfcValid.GetSubParameters().GetParam<double>("Down-regluation").Value;
+            }
+            else if (lfcValid.Value == 1)
+            {
+                double ufc = lfcValid.GetSubParameters().GetParam<double>("Up-regluation").Value;
+                double dfc = lfcValid.GetSubParameters().GetParam<double>("Down-regluation").Value;
+                List<double> fcList = new List<double>();
+                StreamReader reader = new StreamReader(File.OpenRead(resultName));
+                int lineNum = 0;
+                double fcValue = 0;
+                while (!reader.EndOfStream)
+                {
+                    string line = reader.ReadLine();
+                    if (!String.IsNullOrWhiteSpace(line))
+                    {
+                        line = line.Replace("\"", "");
+                        string[] info = line.Split(',');
+                        if (lineNum != 0)
+                        {
+                            if (method == "DESeq2")
+                                double.TryParse(info[2], out fcValue);
+                            else
+                                double.TryParse(info[1], out fcValue);
+                            fcList.Add(fcValue);
+                        }
+                    }
+                    lineNum++;
+                }
+                reader.Close();
+                fcList.Sort();
+                fcs[0] = fcList[(int)Math.Round(((double)fcList.Count / (double)100) * ufc)];
+                fcs[1] = fcList[(int)Math.Round(((double)fcList.Count / (double)100) * dfc)];
+            }
+            return fcs;
+        }
+
         public void ExtractDESeq2Results(IMatrixData mdata, string pair1, string pair2, 
             ParameterWithSubParams<bool> fdrValid, ParameterWithSubParams<bool> pValid, 
-            ParameterWithSubParams<bool> lfcValid, bool replicate)
+            ParameterWithSubParams<int> lfcValid, bool replicate)
         {
+            double[] fcs = GetCutoffLogFC(lfcValid, "results.csv", "DESeq2");
             StreamReader reader = new StreamReader(File.OpenRead("results.csv"));
             int lineNum = 0;
             string[][] validCol = new string[mdata.Values.RowCount][];
@@ -317,7 +359,7 @@ namespace PerseusPluginLib.DESeq2
                         }
                         if (validCol[lineNum - 1][0] == "+")
                             CheckSignificant(sigCol, info[6], info[2], info[5], fdrValid,
-                                pValid, lfcValid, lineNum);
+                                pValid, lfcValid, lineNum, fcs);
                         results["baseMean"][lineNum - 1] = info[1];
                         results["log2FoldChange"][lineNum - 1] = info[2];
                         results["lfcSE"][lineNum - 1] = info[3];
@@ -334,7 +376,7 @@ namespace PerseusPluginLib.DESeq2
 
         public void RunDESeq2(Dictionary<string, List<string>> samples, List<string> pairs1, List<string> pairs2,
             IMatrixData mdata, REngine engine, ParameterWithSubParams<bool> fdrValid, 
-            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, string fitType)
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<int> lfcValid, string fitType)
         {
             engine.Evaluate("library(DESeq2)");
             bool replicate = true;
@@ -419,7 +461,7 @@ namespace PerseusPluginLib.DESeq2
 
         public void RunEdgeRWithReplicates(REngine engine, Dictionary<string, List<string>> samples,
             List<string> pairs1, List<string> pairs2, IMatrixData mdata, ParameterWithSubParams<bool> fdrValid,
-            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid)
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<int> lfcValid)
         {
             engine.Evaluate("data_raw <- read.table('Count_table.txt', header = TRUE)");
             string repString = "";
@@ -489,7 +531,7 @@ namespace PerseusPluginLib.DESeq2
 
         public void RunEdgeRWithoutReplicates(REngine engine, Dictionary<string, List<string>> samples,
             List<string> pairs1, List<string> pairs2, IMatrixData mdata, ParameterWithSubParams<bool> fdrValid,
-            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, double dispersion)
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<int> lfcValid, double dispersion)
         {
             foreach (string pair1 in pairs1)
             {
@@ -534,7 +576,7 @@ namespace PerseusPluginLib.DESeq2
 
         public void RunEdgeR(Dictionary<string, List<string>> samples, List<string> pairs1, List<string> pairs2,
             IMatrixData mdata, REngine engine, ParameterWithSubParams<bool> fdrValid,
-            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<bool> lfcValid, 
+            ParameterWithSubParams<bool> pValid, ParameterWithSubParams<int> lfcValid, 
             double dispersion)
         {
             engine.Evaluate("library(edgeR)");
@@ -654,7 +696,7 @@ namespace PerseusPluginLib.DESeq2
             ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Group");
             ParameterWithSubParams<bool> fdrValid = param.GetParamWithSubParams<bool>("Adjusted p-value (FDR)");
             ParameterWithSubParams<bool> pValid = param.GetParamWithSubParams<bool>("P-value");
-            ParameterWithSubParams<bool> lfcValid = param.GetParamWithSubParams<bool>("Log2 Fold Change");
+            ParameterWithSubParams<int> lfcValid = param.GetParamWithSubParams<int>("Log2 Fold Change");
             int colInd = p.Value;
             if (colInd < 0)
             {
@@ -752,11 +794,28 @@ namespace PerseusPluginLib.DESeq2
                     Help = "The categorical row that the analysis should be based on.",
                     ParamNameWidth = 70,
                     TotalWidth = 731
-                }, new BoolWithSubParams("Log2 Fold Change") {
+                }, new SingleChoiceWithSubParams("Log2 Fold Change") {
                     Help = "The Log2 Fold Change threshold of the significant features.",
-                    Value = true,
-                    SubParamsTrue = new Parameters(new DoubleParam("Up-regluation", 2),
-                        new DoubleParam("Down-regluation", -2)),
+                    Values = new[] { "Number", "Percentile", "None" },
+                    SubParams = new[]{
+                        new Parameters(new DoubleParam("Up-regluation", 2) {
+                        Help = "The minimum value of logFC for up-regulation. " +
+                        "If the expressed values are higher than this value, " +
+                        "it would be considered as up-regulated genes/proteins."},
+                        new DoubleParam("Down-regluation", -2) {
+                        Help = "The maximum value of logFC for down-regulation. " +
+                        "If the expressed values are lower than this value, " +
+                        "it would be considered as down-regulated genes/proteins."}),
+                        new Parameters(new DoubleParam("Up-regluation", 95) {
+                        Help = "The cutoff of logFC for up-regulation. " +
+                        "If the expressed values are located at higher percentile of the assigned value, " +
+                        "it would be considered as up-regulated genes/proteins."},
+                        new DoubleParam("Down-regluation", 5){
+                        Help = "The cutoff of logFC for down-regulation. " +
+                        "If the expressed values are located at lower percentile of the assigned value, " +
+                        "it would be considered as down-regulated genes/proteins."}),
+                        new Parameters(),
+                    },
                     ParamNameWidth = 90,
                     TotalWidth = 731
                 }, new BoolWithSubParams("Adjusted p-value (FDR)") {
