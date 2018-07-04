@@ -28,11 +28,7 @@ namespace PerseusPluginLib.Export {
 			bool addtlMatrices = parameters.GetParam<bool>("Write quality and imputed matrices").Value;
 			addtlMatrices = addtlMatrices && data.IsImputed != null && data.Quality != null && data.IsImputed.IsInitialized() &&
 			                data.Quality.IsInitialized();
-			try {
-				PerseusUtils.WriteMatrixToFile(data, filename, addtlMatrices);
-			} catch (Exception e) {
-				processInfo.ErrString = e.Message;
-			}
+			PerseusUtils.WriteMatrixToFile(data, filename, addtlMatrices);
 		}
 
 		public Parameters GetParameters(IMatrixData matrixData, ref string errorString) {
