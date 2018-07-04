@@ -50,8 +50,8 @@
     <Reference Include="nunit.framework, Version=3.8.1.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.3.8.1\lib\net45\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="PerseusLibS, Version=1.6.0.1381, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\PerseusLibS.1.6.0.1381\lib\net45\PerseusLibS.dll</HintPath>
+    <Reference Include="PerseusLibS, Version=1.6.0.2098, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\PerseusLibS.1.6.0.2098\lib\net45\PerseusLibS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -79,6 +79,7 @@
     <Compile Include="Mods\ExpandSiteTableTest.cs" />
     <Compile Include="PerseusApi\PerseusUtilsTest.cs" />
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Rearrange\TransposeTest.cs" />
     <Compile Include="Utils\PerseusPluginUtilsTest.cs" />
     <Compile Include="Utils\PerseusUtilsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
