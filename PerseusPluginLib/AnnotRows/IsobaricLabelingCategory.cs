@@ -126,13 +126,13 @@ namespace PerseusPluginLib.AnnotRows
                             if (!repeatNames.ContainsKey(exps[nameIndex]))
                             {
                                 repeatNames.Add(exps[nameIndex], 2);
-                                samples[exps[expIndex]][sampleNum][nameIndex] = exps[nameIndex] + " 1";
-                                exps[nameIndex] = exps[nameIndex] + " 2";
+                                samples[exps[expIndex]][sampleNum][nameIndex] = exps[nameIndex] + "_1";
+                                exps[nameIndex] = exps[nameIndex] + "_2";
                             }
                             else
                             {
                                 repeatNames[exps[nameIndex]]++;
-                                exps[nameIndex] = exps[nameIndex] + " " + repeatNames[exps[nameIndex]];
+                                exps[nameIndex] = exps[nameIndex] + "_" + repeatNames[exps[nameIndex]];
                             }
                         }
                     }
@@ -282,11 +282,11 @@ namespace PerseusPluginLib.AnnotRows
                             repeats.Add(catInfo[0], 2);
                         else
                             repeats[catInfo[0]]++;
-                        catRow[numRow][0] = catInfo[0] + " " + repeats[catInfo[0]];
+                        catRow[numRow][0] = catInfo[0] + "_" + repeats[catInfo[0]];
                         for (int i = 0; i < names.Count; i++)
                         {
                             if (names[i] == catInfo[0])
-                                catRow[i][0] = catInfo[0] + " 1";
+                                catRow[i][0] = catInfo[0] + "_1";
                         }
                     }
                 }

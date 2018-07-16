@@ -117,28 +117,28 @@ namespace PerseusPluginLib.DESeq2
                 if (fdr <= maxFDR)
                 {
                     if (lfc > 0)
-                        sigCol[lineNum - 1][0] = "Up-regulated";
+                        sigCol[lineNum - 1][0] = "+";
                     else if (lfc < 0)
-                        sigCol[lineNum - 1][0] = "Down-regulated";
+                        sigCol[lineNum - 1][0] = "-";
                     else
-                        sigCol[lineNum - 1][0] = "Equal";
+                        sigCol[lineNum - 1][0] = "";
                 }
                 else
-                    sigCol[lineNum - 1][0] = "Insignificant";
+                    sigCol[lineNum - 1][0] = "";
             }
             if (lfcValid.Value != 2)
             {
                 double.TryParse(LogFC, out double lfc);
                 if (lfc > 0 && lfc < fcs[0])
-                    sigCol[lineNum - 1][0] = "Insignificant";
+                    sigCol[lineNum - 1][0] = "";
                 else if (lfc < 0 && lfc > fcs[1])
-                    sigCol[lineNum - 1][0] = "Insignificant";
+                    sigCol[lineNum - 1][0] = "";
                 if (!fdrValid.Value)
                 {
                     if (lfc >= fcs[0])
-                        sigCol[lineNum - 1][0] = "Up-regulated";
+                        sigCol[lineNum - 1][0] = "+";
                     else if (lfc <= fcs[1])
-                        sigCol[lineNum - 1][0] = "Down-regulated";
+                        sigCol[lineNum - 1][0] = "-";
                 }
             }
             if (pValid.Value)
@@ -147,17 +147,17 @@ namespace PerseusPluginLib.DESeq2
                 double.TryParse(Pvalue, out double p);
                 double.TryParse(LogFC, out double lfc);
                 if (p > maxP)
-                    sigCol[lineNum - 1][0] = "Insignificant";
+                    sigCol[lineNum - 1][0] = "";
                 if ((!fdrValid.Value) && (!fdrValid.Value))
                 {
                     if (p <= maxP)
                     {
                         if (lfc > 0)
-                            sigCol[lineNum - 1][0] = "Up-regulated";
+                            sigCol[lineNum - 1][0] = "+";
                         else if (lfc < 0)
-                            sigCol[lineNum - 1][0] = "Down-regulated";
+                            sigCol[lineNum - 1][0] = "-";
                         else
-                            sigCol[lineNum - 1][0] = "Equal";
+                            sigCol[lineNum - 1][0] = "";
                     }
                 }
             }
@@ -236,7 +236,7 @@ namespace PerseusPluginLib.DESeq2
             ParameterWithSubParams<int> lfcValid, string logFC, string logCPM, string pV, 
             string FDR, string LR, double[] fcs)
         {
-            sigCol[lineNum - 1] = new string[] { "Insignificant" };
+            sigCol[lineNum - 1] = new string[] { "" };
             CheckSignificant(sigCol, FDR, logFC, pV, fdrValid,
                 pValid, lfcValid, lineNum, fcs);
             results["log2FoldChange"][lineNum - 1] = logFC;
@@ -577,7 +577,7 @@ namespace PerseusPluginLib.DESeq2
         public void RunEdgeR(Dictionary<string, List<string>> samples, List<string> pairs1, List<string> pairs2,
             IMatrixData mdata, REngine engine, ParameterWithSubParams<bool> fdrValid,
             ParameterWithSubParams<bool> pValid, ParameterWithSubParams<int> lfcValid, 
-            double dispersion)
+            double dispersion, int testMethod)
         {
             engine.Evaluate("library(edgeR)");
             bool replicate = true;
@@ -586,15 +586,18 @@ namespace PerseusPluginLib.DESeq2
                 if (entry.Value.Count <= 1)
                     replicate = false;
             }
-            if (replicate)
+            if ((replicate) && (testMethod == 0))
             {
                 RunEdgeRWithReplicates(engine, samples, pairs1, pairs2, mdata, fdrValid,
                     pValid, lfcValid);
             }
             else
             {
-                MessageBox.Show("Experiments without replicates. It is only used for data exploration, " +
+                if (!replicate)
+                {
+                    MessageBox.Show("Experiments without replicates. It is only used for data exploration, " +
                         "but for generating precisely differential expression, biological replicates are mandatory. ");
+                }
                 RunEdgeRWithoutReplicates(engine, samples, pairs1, pairs2, mdata, fdrValid,
                     pValid, lfcValid, dispersion);
             }
@@ -748,7 +751,8 @@ namespace PerseusPluginLib.DESeq2
             else
             {
                 double dispersion = programInd.GetSubParameters().GetParam<double>("Dispersion (without replicates)").Value;
-                RunEdgeR(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid, dispersion);
+                int testMethod = programInd.GetSubParameters().GetParam<int>("Test method").Value;
+                RunEdgeR(samples, pairs1, pairs2, mdata, engine, fdrValid, pValid, lfcValid, dispersion, testMethod);
             }
             DeleteTempFiles(fileNames, curPath, multiFileNames);
             Directory.SetCurrentDirectory(@curPath);
@@ -782,7 +786,10 @@ namespace PerseusPluginLib.DESeq2
                             Help = "This fitType for running DESeq2. If your dataset without replicates, please use local or mean.",
                             } }),
                         new Parameters(new Parameter[]{ new DoubleParam("Dispersion (without replicates)", 0.04){
-                            Help = "This dispersion value of EdgeR for the dataset without replicates." } })
+                            Help = "This dispersion value of EdgeR for the dataset without replicates." },
+                            new SingleChoiceParam("Test method"){
+                                Values = new[] { "Generalized linear model", "Exact Test" },
+                                Help = "This test method for running EdgeR." }})
                     },
                     Help = "The program for doing differential expression analysis.",
                     ParamNameWidth = 170,

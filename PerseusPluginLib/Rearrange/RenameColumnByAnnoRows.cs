@@ -50,14 +50,14 @@ namespace PerseusPluginLib.Rearrange
                         repeats.Add(newNames[i], 2);
                     else
                         repeats[newNames[i]]++;
-                    newNames[i] = newNames[i] + " " + repeats[newNames[i]];
+                    newNames[i] = newNames[i] + "_" + repeats[newNames[i]];
                 }
             }
             for (int i = 0; i < newNames.Length; i++)
             {
                 if (repeats.ContainsKey(newNames[i]))
                 {
-                    newNames[i] = newNames[i] + " 1";
+                    newNames[i] = newNames[i] + "_1";
                 }
             }
         }
