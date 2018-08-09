@@ -66,6 +66,7 @@
     <Compile Include="AnnotCols\AnnotationProvider\ConfFolderAnnotationProvider.cs" />
     <Compile Include="AnnotCols\CountingResult.cs" />
     <Compile Include="AnnotCols\AnnotationProvider\IAnnotationProvider.cs" />
+    <Compile Include="AnnotRows\IsobaricLabelingCategory.cs" />
     <Compile Include="Basic\CloneProcessing.cs" />
     <Compile Include="Basic\CombineAnnotations.cs" />
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Quality\CreateQualityMatrix.cs" />
     <Compile Include="Rearrange\ChangeColumnType.cs" />
     <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
+    <Compile Include="Rearrange\RenameColumnByAnnoRows.cs" />
     <Compile Include="Rearrange\ReorderColumnsByNumAnnotationRow.cs" />
     <Compile Include="Utils\MatrixDataExtensions.cs" />
     <Compile Include="Rearrange\UniqueRows.cs" />
