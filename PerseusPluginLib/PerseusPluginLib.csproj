@@ -67,6 +67,7 @@
     <Compile Include="AnnotCols\CountingResult.cs" />
     <Compile Include="AnnotCols\AnnotationProvider\IAnnotationProvider.cs" />
     <Compile Include="AnnotRows\IsobaricLabelingCategory.cs" />
+    <Compile Include="AnnotRows\IsobaricLabelingTrimPrefix.cs" />
     <Compile Include="Basic\CloneProcessing.cs" />
     <Compile Include="Basic\CombineAnnotations.cs" />
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />

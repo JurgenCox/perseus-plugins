@@ -21,7 +21,7 @@ namespace PerseusPluginLib.AnnotRows
         public string HelpOutput => "The column names will be grouped by the information of the isobaric labeling profiles.";
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
-        public string Name => "Isobaric labeling";
+        public string Name => "Isobaric labeling from profile";
         public string Heading => "Annot. rows";
         public bool IsActive => true;
         public float DisplayRank => 6;
@@ -143,8 +143,8 @@ namespace PerseusPluginLib.AnnotRows
             return repeat;
         }
 
-        public bool ReadProfile(string filename, Parameters param, 
-            Dictionary<string, List<string[]>> samples, ProcessInfo processInfo, 
+        public bool ReadProfile(string filename, Parameters param,
+            Dictionary<string, List<string[]>> samples, ProcessInfo processInfo,
             List<string> uniColumnNames, Dictionary<string, int> requireTitles)
         {
             bool repeat = false;
@@ -167,9 +167,9 @@ namespace PerseusPluginLib.AnnotRows
                         int channelIndex = requireTitles["channels"];
                         int expIndex = requireTitles["experiments"];
                         int.TryParse(exps[channelIndex], out int channelInd);
-                        if (((exps[channelIndex] != "0") && (channelInd == 0)) || ((channelInd > 10) || (channelInd < 0)))
+                        if ((channelInd == 0) || (channelInd <= 0))
                         {
-                            processInfo.ErrString = "Channal indices should be from 0 to 10.";
+                            processInfo.ErrString = "Channal indices should be larger than 1.";
                             repeat = true;
                         }
                         else
@@ -183,8 +183,8 @@ namespace PerseusPluginLib.AnnotRows
             return repeat;
         }
 
-        public void CheckChannelAndAssignValue(IMatrixData mdata, 
-            KeyValuePair<string, List<string[]>> entry, int channelIndex, 
+        public void CheckChannelAndAssignValue(IMatrixData mdata,
+            KeyValuePair<string, List<string[]>> entry, int channelIndex,
             string[] mainColInfoName, Dictionary<string, int> requireTitles,
             int renameType, int mainColChannl, List<string[][]> catRows, int k)
         {
@@ -229,8 +229,8 @@ namespace PerseusPluginLib.AnnotRows
                         string[] mainColInfoName = new string[mainColInfo.Length - expNameSplit - 1];
                         Array.Copy(mainColInfo, 0, mainColInfoName, 0, mainColInfo.Length - expNameSplit - 1);
                         int.TryParse(mainColInfo[mainColInfo.Length - expNameSplit - 1], out int mainColChannl);
-                        if ((entry.Key == String.Join(" ", checkExpName)) && 
-                            ((mainColInfo[mainColInfo.Length - expNameSplit - 1] == "0") || (mainColChannl != 0)))
+                        if ((entry.Key == String.Join(" ", checkExpName)) &&
+                            (mainColChannl != 0)) // (mainColInfo[mainColInfo.Length - expNameSplit - 1] == "0")
                         {
                             CheckChannelAndAssignValue(mdata, entry, channelIndex, mainColInfoName, requireTitles,
                                  renameType, mainColChannl, catRows, k);
@@ -248,7 +248,7 @@ namespace PerseusPluginLib.AnnotRows
                 foreach (string[] catInfo in catRow)
                 {
                     foreach (string cat in catInfo)
-                        if (cat != "NA")
+                        if (cat != "")
                         {
                             valid = true;
                         }
@@ -270,7 +270,7 @@ namespace PerseusPluginLib.AnnotRows
             int numRow = 0;
             foreach (string[] catInfo in catRow)
             {
-                if (catInfo[0] != "NA")
+                if (catInfo[0] != "")
                 {
                     if (!names.Contains(catInfo[0]))
                     {
@@ -279,16 +279,24 @@ namespace PerseusPluginLib.AnnotRows
                     else
                     {
                         if (!repeats.ContainsKey(catInfo[0]))
+                        {
                             repeats.Add(catInfo[0], 2);
+                            for (int i = 0; i < names.Count; i++)
+                            {
+                                if (names[i] == catInfo[0])
+                                {
+                                    catRow[i][0] = catInfo[0] + "_1";
+                                }
+                            }
+                        }
                         else
                             repeats[catInfo[0]]++;
                         catRow[numRow][0] = catInfo[0] + "_" + repeats[catInfo[0]];
-                        for (int i = 0; i < names.Count; i++)
-                        {
-                            if (names[i] == catInfo[0])
-                                catRow[i][0] = catInfo[0] + "_1";
-                        }
                     }
+                }
+                else
+                {
+                    names.Add(catInfo[0]);
                 }
                 numRow++;
             }
@@ -320,7 +328,7 @@ namespace PerseusPluginLib.AnnotRows
                 catRows.Add(new string[mdata.ColumnCount][]);
                 for (int j = 0; j < mdata.ColumnCount; j++)
                 {
-                    catRows[i][j] = new string[1] { "NA" };
+                    catRows[i][j] = new string[1] { "" };
                 }
             }
             AssignCategory(mdata, samples, catRows, requireTitles, renameType);
@@ -336,7 +344,7 @@ namespace PerseusPluginLib.AnnotRows
                     CheckRepeat(catRows[i]);
                     for (int j = 0; j < mdata.ColumnCount; j++)
                     {
-                        if (catRows[i][j][0] != "NA")
+                        if (catRows[i][j][0] != "")
                             mdata.ColumnNames[j] = catRows[i][j][0];
                     }
                 }
@@ -350,7 +358,7 @@ namespace PerseusPluginLib.AnnotRows
             {
                 Help = "Please specify here the name of the isobaric labeling profiles. " +
                 "The file should contain at least the names of experiments called \"Experiments\", " +
-                "channel index called \"Channels\" (the order, which is from lowest mass to highest is 0 - 10). " +
+                "channel index called \"Channels\" (the order, which is from lowest mass to highest is 1 - 11). " +
                 "If the profile contain a column called \"Names\", the name of main columns will be replaced by " +
                 "the given names. The other information can be also extended by additional columns."
             }, new SingleChoiceWithSubParams("Delimiter of the profile")
