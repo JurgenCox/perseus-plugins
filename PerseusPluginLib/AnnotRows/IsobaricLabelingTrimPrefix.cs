@@ -54,6 +54,7 @@ namespace PerseusPluginLib.AnnotRows
         {
             string prefixStr = param.GetParam<string>("Trimming prefix").Value;
             int[] mainColInd = param.GetParam<int[]>("Columns").Value;
+            ParameterWithSubParams<bool> trimLast = param.GetParamWithSubParams<bool>("Trimming the last element after a delimiter");
             string[][] mainCols = new string[mdata.ColumnCount][];
             for (int i = 0; i < mdata.ColumnCount; i++)
             {
@@ -64,6 +65,15 @@ namespace PerseusPluginLib.AnnotRows
                     if (prefixCol == prefixStr)
                     {
                         prefixCol = mdata.ColumnNames[i].Substring(prefixStr.Length, mdata.ColumnNames[i].Length - prefixStr.Length);
+                        if (trimLast.Value)
+                        {
+                            string delimiter = trimLast.GetSubParameters().GetParam<string>("Delimiter").Value;
+                            string[] fullColName = prefixCol.Split(new string[] { delimiter }, StringSplitOptions.None);
+                            if (fullColName.Length > 1)
+                            {
+                                prefixCol = string.Join(" ", fullColName.Take(fullColName.Length - 1));
+                            }
+                        }
                         string[] colWords = prefixCol.Split(' ');
                         if (colWords.Length > 0)
                         {
@@ -89,6 +99,13 @@ namespace PerseusPluginLib.AnnotRows
             return new Parameters(new StringParam("Trimming prefix", "Reporter intensity corrected")
             {
                 Help = "The prefix string which need to be trimmed."
+            }, new BoolWithSubParams("Trimming the last element after a delimiter")
+            {
+                Help = "Removing the last element after a delimiter to generate the category.",
+                Value = true,
+                SubParamsTrue = new Parameters(new StringParam("Delimiter", "_")),
+                ParamNameWidth = 90,
+                TotalWidth = 731
             }, new MultiChoiceParam("Columns")
             {
                 Help = "The columns for doing prefix trimming.",
