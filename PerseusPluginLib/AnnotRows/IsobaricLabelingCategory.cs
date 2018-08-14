@@ -21,7 +21,7 @@ namespace PerseusPluginLib.AnnotRows
         public string HelpOutput => "The column names will be grouped by the information of the isobaric labeling profiles.";
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
-        public string Name => "Isobaric labeling from profile";
+        public string Name => "Isobaric labeling annotation - profile";
         public string Heading => "Annot. rows";
         public bool IsActive => true;
         public float DisplayRank => 6;
