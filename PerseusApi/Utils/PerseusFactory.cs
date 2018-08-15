@@ -26,7 +26,7 @@ namespace PerseusApi.Utils {
 		/// Create minimally initialized <see cref="IMatrixData"/>.
 		/// </summary>
 		public static IMatrixData CreateMatrixData(double[,] values) {
-			return CreateMatrixData(values, Enumerable.Range(1, values.GetLength(0) + 1).Select(i => $"Column {i}").ToList());
+			return CreateMatrixData(values, Enumerable.Range(0, values.GetLength(1)).Select(i => $"Column {i + 1}").ToList());
 		}
 
 		/// <summary>
