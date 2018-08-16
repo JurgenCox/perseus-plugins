@@ -74,6 +74,7 @@
     <Compile Include="Annot\MockAnnotationProvider.cs" />
     <Compile Include="Filter\FilterDuplicateRowsTest.cs" />
     <Compile Include="Join\MatchingColumnsByNameTest.cs" />
+    <Compile Include="Join\ConcatenateTest.cs" />
     <Compile Include="Join\MatchingRowsByNameTest.cs" />
     <Compile Include="Load\UnstructuredTxtUploadTest.cs" />
     <Compile Include="Mods\ExpandSiteTableTest.cs" />
