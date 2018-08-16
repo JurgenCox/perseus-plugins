@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 
-namespace PerseusPluginLib.AnnotRows
+namespace PerseusPluginLib.IsobaricLabeling
 {
     public class IsobaricLabelingRename : IMatrixProcessing
     {
@@ -21,8 +21,8 @@ namespace PerseusPluginLib.AnnotRows
         public string HelpOutput => "The column names will be grouped by the information of the isobaric labeling profiles.";
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
-        public string Name => "Isobaric labeling annotation - profile";
-        public string Heading => "Annot. rows";
+        public string Name => "Annotation from profile";
+        public string Heading => "Isobaric Labeling";
         public bool IsActive => true;
         public float DisplayRank => 6;
         public string[] HelpDocuments => new string[0];

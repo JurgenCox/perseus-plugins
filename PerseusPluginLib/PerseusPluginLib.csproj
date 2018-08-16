@@ -66,8 +66,6 @@
     <Compile Include="AnnotCols\AnnotationProvider\ConfFolderAnnotationProvider.cs" />
     <Compile Include="AnnotCols\CountingResult.cs" />
     <Compile Include="AnnotCols\AnnotationProvider\IAnnotationProvider.cs" />
-    <Compile Include="AnnotRows\IsobaricLabelingCategory.cs" />
-    <Compile Include="AnnotRows\IsobaricLabelingTrimPrefix.cs" />
     <Compile Include="Basic\CloneProcessing.cs" />
     <Compile Include="Basic\CombineAnnotations.cs" />
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />
@@ -75,6 +73,10 @@
     <Compile Include="Basic\DeHyphenateIds.cs" />
     <Compile Include="Filter\FilterNumericalColumn.cs" />
     <Compile Include="Filter\FilterDuplicateRows.cs" />
+    <Compile Include="IsobaricLabeling\IsobaricLabelingCategory.cs" />
+    <Compile Include="IsobaricLabeling\IsobaricLabelingFilterColumns.cs" />
+    <Compile Include="IsobaricLabeling\IsobaricLabelingTrimPrefix.cs" />
+    <Compile Include="IsobaricLabeling\IsobaricLabelingRemoveChannels.cs" />
     <Compile Include="Join\Concatenate.cs" />
     <Compile Include="Join\ReplaceStrings.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
