@@ -160,8 +160,8 @@ namespace PerseusPluginLib.Join{
 					var idx = indexMap.Length + i;
 					extendedIndexMap[idx] = new[] { unmappedRightIndices[i] };
 				}
-				ExtendMainColumns(result, unmappedRightIndices.Length);
-				ExtendAnnotationColumns(result, unmappedRightIndices.Length);
+
+				DataWithAnnotationColumnsExtensions.AddEmptyRows(result, unmappedRightIndices.Length);
 				UpdateIdColumns(result, mdata2, indexMap.Length, unmappedRightIndices, matching.first, matching.second);
 				indexMap = extendedIndexMap;
 			}
@@ -221,78 +221,6 @@ namespace PerseusPluginLib.Join{
 				{
 					result.NumericColumns[second.Value.left - result.StringColumnCount] = idColumn.Select(Convert.ToDouble).ToArray();
 				}
-			}
-		}
-
-		private void ExtendAnnotationColumns(IMatrixData mdata, int length)
-		{
-			for (int i = 0; i < mdata.StringColumnCount; i++)
-			{
-				mdata.StringColumns[i] = mdata.StringColumns[i].Concat(Enumerable.Repeat(string.Empty, length)).ToArray();
-			}
-			for (int i = 0; i < mdata.NumericColumnCount; i++)
-			{
-				mdata.NumericColumns[i] = mdata.NumericColumns[i].Concat(Enumerable.Repeat(double.NaN, length)).ToArray();
-			}
-			for (int i = 0; i < mdata.MultiNumericColumnCount; i++)
-			{
-				mdata.MultiNumericColumns[i] = mdata.MultiNumericColumns[i].Concat(Enumerable.Range(0, length).Select(_ => new double[0])).ToArray();
-			}
-			for (int i = 0; i < mdata.CategoryColumnCount; i++)
-			{
-				mdata.SetCategoryColumnAt(mdata.GetCategoryColumnAt(i).Concat(Enumerable.Repeat(new string[0], length)).ToArray(), i);
-			}
-		}
-
-		/// <summary>
-		/// Add padding with NaNs to main, quality, and imputation columns.
-		/// </summary>
-		private void ExtendMainColumns(IMatrixData mdata, int length)
-		{
-			var values = new float[mdata.RowCount + length, mdata.ColumnCount];
-			var hasQuality = mdata.Quality.IsInitialized();
-			var quality = hasQuality ? new float[mdata.Quality.RowCount + length, mdata.Quality.ColumnCount] : new float[0, 0];
-			var hasImputation = mdata.IsImputed.IsInitialized();
-			var isImputed = hasImputation ? new bool[mdata.IsImputed.RowCount + length, mdata.IsImputed.ColumnCount] : new bool[0,0];
-			for (int i = 0; i < mdata.Values.RowCount; i++)
-			{
-				for (int j = 0; j < mdata.Values.ColumnCount; j++)
-				{
-					values[i, j] = (float) mdata.Values[i, j];
-					if (hasQuality)
-					{
-						quality[i, j] = (float)mdata.Quality[i, j];
-					}
-					if (hasImputation)
-					{
-						isImputed[i, j] = mdata.IsImputed[i, j];
-					}
-				}
-			}
-			for (int i = mdata.Values.RowCount; i < values.GetLength(0); i++)
-			{
-				for (int j = 0; j < values.GetLength(1); j++)
-				{
-					values[i, j] = float.NaN;
-					if (hasQuality)
-					{
-						quality[i, j] = float.NaN;
-					}
-					if (hasImputation)
-					{
-						isImputed[i, j] = false;
-					}
-				}	
-			}
-			mdata.Values = new FloatMatrixIndexer(values);
-			if (hasQuality)
-			{
-				mdata.Quality = new FloatMatrixIndexer(quality);
-			}
-
-			if (hasImputation)
-			{
-				mdata.IsImputed = new BoolMatrixIndexer(isImputed);
 			}
 		}
 
@@ -611,7 +539,7 @@ namespace PerseusPluginLib.Join{
 						}
 						else
 						{
-							idToRows.Add(id, new List<int>());
+							idToRows.Add(id, new List<int> {i});
 						}
 					}
 				}
