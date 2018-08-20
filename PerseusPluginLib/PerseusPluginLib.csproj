@@ -77,7 +77,6 @@
     <Compile Include="IsobaricLabeling\IsobaricLabelingFilterColumns.cs" />
     <Compile Include="IsobaricLabeling\IsobaricLabelingTrimPrefix.cs" />
     <Compile Include="IsobaricLabeling\IsobaricLabelingRemoveChannels.cs" />
-    <Compile Include="Join\Concatenate.cs" />
     <Compile Include="Join\ReplaceStrings.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
     <Compile Include="Load\CreateRandomMatrix.cs" />
