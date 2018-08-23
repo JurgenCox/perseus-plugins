@@ -79,6 +79,7 @@
     <Compile Include="Mods\ExpandSiteTableTest.cs" />
     <Compile Include="PerseusApi\PerseusUtilsTest.cs" />
     <Compile Include="BaseTest.cs" />
+    <Compile Include="Rearrange\ChangeColumnTypeTest.cs" />
     <Compile Include="Rearrange\TransposeTest.cs" />
     <Compile Include="Utils\PerseusPluginUtilsTest.cs" />
     <Compile Include="Utils\PerseusUtilsTest.cs" />

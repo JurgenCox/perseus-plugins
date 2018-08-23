@@ -354,6 +354,10 @@ namespace PerseusPluginLib.Rearrange{
 			for (int i = 0; i < mdata.NumericRows.Count; i++){
 				mdata.NumericRows[i] = ExtendNumericRow(mdata.NumericRows[i], num.Length);
 			}
+			for (int i = 0; i < mdata.StringRows.Count; i++)
+			{
+				mdata.StringRows[i] = ExtendStringRow(mdata.StringRows[i], num.Length);
+			}
 		}
 
 		private static void StringToExpression(IList<int> colInds, IMatrixData mdata){
@@ -398,6 +402,10 @@ namespace PerseusPluginLib.Rearrange{
 			for (int i = 0; i < mdata.NumericRows.Count; i++){
 				mdata.NumericRows[i] = ExtendNumericRow(mdata.NumericRows[i], str.Length);
 			}
+			for (int i = 0; i < mdata.StringRows.Count; i++)
+			{
+				mdata.StringRows[i] = ExtendStringRow(mdata.StringRows[i], str.Length);
+			}
 		}
 
 		private static void ExpressionToNumeric(IList<int> colInds, IMatrixData mdata){
@@ -427,6 +435,19 @@ namespace PerseusPluginLib.Rearrange{
 			}
 			for (int i = categoryRow.Count; i < categoryRow.Count + add; i++){
 				result[i] = new string[0];
+			}
+			return result;
+		}
+
+		private static string[] ExtendStringRow(IList<string> stringRow, int add)
+		{
+			var result = new string[stringRow.Count + add];
+			for (int i = 0; i < stringRow.Count; i++){
+				result[i] = stringRow[i];
+			}
+			for (int i = stringRow.Count; i < stringRow.Count + add; i++)
+			{
+				result[i] = string.Empty;
 			}
 			return result;
 		}

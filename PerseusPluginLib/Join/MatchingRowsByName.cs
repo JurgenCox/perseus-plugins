@@ -166,8 +166,7 @@ namespace PerseusPluginLib.Join
 					var idx = indexMap.Length + i;
 					extendedIndexMap[idx] = new[] { unmappedRightIndices[i] };
 				}
-
-				DataWithAnnotationColumnsExtensions.AddEmptyRows(result, unmappedRightIndices.Length);
+				result.AddEmptyRows(unmappedRightIndices.Length);
 				UpdateIdColumns(result, mdata2, indexMap.Length, unmappedRightIndices, matching.first, matching.second);
 				indexMap = extendedIndexMap;
 			}
