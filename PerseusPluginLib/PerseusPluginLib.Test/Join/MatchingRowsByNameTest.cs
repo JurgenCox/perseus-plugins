@@ -8,6 +8,7 @@ using PerseusApi.Matrix;
 using PerseusApi.Utils;
 using PerseusLibS.Data;
 using PerseusPluginLib.Join;
+using PerseusPluginLib.Manual;
 using PerseusPluginLib.Rearrange;
 
 namespace PerseusPluginLib.Test.Join
@@ -161,5 +162,49 @@ namespace PerseusPluginLib.Test.Join
             CollectionAssert.AreEqual(new double[0], result.MultiNumericColumns[1][2]);
             CollectionAssert.AreEqual(new [] {3.0}, result.MultiNumericColumns[1][3]);
         }
+
+	    [Test]
+	    public void TestMatchingCaseSensitive()
+	    {
+		    var mBase = PerseusFactory.CreateMatrixData();
+			mBase.AddStringColumn("Name", "", new []{"A", "a", "B", "b", "C", "c"});
+			Assert.IsTrue(mBase.IsConsistent(out var mBaseConsistent), mBaseConsistent);
+
+		    var mdata = PerseusFactory.CreateMatrixData();
+			mdata.AddStringColumn("Name", "", new []{"a", "B"});
+			Assert.IsTrue(mdata.IsConsistent(out var mdataConsistent), mdataConsistent);
+            var match = new MatchingRowsByName();
+            var errString = string.Empty;
+            var param = match.GetParameters(new []{mBase, mdata}, ref errString);
+	        param.GetParam<bool>("Add indicator").Value = true;
+	        param.GetParam<bool>("Ignore case").Value = false;
+	        IMatrixData[] supplTables = null;
+	        IDocumentData[] documents = null;
+            var result = match.ProcessData(new[] {mBase, mdata}, param, ref supplTables, ref documents, BaseTest.CreateProcessInfo());
+			var indicator = result.GetCategoryColumnAt(0).Select(cats => cats.SingleOrDefault() ?? "").ToArray();
+			CollectionAssert.AreEqual(new [] {"", "+", "+", "", "", ""}, indicator);
+	    }
+
+	    [Test]
+	    public void TestMatchingCaseInSensitive()
+	    {
+		    var mBase = PerseusFactory.CreateMatrixData();
+			mBase.AddStringColumn("Name", "", new []{"A", "a", "B", "b", "C", "c"});
+			Assert.IsTrue(mBase.IsConsistent(out var mBaseConsistent), mBaseConsistent);
+
+		    var mdata = PerseusFactory.CreateMatrixData();
+			mdata.AddStringColumn("Name", "", new []{"a", "B"});
+			Assert.IsTrue(mdata.IsConsistent(out var mdataConsistent), mdataConsistent);
+            var match = new MatchingRowsByName();
+            var errString = string.Empty;
+            var param = match.GetParameters(new []{mBase, mdata}, ref errString);
+	        param.GetParam<bool>("Add indicator").Value = true;
+	        param.GetParam<bool>("Ignore case").Value = true;
+	        IMatrixData[] supplTables = null;
+	        IDocumentData[] documents = null;
+            var result = match.ProcessData(new[] {mBase, mdata}, param, ref supplTables, ref documents, BaseTest.CreateProcessInfo());
+			var indicator = result.GetCategoryColumnAt(0).Select(cats => cats.SingleOrDefault() ?? "").ToArray();
+			CollectionAssert.AreEqual(new [] {"+", "+", "+", "+", "", ""}, indicator);
+	    }
 	}
 }

@@ -143,17 +143,24 @@ namespace PerseusPluginLib.Join
 					Values = new List<string> {"Left", "Outer"},
 					Help = "The left join includes all the rows in table 1 and adds matching rows from table2. " +
 						   "The outer join additionally includes rows from table 2 that could not be matched to any row in table 1."
-				}};
+				},
+				new BoolParam(IgnoreCaseLabel, false)
+				{
+					Help = "Ignore the captialization of the string while matching"
+				}, 
+			};
 		}
 
 		private const string Separator = "!§$%";
+		private const string IgnoreCaseLabel = "Ignore case";
+
 		public IMatrixData ProcessData(IMatrixData[] inputData, Parameters parameters, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo)
 		{
 			IMatrixData mdata1 = inputData[0];
 			IMatrixData mdata2 = inputData[1];
 			var matching = ParseMatchingColumns(parameters);
-			var (indexMap, unmappedRightIndices) = GetIndexMap(mdata1, mdata2, matching.first, matching.second);
+			var (indexMap, unmappedRightIndices) = GetIndexMap(mdata1, mdata2, matching.first, matching.second, matching.ignoreCase);
 
 			var result = (IMatrixData)mdata1.Clone();
 			result.Origin = "Combination";
@@ -241,7 +248,7 @@ namespace PerseusPluginLib.Join
 			return ((exColInds, combineMain), copyTextColumns, (copyNumericalColumns, combineNumerical), copyCatColumns);
 		}
 
-		public static ((int m1, int m2) first, (int m1, int m2)? second, bool outer) ParseMatchingColumns(Parameters parameters)
+		public static ((int m1, int m2) first, (int m1, int m2)? second, bool outer, bool ignoreCase) ParseMatchingColumns(Parameters parameters)
 		{
 			int Value(Parameters param, string name) => param.GetParam<int>(name).Value;
 			(int, int) first = (Value(parameters, "Matching column in table 1"), Value(parameters, "Matching column in table 2"));
@@ -253,15 +260,18 @@ namespace PerseusPluginLib.Join
 				second = (Value(subPar, "Additional column in table 1"), Value(subPar, "Additional column in table 2"));
 			}
 			var outer = parameters.GetParam<int>("Join style").Value == 1; // 0 left, 1 outer
-			return (first, second, outer);
+			var ignoreCase = parameters.GetParam<bool>(IgnoreCaseLabel).Value;
+			return (first, second, outer, ignoreCase);
 		}
 
 		private static void AddIndicator(IDataWithAnnotationColumns result, IData mdata2, int[][] indexMap)
 		{
+			var indicator = new[] { "+" };
+			var noIndicator = new string[0];
 			string[][] indicatorCol = new string[indexMap.Length][];
 			for (int i = 0; i < indexMap.Length; i++)
 			{
-				indicatorCol[i] = indexMap[i].Length > 0 ? new[] { "+" } : new string[0];
+				indicatorCol[i] = indexMap[i].Length > 0 ? indicator : noIndicator;
 			}
 			result.AddCategoryColumn(mdata2.Name, "", indicatorCol);
 		}
@@ -518,7 +528,7 @@ namespace PerseusPluginLib.Join
 		/// <summary>
 		/// Create a mapping from id to row index from the specificed <see cref="idColumn"/>.
 		/// </summary>
-		private static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn)
+		private static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn, bool ignoreCase)
 		{
 			string[][] splitIds = GetColumnSplitBySemicolon(data, idColumn);
 			Dictionary<string, List<int>> idToRow = new Dictionary<string, List<int>>();
@@ -526,13 +536,18 @@ namespace PerseusPluginLib.Join
 			{
 				foreach (string s in splitIds[i])
 				{
-					if (idToRow.TryGetValue(s, out var rows))
+					var id = s;
+					if (ignoreCase)
+					{
+						id = id.ToLower();
+					}
+					if (idToRow.TryGetValue(id, out var rows))
 					{
 						rows.Add(i);
 					}
 					else
 					{
-						idToRow.Add(s, new List<int> { i });
+						idToRow.Add(id, new List<int> { i });
 					}
 				}
 			}
@@ -542,7 +557,7 @@ namespace PerseusPluginLib.Join
 		/// <summary>
 		/// Create a mapping from id1 and id2 with a magic <see cref="Separator"/> to row index from the specificed id columns.
 		/// </summary>
-		private static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn1, int idColumn2)
+		private static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn1, int idColumn2, bool ignoreCase)
 		{
 			string[][] splitIds1 = GetColumnSplitBySemicolon(data, idColumn1);
 			string[][] splitIds2 = GetColumnSplitBySemicolon(data, idColumn2);
@@ -554,6 +569,10 @@ namespace PerseusPluginLib.Join
 					foreach (string s2 in splitIds2[i])
 					{
 						string id = s1 + Separator + s2;
+						if (ignoreCase)
+						{
+							id = id.ToLower();
+						}
 						if (idToRows.TryGetValue(id, out var rows))
 						{
 							rows.Add(i);
@@ -574,33 +593,38 @@ namespace PerseusPluginLib.Join
 		/// umatchedRightIndices contains a list of unmapped 
 		/// </summary>
 		public static (int[][] leftIndexMap, int[] unmatchedRightIndices) GetIndexMap(IDataWithAnnotationColumns leftData, IDataWithAnnotationColumns rightData,
-			(int left, int right) first, (int left, int right)? second)
+			(int left, int right) first, (int left, int right)? second, bool ignoreCase)
 		{
-			Dictionary<string, List<int>> idToCols2;
-			string[][] matchCol1;
+			Dictionary<string, List<int>> idToRows;
+			string[][] matchCol;
 			if (second.HasValue)
 			{
-				idToCols2 = MapIdToRow(rightData, first.right, second.Value.right);
-				matchCol1 = GetColumnPair(leftData, first.left, second.Value.left);
+				idToRows = MapIdToRow(rightData, first.right, second.Value.right, ignoreCase);
+				matchCol = GetColumnPair(leftData, first.left, second.Value.left);
 			}
 			else
 			{
-				idToCols2 = MapIdToRow(rightData, first.right);
-				matchCol1 = GetColumnSplitBySemicolon(leftData, first.left);
+				idToRows = MapIdToRow(rightData, first.right, ignoreCase);
+				matchCol = GetColumnSplitBySemicolon(leftData, first.left);
 			}
 			var unmatchedIndices = new HashSet<int>(Enumerable.Range(0, rightData.RowCount));
-			int[][] indexMap = new int[matchCol1.Length][];
-			for (int i = 0; i < matchCol1.Length; i++)
+			int[][] indexMap = new int[matchCol.Length][];
+			for (int i = 0; i < matchCol.Length; i++)
 			{
-				List<int> q = new List<int>();
-				foreach (string s in matchCol1[i])
+				List<int> matchingRows = new List<int>();
+				foreach (string s in matchCol[i])
 				{
-					if (idToCols2.ContainsKey(s))
+					var id = s;
+					if (ignoreCase)
 					{
-						q.AddRange(idToCols2[s]);
+						id = id.ToLower();
+					}
+					if (idToRows.TryGetValue(id, out var rows))
+					{
+						matchingRows.AddRange(rows);
 					}
 				}
-				var indices = ArrayUtils.UniqueValues(q.ToArray());
+				var indices = ArrayUtils.UniqueValues(matchingRows.ToArray());
 				indexMap[i] = indices;
 				foreach (var index in indices)
 				{
