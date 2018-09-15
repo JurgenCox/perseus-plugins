@@ -156,7 +156,7 @@
         </member>
         <member name="M:BaseLibS.Api.RegressionMethod.Train(BaseLibS.Num.Vector.BaseVector[],System.Int32[],System.Double[],BaseLibS.Param.Parameters,System.Int32,System.Action{System.Double})">
             <summary>
-            Create a classification model based on the given training data x with group assignments in y.
+            Create a regression model based on the given training data x with quantitative output in y.
             </summary>
             <param name="x">The training data for which the group assignment is known. <code>x.Length</code> 
             is the number of training instances. All <code>BaseVector</code> instances in the array must have 
@@ -1137,6 +1137,16 @@
             A collection of primitive operation on matrices.
             </summary>
         </member>
+        <member name="F:BaseLibS.Num.NumConstants.kb">
+            <summary>
+            Boltzmann constant
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Num.NumConstants.elemCharge">
+            <summary>
+            elementary charge
+            </summary>
+        </member>
         <member name="M:BaseLibS.Num.NumUtils.GetPartitions(System.Int32,System.Int32)">
             <summary>
             Creates all partitions of exactly <code>nItems</code> items into <code>nClasses</code> classes. 
@@ -1577,6 +1587,12 @@
             <param name="x">The input array.</param>
             <returns>The maximum.</returns>
         </member>
+        <member name="M:BaseLibS.Num.ArrayUtils.WeightedMedian(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double},System.Boolean)">
+            <param name="x">Not assumed to be in order.</param>
+            <param name="weights">Weights are assumed to sum up to 1.</param>
+            <param name="logAverage"></param>
+            <returns>The weighted median.</returns>
+        </member>
         <member name="M:BaseLibS.Num.ArrayUtils.Complement(System.Collections.Generic.IList{System.Int32},System.Int32)">
             <summary>
             Set of all ints in [0, length] not contained in present
@@ -1908,6 +1924,11 @@
             <param name="value">The value to look for.</param>
             <returns></returns>
         </member>
+        <member name="M:BaseLibS.Param.EmptyParam.#ctor">
+            <summary>
+            for xml serialization only
+            </summary>
+        </member>
         <member name="M:BaseLibS.Param.BoolParam.#ctor">
             <summary>
             for xml serialization only
@@ -1946,6 +1967,11 @@
         <member name="M:BaseLibS.Param.IntParam.#ctor">
             <summary>
             only for xml serialization
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Param.IsobaricLabelsParam.#ctor">
+            <summary>
+            for xml serialization only
             </summary>
         </member>
         <member name="M:BaseLibS.Param.LabelParam.#ctor">
