@@ -72,6 +72,7 @@
     <Compile Include="Annot\CombineAnnotationColumnsTest.cs" />
     <Compile Include="Annot\Examples.cs" />
     <Compile Include="Annot\MockAnnotationProvider.cs" />
+    <Compile Include="Basic\SummaryStatisticsRowsTest.cs" />
     <Compile Include="Filter\FilterDuplicateRowsTest.cs" />
     <Compile Include="Join\MatchingColumnsByNameTest.cs" />
     <Compile Include="Join\MatchingRowsByNameTest.cs" />
