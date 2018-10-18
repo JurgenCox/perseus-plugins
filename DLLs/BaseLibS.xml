@@ -800,6 +800,13 @@
             Sum of Ms1Count from the two layers. No usages found!
             </summary>
         </member>
+        <member name="M:BaseLibS.Ms.RawFile.Index2K0(System.Int32,System.Double[])">
+            <summary>
+            1/k0 is an alternative indexing for ion mobility.
+            The regular <code>imsInds</code> refer to the ion mobility bin which is not transferable between runs.
+            1/k0 is howeber transferable between runs.
+            </summary>
+        </member>
         <member name="M:BaseLibS.Ms.RawFile.IsSuitableFile(System.String)">
             <summary>
             Default implementation does nothing more than to call PathIsValid, which examines three conditions:
@@ -2236,6 +2243,31 @@
             </summary>
             <param name="filename">The file to retrieve the MD5 hash from.</param>
             <returns>The base64 encoded MD5 hash from the file.</returns>
+        </member>
+        <member name="T:BaseLibS.Util.StreamBackwardReader">
+            <summary>
+            Reads the stream backwards one character at a time.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.#ctor(System.String)">
+            <summary>
+            Create <see cref="T:BaseLibS.Util.StreamBackwardReader"/> from file name.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.#ctor(System.IO.Stream)">
+            <summary>
+            Create <see cref="T:BaseLibS.Util.StreamBackwardReader"/> from a <see cref="T:System.IO.Stream"/>.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.ReadLine">
+            <summary>
+            Read a line from the back of the stream
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.ReadLines">
+            <summary>
+            Lazily iterate over all lines in reverse order.
+            </summary>
         </member>
         <member name="M:BaseLibS.Util.WorkDispatcher.IsRunningOnMono">
             <summary>
