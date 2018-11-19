@@ -108,7 +108,7 @@
             <param name="y">The second vector.</param>
             <returns></returns>
         </member>
-        <member name="M:BaseLibS.Api.IDistance.Get(System.Single[0:,0:],System.Single[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess)">
+        <member name="M:BaseLibS.Api.IDistance.Get(System.Single[0:,0:],System.Single[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess,BaseLibS.Api.MatrixAccess)">
             <summary>
             This method returns the distance between two row or column vectors in two matrices.
             The matrices must have the same number of rows or columns (depending on the access type 
@@ -118,10 +118,11 @@
             <param name="data2">The matrix from which the second row/column is taken.</param>
             <param name="index1">The row/column index in the first matrix.</param>
             <param name="index2">The row/column index in the second matrix.</param>
-            <param name="access">Specifes whether the kernel function is evaluated on row or column vectors.</param>
+            <param name="access1">Specifes whether the distance is evaluated on row or column vectors of the first matrix.</param>
+            <param name="access2">Specifes whether the distance is evaluated on row or column vectors of the second matrix.</param>
             <returns></returns>
         </member>
-        <member name="M:BaseLibS.Api.IDistance.Get(System.Double[0:,0:],System.Double[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess)">
+        <member name="M:BaseLibS.Api.IDistance.Get(System.Double[0:,0:],System.Double[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess,BaseLibS.Api.MatrixAccess)">
             <summary>
             This method returns the distance between two row or column vectors in two matrices.
             The matrices must have the same number of rows or columns (depending on the access type 
@@ -131,7 +132,8 @@
             <param name="data2">The matrix from which the second row/column is taken.</param>
             <param name="index1">The row/column index in the first matrix.</param>
             <param name="index2">The row/column index in the second matrix.</param>
-            <param name="access">Specifes whether the kernel function is evaluated on row or column vectors.</param>
+            <param name="access1">Specifes whether the distance is evaluated on row or column vectors of the first matrix.</param>
+            <param name="access2">Specifes whether the distance is evaluated on row or column vectors of the second matrix.</param>
             <returns></returns>
         </member>
         <member name="P:BaseLibS.Api.INamedItem.Name">
@@ -1558,6 +1560,13 @@
             </summary>
             <param name="x">The input array.</param>
             <returns>The minimum.</returns>
+        </member>
+        <member name="M:BaseLibS.Num.ArrayUtils.Max(System.Collections.Generic.IList{System.Double[]})">
+            <summary>
+                Determines the biggest number in the input array.
+            </summary>
+            <param name="x">The input array. It may contain NaN and infinity values.</param>
+            <returns>The maximum.</returns>
         </member>
         <member name="M:BaseLibS.Num.ArrayUtils.Max(System.Collections.Generic.IList{System.Double})">
             <summary>
