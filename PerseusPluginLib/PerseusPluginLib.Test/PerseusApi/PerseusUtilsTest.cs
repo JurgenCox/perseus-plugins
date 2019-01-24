@@ -26,7 +26,8 @@ namespace PerseusPluginLib.Test.PerseusApi {
 		}
 
 		[Test]
-		public void WriteMatrixTest() {
+		public void WriteMatrixTest()
+		{
 			// main data
 			IMatrixData mdata = PerseusFactory.CreateMatrixData(new double[,] {{1, 2, 3}, {3, 4, 5}},
 				new List<string> {"col1", "col2", "col3"});
