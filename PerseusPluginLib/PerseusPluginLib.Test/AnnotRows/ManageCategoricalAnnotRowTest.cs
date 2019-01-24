@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
@@ -8,10 +8,10 @@ using PerseusPluginLib.AnnotRows;
 
 namespace PerseusPluginLib.Test.AnnotRows
 {
-    [TestClass]
+    [TestFixture]
     public class ManageCategoricalAnnotRowTest
     {
-        [TestMethod]
+        [Test]
         public void TestGetParameters()
         {
             var processing = new ManageCategoricalAnnotRow();
