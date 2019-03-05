@@ -99,6 +99,7 @@ namespace PerseusPluginLib.AnnotCols{
 			if (selection != null){
 				numColNames.AddRange(new[]{"Selection count", "Selection percentage"});
 			}
+			data.Clear();
 			data.Name = "Count";
 			data.ColumnNames = new List<string>();
 			data.Values.Set(ex);

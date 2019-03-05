@@ -32,8 +32,7 @@ namespace PerseusPluginLib.Load{
 		public Parameters GetParameters(ref string errString){
 			return
 				new Parameters(new FileParam("File"){
-					Filter =
-						"Text (Tab delimited) (*.txt)|*.txt;*txt.gz|CSV (Comma delimited) (*.csv)|*.csv;*.csv.gz|All files (*.*)|*.*",
+					Filter = "All files (*.*)|*.*",
 					Help = "Please specify here the name of the file to be uploaded including its full path."
 				}, new BoolWithSubParams("Split into columns", false){
 					SubParamsTrue = new Parameters(new SingleChoiceParam("Separator"){Values = Separators.Select(sep => sep.name).ToArray()})
@@ -74,8 +73,8 @@ namespace PerseusPluginLib.Load{
 				PerseusUtils.commentPrefixExceptions, null, separator);
 			string[][] cols = TabSep.GetColumns(colNames, filename, 0, PerseusUtils.commentPrefix,
 				PerseusUtils.commentPrefixExceptions, separator);
-			int nrows = TabSep.GetRowCount(filename);
-			mdata.Values.Init(nrows,0);
+			var rowCount = (cols.FirstOrDefault() ?? new string[0]).Length;
+			mdata.Values.Init(rowCount,0);
 			mdata.SetAnnotationColumns(new List<string>(colNames), new List<string>(colNames), new List<string[]>(cols), new List<string>(),
 				new List<string>(), new List<string[][]>(), new List<string>(), new List<string>(), new List<double[]>(),
 				new List<string>(), new List<string>(), new List<double[][]>());

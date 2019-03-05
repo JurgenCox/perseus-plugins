@@ -76,6 +76,11 @@ namespace PerseusPluginLib.Rearrange{
 				GetCategoryRows(mdata), mdata.NumericRowNames, mdata.NumericRowDescriptions, mdata.NumericRows, new List<string>(),
 				new List<string>(), new List<double[][]>());
 			mdata.ColumnNames = colNames;
+			List<string> colDescr = new List<string>();
+			foreach (string s in colNames) {
+				colDescr.Add("");
+			}
+			mdata.ColumnDescriptions = colDescr;
 			mdata.SetAnnotationRows(stringColumnNames, stringColumnDescriptions, stringColumns, categoryColumnNames,
 				categoryColumnDescriptions, categoryColumns, numericColumnNames, numericColumnDescriptions, numericColumns,
 				multiNumericColumnNames, multiNumericColumnDescriptions, multiNumericColumns);

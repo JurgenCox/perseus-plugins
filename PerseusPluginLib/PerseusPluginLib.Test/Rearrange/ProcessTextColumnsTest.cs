@@ -41,7 +41,7 @@ namespace PerseusPluginLib.Test.Rearrange{
 		[Test] public void TestSeparatedBySemicolons(){
 			const string regexStr = "B *= *([^,; ]+)";
 			string[] stringsInit = new[]{"A = 123, B = 456", "A=123; B=456", "B=123; B=456"};
-			string[] stringsExpect = new[]{"456", ";456", "123;456"};
+			string[] stringsExpect = new[]{"456", "456", "123"};
 			TestRegex(regexStr, stringsInit, stringsExpect);
 		}
 
@@ -72,8 +72,8 @@ namespace PerseusPluginLib.Test.Rearrange{
 			ptc.ProcessData(mdata, param, ref supplTables, ref documents, null);
 			for (int rowInd = 0; rowInd < stringColumnsInit[0].Length; rowInd++)
 			{
-			    string expected = mdata.StringColumns[0][rowInd];
-			    string actual = stringColumnsExpect[0][rowInd];
+			    var actual = mdata.StringColumns[0][rowInd];
+			    var expected = stringColumnsExpect[0][rowInd];
                 StringAssert.AreEqualIgnoringCase(expected, actual);
 			}
 		}

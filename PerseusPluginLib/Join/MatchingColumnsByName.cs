@@ -10,6 +10,9 @@ using PerseusApi.Utils;
 using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Join{
+	/// <summary>
+	/// Matching columns by name concatenates the rows from two matrices.
+	/// </summary>
 	public class MatchingColumnsByName : IMatrixMultiProcessing{
 		public bool HasButton => true;
 		public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("combineButton.Image.png");
@@ -17,7 +20,8 @@ namespace PerseusPluginLib.Join{
 		public bool IsActive => true;
 		public float DisplayRank => -4;
 		public string HelpOutput => "";
-		public string Description => "Two matrices are merged by matching columns by their names.";
+		public string Description => "Two matrices are merged by matching columns by their names. " +
+		                             "The resulting matrix contains the rows of both matrices.";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string[] HelpDocuments => new string[0];
