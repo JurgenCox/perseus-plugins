@@ -108,7 +108,7 @@
             <param name="y">The second vector.</param>
             <returns></returns>
         </member>
-        <member name="M:BaseLibS.Api.IDistance.Get(System.Single[0:,0:],System.Single[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess)">
+        <member name="M:BaseLibS.Api.IDistance.Get(System.Single[0:,0:],System.Single[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess,BaseLibS.Api.MatrixAccess)">
             <summary>
             This method returns the distance between two row or column vectors in two matrices.
             The matrices must have the same number of rows or columns (depending on the access type 
@@ -118,10 +118,11 @@
             <param name="data2">The matrix from which the second row/column is taken.</param>
             <param name="index1">The row/column index in the first matrix.</param>
             <param name="index2">The row/column index in the second matrix.</param>
-            <param name="access">Specifes whether the kernel function is evaluated on row or column vectors.</param>
+            <param name="access1">Specifes whether the distance is evaluated on row or column vectors of the first matrix.</param>
+            <param name="access2">Specifes whether the distance is evaluated on row or column vectors of the second matrix.</param>
             <returns></returns>
         </member>
-        <member name="M:BaseLibS.Api.IDistance.Get(System.Double[0:,0:],System.Double[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess)">
+        <member name="M:BaseLibS.Api.IDistance.Get(System.Double[0:,0:],System.Double[0:,0:],System.Int32,System.Int32,BaseLibS.Api.MatrixAccess,BaseLibS.Api.MatrixAccess)">
             <summary>
             This method returns the distance between two row or column vectors in two matrices.
             The matrices must have the same number of rows or columns (depending on the access type 
@@ -131,7 +132,8 @@
             <param name="data2">The matrix from which the second row/column is taken.</param>
             <param name="index1">The row/column index in the first matrix.</param>
             <param name="index2">The row/column index in the second matrix.</param>
-            <param name="access">Specifes whether the kernel function is evaluated on row or column vectors.</param>
+            <param name="access1">Specifes whether the distance is evaluated on row or column vectors of the first matrix.</param>
+            <param name="access2">Specifes whether the distance is evaluated on row or column vectors of the second matrix.</param>
             <returns></returns>
         </member>
         <member name="P:BaseLibS.Api.INamedItem.Name">
@@ -156,7 +158,7 @@
         </member>
         <member name="M:BaseLibS.Api.RegressionMethod.Train(BaseLibS.Num.Vector.BaseVector[],System.Int32[],System.Double[],BaseLibS.Param.Parameters,System.Int32,System.Action{System.Double})">
             <summary>
-            Create a classification model based on the given training data x with group assignments in y.
+            Create a regression model based on the given training data x with quantitative output in y.
             </summary>
             <param name="x">The training data for which the group assignment is known. <code>x.Length</code> 
             is the number of training instances. All <code>BaseVector</code> instances in the array must have 
@@ -800,6 +802,13 @@
             Sum of Ms1Count from the two layers. No usages found!
             </summary>
         </member>
+        <member name="M:BaseLibS.Ms.RawFile.Index2K0(System.Int32,System.Double[])">
+            <summary>
+            1/k0 is an alternative indexing for ion mobility.
+            The regular <code>imsInds</code> refer to the ion mobility bin which is not transferable between runs.
+            1/k0 is howeber transferable between runs.
+            </summary>
+        </member>
         <member name="M:BaseLibS.Ms.RawFile.IsSuitableFile(System.String)">
             <summary>
             Default implementation does nothing more than to call PathIsValid, which examines three conditions:
@@ -1126,9 +1135,25 @@
             <param name="yp1">derivative at <code>x[0]</code> </param>
             <param name="ypn">derivative at <code>x[x.Length - 1]</code> </param>
         </member>
+        <member name="M:BaseLibS.Num.CubicSpline.Interpolate(System.Double)">
+            <summary>
+            Be aware that the function is assumed to be constant outside of the range of x values. That means in particular that
+            the functio is not differentiable at x[0] and x[n-1].
+            </summary>
+        </member>
         <member name="T:BaseLibS.Num.MatrixUtils">
             <summary>
             A collection of primitive operation on matrices.
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Num.NumConstants.kb">
+            <summary>
+            Boltzmann constant
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Num.NumConstants.elemCharge">
+            <summary>
+            elementary charge
             </summary>
         </member>
         <member name="M:BaseLibS.Num.NumUtils.GetPartitions(System.Int32,System.Int32)">
@@ -1382,7 +1407,21 @@
             <param name="xs"></param>
             <param name="ys"></param>
         </member>
-        <member name="M:BaseLibS.Num.Test.Univariate.NSamples.KruskalWallisTest.TestImpl(System.Double[][],System.Double@)">
+        <member name="M:BaseLibS.Num.Test.PermBasedFdrUtil.BalancedPermutationsSubgroups(System.Int32[][][],System.Int32[][]@,BaseLibS.Num.Random2)">
+            <summary>
+            Creates permutations of group memberships of data points while preserving subgroup structures. 
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Num.Test.PermBasedFdrUtil.BalancedPermutations(System.Int32[][],System.Int32[][]@,BaseLibS.Num.Random2)">
+            <summary>
+            Creates permutations of group memberships of data points. 
+            </summary>
+            <param name="inds">Original group memberships. Length = number of groups. Each sub-array contains indices 
+            of original group members.</param>
+            <param name="indsOut">Scrambled groups</param>
+            <param name="r2">Random number generator used for creating the permutations</param>
+        </member>
+        <member name="M:BaseLibS.Num.Test.Univariate.NSample.KruskalWallisTest.TestImpl(System.Double[][],System.Double@)">
             <summary>
             Kruskal Wallis test is the extention of the Wilcoxon U test to more than two group
             Another words it is designed to test the equakity of medians of multiple sample
@@ -1522,6 +1561,13 @@
             <param name="x">The input array.</param>
             <returns>The minimum.</returns>
         </member>
+        <member name="M:BaseLibS.Num.ArrayUtils.Max(System.Collections.Generic.IList{System.Double[]})">
+            <summary>
+                Determines the biggest number in the input array.
+            </summary>
+            <param name="x">The input array. It may contain NaN and infinity values.</param>
+            <returns>The maximum.</returns>
+        </member>
         <member name="M:BaseLibS.Num.ArrayUtils.Max(System.Collections.Generic.IList{System.Double})">
             <summary>
                 Determines the biggest number in the input array.
@@ -1556,6 +1602,12 @@
             </summary>
             <param name="x">The input array.</param>
             <returns>The maximum.</returns>
+        </member>
+        <member name="M:BaseLibS.Num.ArrayUtils.WeightedMedian(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double},System.Boolean)">
+            <param name="x">Not assumed to be in order.</param>
+            <param name="weights">Weights are not assumed to sum up to 1.</param>
+            <param name="logAverage"></param>
+            <returns>The weighted median.</returns>
         </member>
         <member name="M:BaseLibS.Num.ArrayUtils.Complement(System.Collections.Generic.IList{System.Int32},System.Int32)">
             <summary>
@@ -1888,6 +1940,11 @@
             <param name="value">The value to look for.</param>
             <returns></returns>
         </member>
+        <member name="M:BaseLibS.Param.EmptyParam.#ctor">
+            <summary>
+            for xml serialization only
+            </summary>
+        </member>
         <member name="M:BaseLibS.Param.BoolParam.#ctor">
             <summary>
             for xml serialization only
@@ -1928,6 +1985,11 @@
             only for xml serialization
             </summary>
         </member>
+        <member name="M:BaseLibS.Param.IsobaricLabelsParam.#ctor">
+            <summary>
+            for xml serialization only
+            </summary>
+        </member>
         <member name="M:BaseLibS.Param.LabelParam.#ctor">
             <summary>
             only for xml serialization
@@ -1949,6 +2011,11 @@
             </summary>
         </member>
         <member name="M:BaseLibS.Param.MultiFileParam.#ctor">
+            <summary>
+            for xml serialization only
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Param.MultiShapeParam.#ctor">
             <summary>
             for xml serialization only
             </summary>
@@ -2039,6 +2106,11 @@
             <param name="writer"></param>
             <param name="values"></param>
             <param name="childTag"></param>
+        </member>
+        <member name="M:BaseLibS.Param.ShapeParam.#ctor">
+            <summary>
+            only for xml serialization
+            </summary>
         </member>
         <member name="M:BaseLibS.Param.SingleChoiceParam.#ctor">
             <summary>
@@ -2191,6 +2263,31 @@
             <param name="filename">The file to retrieve the MD5 hash from.</param>
             <returns>The base64 encoded MD5 hash from the file.</returns>
         </member>
+        <member name="T:BaseLibS.Util.StreamBackwardReader">
+            <summary>
+            Reads the stream backwards one character at a time.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.#ctor(System.String)">
+            <summary>
+            Create <see cref="T:BaseLibS.Util.StreamBackwardReader"/> from file name.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.#ctor(System.IO.Stream)">
+            <summary>
+            Create <see cref="T:BaseLibS.Util.StreamBackwardReader"/> from a <see cref="T:System.IO.Stream"/>.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.ReadLine">
+            <summary>
+            Read a line from the back of the stream
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Util.StreamBackwardReader.ReadLines">
+            <summary>
+            Lazily iterate over all lines in reverse order.
+            </summary>
+        </member>
         <member name="M:BaseLibS.Util.WorkDispatcher.IsRunningOnMono">
             <summary>
             http://www.mono-project.com/docs/gui/winforms/porting-winforms-applications/
@@ -2227,7 +2324,7 @@
             </code>
             </summary>
         </member>
-        <member name="M:BaseLibS.Util.LockFile.#ctor(System.String)">
+        <member name="M:BaseLibS.Util.LockFile.#ctor(System.String,System.Random)">
             <summary>
             Constructs a new instance of a lock-file in the given path. After this the actual lock-file will not
             have been created, which needs to be done with a call to <see cref="M:BaseLibS.Util.LockFile.Lock"/>. When the directory does
