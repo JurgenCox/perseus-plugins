@@ -1605,7 +1605,7 @@
         </member>
         <member name="M:BaseLibS.Num.ArrayUtils.WeightedMedian(System.Collections.Generic.IList{System.Double},System.Collections.Generic.IList{System.Double},System.Boolean)">
             <param name="x">Not assumed to be in order.</param>
-            <param name="weights">Weights are assumed to sum up to 1.</param>
+            <param name="weights">Weights are not assumed to sum up to 1.</param>
             <param name="logAverage"></param>
             <returns>The weighted median.</returns>
         </member>
@@ -2015,6 +2015,11 @@
             for xml serialization only
             </summary>
         </member>
+        <member name="M:BaseLibS.Param.MultiShapeParam.#ctor">
+            <summary>
+            for xml serialization only
+            </summary>
+        </member>
         <member name="M:BaseLibS.Param.MultiStringParam.#ctor">
             <summary>
             for xml serialization only
@@ -2101,6 +2106,11 @@
             <param name="writer"></param>
             <param name="values"></param>
             <param name="childTag"></param>
+        </member>
+        <member name="M:BaseLibS.Param.ShapeParam.#ctor">
+            <summary>
+            only for xml serialization
+            </summary>
         </member>
         <member name="M:BaseLibS.Param.SingleChoiceParam.#ctor">
             <summary>
