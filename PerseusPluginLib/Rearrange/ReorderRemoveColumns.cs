@@ -52,7 +52,7 @@ namespace PerseusPluginLib.Rearrange{
 			data.CategoryColumnDescriptions = ArrayUtils.SubList(data.CategoryColumnDescriptions, catColInds);
 			data.StringColumns = ArrayUtils.SubList(data.StringColumns, textColInds);
 			data.StringColumnNames = ArrayUtils.SubList(data.StringColumnNames, textColInds);
-			data.StringColumnDescriptions = ArrayUtils.SubList(data.StringColumnDescriptions, textColInds);
+			data.ColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, textColInds);
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){

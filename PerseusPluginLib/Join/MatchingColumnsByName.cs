@@ -91,7 +91,7 @@ namespace PerseusPluginLib.Join{
 		}
 
 		public IMatrixData ProcessData(IMatrixData[] inputData, Parameters param, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo){
+			ref IDocumentData[] documents, ProcessInfo processInfo) {
 			IMatrixData mdata1 = inputData[0];
 			IMatrixData mdata2 = inputData[1];
 			int nrows1 = mdata1.RowCount;
@@ -208,12 +208,14 @@ namespace PerseusPluginLib.Join{
 				}
 			}
 		    IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
-			result.ColumnDescriptions = result.ColumnNames;
-			result.NumericColumnNames = new List<string>(numColNames);
+          //  result.ColumnDescriptions = result.ColumnNames;
+          //  result.MainColumnNames = result.ColumnNames;
+         //   result.NumericColumnNames = new List<string>(numColNames);
+            result.NumericColumnNames = new List<string>(numColNames);
 			result.NumericColumnDescriptions = result.NumericColumnNames;
 			result.NumericColumns = numCols;
 			result.StringColumnNames = new List<string>(stringColNames);
-			result.StringColumnDescriptions = result.StringColumnDescriptions;
+			result.StringColumnDescriptions = result.ColumnDescriptions;
 			result.StringColumns = stringCols;
 			result.CategoryColumnNames = new List<string>(catColNames);
 			result.CategoryColumnDescriptions = result.CategoryColumnNames;
@@ -221,6 +223,7 @@ namespace PerseusPluginLib.Join{
 			result.MultiNumericColumnNames = new List<string>(multiNumColNames);
 			result.MultiNumericColumnDescriptions = result.MultiNumericColumnNames;
 			result.MultiNumericColumns = multiNumCols;
+
 			return result;
 		}
 	}

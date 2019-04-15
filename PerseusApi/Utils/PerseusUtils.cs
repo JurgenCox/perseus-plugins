@@ -138,7 +138,7 @@ namespace PerseusApi.Utils {
 			IMatrixData matrixData) {
 			if (colDescriptions != null) {
 				string[] columnDesc = ArrayUtils.SubArray(colDescriptions, mainColIndices);
-				matrixData.ColumnDescriptions = new List<string>(columnDesc);
+				matrixData.StringColumnDescriptions = new List<string>(columnDesc);
 			}
 		}
 
@@ -186,7 +186,7 @@ namespace PerseusApi.Utils {
 				double[] num = new double[svals.Length];
 				for (int i = 0; i < num.Length; i++) {
 					string s = svals[i].Trim();
-					if (!Parser.TryDouble(s, out num[i])) {
+					if (!Parser.TryDouble(s, out num[i])) { 
 						num[i] = double.NaN;
 					}
 				}
@@ -966,17 +966,30 @@ namespace PerseusApi.Utils {
 
 		private static IEnumerable<string> ColumnDescriptions(IDataWithAnnotationColumns data) {
 			List<string> words = new List<string>();
-			for (int i = 0; i < data.CategoryColumnCount; i++) {
-				words.Add(data.CategoryColumnDescriptions[i] ?? "");
+                for (int i = 0; i < data.CategoryColumnCount; i++) {
+                if (data.CategoryColumnDescriptions[i] != null && data.CategoryColumnDescriptions[i].Length > 0)
+                {
+                    words.Add(data.CategoryColumnDescriptions[i] ?? "");
+                
+                }
 			}
 			for (int i = 0; i < data.NumericColumnCount; i++) {
-				words.Add(data.NumericColumnDescriptions[i] ?? "");
+                if (data.NumericColumnDescriptions[i] != null && data.NumericColumnDescriptions[i].Length > 0)
+                {
+                    words.Add(data.NumericColumnDescriptions[i] ?? "");
+                }
 			}
 			for (int i = 0; i < data.StringColumnCount; i++) {
-				words.Add(data.StringColumnDescriptions[i] ?? "");
+                    if (data.StringColumnDescriptions[i] != null && data.StringColumnDescriptions[i].Length > 0)
+                    {
+                        words.Add(data.StringColumnDescriptions[i] ?? "");
+                    }
 			}
 			for (int i = 0; i < data.MultiNumericColumnCount; i++) {
-				words.Add(data.MultiNumericColumnDescriptions[i] ?? "");
+                        if (data.MultiNumericColumnDescriptions[i] != null && data.MultiNumericColumnDescriptions[i].Length > 0)
+                        {
+                            words.Add(data.MultiNumericColumnDescriptions[i] ?? "");
+                        }
 			}
 			return words;
 		}

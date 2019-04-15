@@ -85,7 +85,7 @@ namespace PerseusPluginLib.Manual{
 				AddColumn(mdata.NumericColumnNames[i], 60, ColumnType.Numeric, mdata.NumericColumnDescriptions[i]);
 			}
 			for (int i = 0; i < mdata.StringColumnCount; i++){
-				AddColumn(mdata.StringColumnNames[i], 60, ColumnType.Text, mdata.StringColumnDescriptions[i]);
+				AddColumn(mdata.StringColumnNames[i], 60, ColumnType.Text, mdata.ColumnDescriptions[i]);
 			}
 			for (int i = 0; i < mdata.MultiNumericColumnCount; i++){
 				AddColumn(mdata.MultiNumericColumnNames[i], 60, ColumnType.MultiNumeric, mdata.MultiNumericColumnDescriptions[i]);

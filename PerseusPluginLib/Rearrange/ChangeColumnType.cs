@@ -115,7 +115,7 @@ namespace PerseusPluginLib.Rearrange{
 		private static void StringToCategorical(IList<int> colInds, IMatrixData mdata){
 			int[] inds = ArrayUtils.Complement(colInds, mdata.StringColumnCount);
 			string[] names = ArrayUtils.SubArray(mdata.StringColumnNames, colInds);
-			string[] descriptions = ArrayUtils.SubArray(mdata.StringColumnDescriptions, colInds);
+			string[] descriptions = ArrayUtils.SubArray(mdata.ColumnDescriptions, colInds);
 			string[][] str = ArrayUtils.SubArray(mdata.StringColumns, colInds);
 			string[][][] newCat = new string[str.Length][][];
 			for (int j = 0; j < str.Length; j++){
@@ -135,13 +135,13 @@ namespace PerseusPluginLib.Rearrange{
 			}
 			mdata.StringColumns = ArrayUtils.SubList(mdata.StringColumns, inds);
 			mdata.StringColumnNames = ArrayUtils.SubList(mdata.StringColumnNames, inds);
-			mdata.StringColumnDescriptions = ArrayUtils.SubList(mdata.StringColumnDescriptions, inds);
+			mdata.ColumnDescriptions = ArrayUtils.SubList(mdata.ColumnDescriptions, inds);
 		}
 
 		private static void StringToNumerical(IList<int> colInds, IMatrixData mdata){
 			int[] inds = ArrayUtils.Complement(colInds, mdata.StringColumnCount);
 			string[] name = ArrayUtils.SubArray(mdata.StringColumnNames, colInds);
-			string[] description = ArrayUtils.SubArray(mdata.StringColumnDescriptions, colInds);
+			string[] description = ArrayUtils.SubArray(mdata.ColumnDescriptions, colInds);
 			string[][] str = ArrayUtils.SubArray(mdata.StringColumns, colInds);
 			double[][] newNum = new double[str.Length][];
 			for (int j = 0; j < str.Length; j++){
@@ -161,7 +161,7 @@ namespace PerseusPluginLib.Rearrange{
 			mdata.NumericColumns.AddRange(newNum);
 			mdata.StringColumns = ArrayUtils.SubList(mdata.StringColumns, inds);
 			mdata.StringColumnNames = ArrayUtils.SubList(mdata.StringColumnNames, inds);
-			mdata.StringColumnDescriptions = ArrayUtils.SubList(mdata.StringColumnDescriptions, inds);
+			mdata.ColumnDescriptions = ArrayUtils.SubList(mdata.ColumnDescriptions, inds);
 		}
 
 		private static void NumericToString(IList<int> colInds, IMatrixData mdata){
@@ -178,7 +178,7 @@ namespace PerseusPluginLib.Rearrange{
 				}
 			}
 			mdata.StringColumnNames.AddRange(name);
-			mdata.StringColumnDescriptions.AddRange(description);
+			mdata.ColumnDescriptions.AddRange(description);
 			mdata.StringColumns.AddRange(newString);
 			mdata.NumericColumns = ArrayUtils.SubList(mdata.NumericColumns, inds);
 			mdata.NumericColumnNames = ArrayUtils.SubList(mdata.NumericColumnNames, inds);
@@ -199,7 +199,7 @@ namespace PerseusPluginLib.Rearrange{
 				}
 			}
 			mdata.StringColumnNames.AddRange(name);
-			mdata.StringColumnDescriptions.AddRange(description);
+			mdata.ColumnDescriptions.AddRange(description);
 			mdata.StringColumns.AddRange(newString);
 			mdata.MultiNumericColumns = ArrayUtils.SubList(mdata.MultiNumericColumns, inds);
 			mdata.MultiNumericColumnNames = ArrayUtils.SubList(mdata.MultiNumericColumnNames, inds);
@@ -209,7 +209,7 @@ namespace PerseusPluginLib.Rearrange{
 		private static void StringToMultiNumerical(IList<int> colInds, IMatrixData mdata){
 			int[] inds = ArrayUtils.Complement(colInds, mdata.StringColumnCount);
 			string[] name = ArrayUtils.SubArray(mdata.StringColumnNames, colInds);
-			string[] description = ArrayUtils.SubArray(mdata.StringColumnDescriptions, colInds);
+			string[] description = ArrayUtils.SubArray(mdata.ColumnDescriptions, colInds);
 			string[][] str = ArrayUtils.SubArray(mdata.StringColumns, colInds);
 			double[][][] newMNum = new double[str.Length][][];
 			for (int j = 0; j < str.Length; j++){
@@ -233,7 +233,7 @@ namespace PerseusPluginLib.Rearrange{
 			mdata.MultiNumericColumns.AddRange(newMNum);
 			mdata.StringColumns = ArrayUtils.SubList(mdata.StringColumns, inds);
 			mdata.StringColumnNames = ArrayUtils.SubList(mdata.StringColumnNames, inds);
-			mdata.StringColumnDescriptions = ArrayUtils.SubList(mdata.StringColumnDescriptions, inds);
+			mdata.ColumnDescriptions = ArrayUtils.SubList(mdata.ColumnDescriptions, inds);
 		}
 
 		private static void CategoricalToNumeric(IList<int> colInds, IMatrixData mdata){
@@ -282,7 +282,7 @@ namespace PerseusPluginLib.Rearrange{
 				}
 			}
 			mdata.StringColumnNames.AddRange(names);
-			mdata.StringColumnDescriptions.AddRange(descriptions);
+			mdata.ColumnDescriptions.AddRange(descriptions);
 			mdata.StringColumns.AddRange(newString);
 			mdata.CategoryColumns = PerseusPluginUtils.GetCategoryColumns(mdata, inds);
 			mdata.CategoryColumnNames = ArrayUtils.SubList(mdata.CategoryColumnNames, inds);
@@ -363,7 +363,7 @@ namespace PerseusPluginLib.Rearrange{
 		private static void StringToExpression(IList<int> colInds, IMatrixData mdata){
 			int[] inds = ArrayUtils.Complement(colInds, mdata.StringColumnCount);
 			string[] names = ArrayUtils.SubArray(mdata.StringColumnNames, colInds);
-			string[] descriptions = ArrayUtils.SubArray(mdata.StringColumnDescriptions, colInds);
+			string[] descriptions = ArrayUtils.SubArray(mdata.ColumnDescriptions, colInds);
 			string[][] str = ArrayUtils.SubArray(mdata.StringColumns, colInds);
 			double[][] newEx = new double[str.Length][];
 			for (int j = 0; j < str.Length; j++){
@@ -395,7 +395,7 @@ namespace PerseusPluginLib.Rearrange{
 			mdata.ColumnDescriptions.AddRange(descriptions);
 			mdata.StringColumns = ArrayUtils.SubList(mdata.StringColumns, inds);
 			mdata.StringColumnNames = ArrayUtils.SubList(mdata.StringColumnNames, inds);
-			mdata.StringColumnDescriptions = ArrayUtils.SubList(mdata.StringColumnDescriptions, inds);
+			mdata.ColumnDescriptions = ArrayUtils.SubList(mdata.ColumnDescriptions, inds);
 			for (int i = 0; i < mdata.CategoryRowCount; i++){
 				mdata.SetCategoryRowAt(ExtendCategoryRow(mdata.GetCategoryRowAt(i), str.Length), i);
 			}
