@@ -138,7 +138,7 @@ namespace PerseusApi.Utils {
 			IMatrixData matrixData) {
 			if (colDescriptions != null) {
 				string[] columnDesc = ArrayUtils.SubArray(colDescriptions, mainColIndices);
-				matrixData.StringColumnDescriptions = new List<string>(columnDesc);
+				matrixData.ColumnDescriptions = new List<string>(columnDesc);
 			}
 		}
 
