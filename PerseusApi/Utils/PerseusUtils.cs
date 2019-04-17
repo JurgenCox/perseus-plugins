@@ -76,8 +76,8 @@ namespace PerseusApi.Utils {
 			LoadAllData(matrixData, colNames, mainColIndices, catColIndices, numColIndices, textColIndices, multiNumColIndices,
 				reader, separator, nrows, filters, progress, addtlMatrices, out double[,] qualityValues,
 				out bool[,] isImputedValues, out double[,] mainValues);
-			AddColumnDescriptions(colDescriptions, catColIndices, numColIndices, textColIndices, multiNumColIndices, matrixData);
-			AddMainColumnDescriptions(colDescriptions, mainColIndices, matrixData);
+			//AddColumnDescriptions(colDescriptions, catColIndices, numColIndices, textColIndices, multiNumColIndices, matrixData);
+		//	AddMainColumnDescriptions(colDescriptions, mainColIndices, matrixData);
 			matrixData.Name = origin;
 			string[] columnNames = ArrayUtils.SubArray(colNames, mainColIndices);
 			if (shortenExpressionNames) {

@@ -214,7 +214,7 @@ namespace PerseusPluginLib.Join{
 			result.NumericColumnDescriptions = result.NumericColumnNames;
 			result.NumericColumns = numCols;
 			result.StringColumnNames = new List<string>(stringColNames);
-			result.StringColumnDescriptions = result.ColumnNames;
+		//	result.StringColumnDescriptions = result.ColumnNames;
 			result.StringColumns = stringCols;
 			result.CategoryColumnNames = new List<string>(catColNames);
 			result.CategoryColumnDescriptions = result.CategoryColumnNames;
