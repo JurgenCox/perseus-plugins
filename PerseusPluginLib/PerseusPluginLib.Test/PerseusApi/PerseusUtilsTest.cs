@@ -65,7 +65,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 
 			Assert.AreEqual("hallo", mdata2.StringColumns[mdata2.StringColumnNames.FindIndex(col => col.Equals("strcol2"))][1]);
 
-			Assert.AreEqual(1, mdata2.CategoryRowCount);
+			Assert.AreEqual(1, mdata2.CategoryRowCount); 
 			Assert.AreEqual(1, mdata2.NumericRowCount);
 		}
 
@@ -79,7 +79,8 @@ namespace PerseusPluginLib.Test.PerseusApi {
 			mdata.AddNumericColumn("numcol", "", new[] {1.0, 2.0});
 			mdata.AddMultiNumericColumn("multnumcol", "this is multnumcol", new[] {new[] {-2.0, 2.0}, new double[] {}});
 			mdata.AddCategoryColumn("catcol", "", new[] {new[] {"cat1", "cat1.1"}, new[] {"cat2", "cat1"}});
-			string mdataStr;
+		   // mdata.AddStringColumnDescriptions("strcol1", "this is stringcol1", new[] { "1", "2" });
+            string mdataStr;
 			using (MemoryStream memstream = new MemoryStream())
 			using (StreamWriter writer = new StreamWriter(memstream)) {
 				PerseusUtils.WriteDataWithAnnotationColumns(mdata, writer);

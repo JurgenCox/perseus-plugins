@@ -209,8 +209,7 @@ namespace PerseusPluginLib.Join{
 			}
 		    IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
           // result.ColumnDescriptions = result.ColumnNames;
-          //  result.MainColumnNames = result.ColumnNames;
-         //   result.NumericColumnNames = new List<string>(numColNames);
+     
             result.NumericColumnNames = new List<string>(numColNames);
 			result.NumericColumnDescriptions = result.NumericColumnNames;
 			result.NumericColumns = numCols;

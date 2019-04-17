@@ -67,7 +67,8 @@ namespace PerseusApi.Generic{
 	
 		void ClearStringColumns();
 		void AddStringColumn(string name, string description, string[] vals);
-		void RemoveStringColumnAt(int index);
+      //  void AddStringColumnDescriptions(string name, string description, string[] vals);
+        void RemoveStringColumnAt(int index);
 
         /// <summary>
         /// Gets all string columns in the table.
