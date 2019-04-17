@@ -88,7 +88,6 @@ namespace PerseusApi.Generic{
 	//	List<string> ColumnDescription { get; set; }
     //    List<string> MainColumnNames { get; set; }
         List<string> StringColumnDescriptions { get; set; }
-        void AddStringColumnDescriptions(string name, string description, string[] vals);
         void ClearMultiNumericColumns();
 		void AddMultiNumericColumn(string name, string description, double[][] vals);
 		void RemoveMultiNumericColumnAt(int index);
