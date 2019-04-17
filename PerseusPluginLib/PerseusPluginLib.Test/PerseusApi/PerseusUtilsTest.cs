@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using NUnit.Framework;
@@ -40,6 +41,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 			mdata.AddNumericColumn("numcol", "", new[] {1.0, 2.0});
 			mdata.AddMultiNumericColumn("multnumcol", "this is multnumcol", new[] {new[] {-2.0, 2.0}, new double[] {}});
 			mdata.AddCategoryColumn("catcol", "", new[] {new[] {"cat1", "cat1.1"}, new[] {"cat2", "cat1"}});
+            
 
 			string mdataStr;
 			using (MemoryStream memstream = new MemoryStream())
@@ -79,6 +81,7 @@ namespace PerseusPluginLib.Test.PerseusApi {
 			mdata.AddNumericColumn("numcol", "", new[] {1.0, 2.0});
 			mdata.AddMultiNumericColumn("multnumcol", "this is multnumcol", new[] {new[] {-2.0, 2.0}, new double[] {}});
 			mdata.AddCategoryColumn("catcol", "", new[] {new[] {"cat1", "cat1.1"}, new[] {"cat2", "cat1"}});
+            mdata.AddStringColumnDescriptions("COL", "this is stringcol1", new string[]{});
 			string mdataStr;
 			using (MemoryStream memstream = new MemoryStream())
 			using (StreamWriter writer = new StreamWriter(memstream)) {
