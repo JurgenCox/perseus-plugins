@@ -208,14 +208,14 @@ namespace PerseusPluginLib.Join{
 				}
 			}
 		    IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
-          //  result.ColumnDescriptions = result.ColumnNames;
+          // result.ColumnDescriptions = result.ColumnNames;
           //  result.MainColumnNames = result.ColumnNames;
          //   result.NumericColumnNames = new List<string>(numColNames);
             result.NumericColumnNames = new List<string>(numColNames);
 			result.NumericColumnDescriptions = result.NumericColumnNames;
 			result.NumericColumns = numCols;
 			result.StringColumnNames = new List<string>(stringColNames);
-			result.StringColumnDescriptions = result.ColumnDescriptions;
+			result.StringColumnDescriptions = result.ColumnNames;
 			result.StringColumns = stringCols;
 			result.CategoryColumnNames = new List<string>(catColNames);
 			result.CategoryColumnDescriptions = result.CategoryColumnNames;
