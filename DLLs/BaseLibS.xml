@@ -937,6 +937,11 @@
             largest index of masses for which masses[index] is less than or equal to mass
             </summary>
         </member>
+        <member name="M:BaseLibS.Ms.Spectrum.GetClosestIndex(System.Double,System.Boolean)">
+            <summary>
+            Index of the sorted array masses closes to the mass value 
+            </summary>
+        </member>
         <member name="M:BaseLibS.Ms.Spectrum.GetIntensity(System.Int32)">
             <summary>
             Get intensity as a function of index.
