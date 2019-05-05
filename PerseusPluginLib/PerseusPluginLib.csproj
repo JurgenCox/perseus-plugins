@@ -63,6 +63,7 @@
     <Compile Include="AnnotCols\AnnotationProvider\ConfFolderAnnotationProvider.cs" />
     <Compile Include="AnnotCols\CountingResult.cs" />
     <Compile Include="AnnotCols\AnnotationProvider\IAnnotationProvider.cs" />
+    <Compile Include="Basic\AutomaticDensity.cs" />
     <Compile Include="Basic\CloneProcessing.cs" />
     <Compile Include="Basic\CombineAnnotations.cs" />
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />
