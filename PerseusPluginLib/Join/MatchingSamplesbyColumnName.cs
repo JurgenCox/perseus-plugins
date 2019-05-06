@@ -50,7 +50,7 @@ namespace PerseusPluginLib.Join
 
         public Parameters GetParameters(IMatrixData[] inputData, ref string errString)
         {
-         //   List<string> textCols = inputData.StringColumnNames;
+
             return new Parameters();
         }
 
@@ -117,21 +117,18 @@ namespace PerseusPluginLib.Join
         {
             IMatrixData mdata1 = inputData[0];
             IMatrixData mdata2 = inputData[1];
-       //     IDocumentData documentData1 = documents[0];
-       //     IDocumentData documentData2 = documents[1];
+
             string[] header1 = new string[mdata1.RowCount];
             for (int i = 0; i < mdata1.RowCount; i++)
             {
                 header1[i] = mdata1.Name;
-             //   header1.Add(mdata1.Name);
+
             }
 
-        //    List<string> header2 = new List<string>();
             string[] header2 = new string[mdata2.RowCount];
             for (int i = 0; i < mdata2.RowCount; i++)
             {
                 header2[i] = mdata2.Name;
-           //     header2.Add(mdata2.Name);
             }
 
             int nrows1 = mdata1.RowCount;
@@ -224,35 +221,6 @@ namespace PerseusPluginLib.Join
                 }
             }
 
-     /*       string[] MatrixNames = SpecialSort(header1, header2, out dic1, out dic2);
-            List<string[]> mtrxNames = new List<string[]>();
-            for (int i = 0; i < MatrixNames.Length; i++)
-            {
-                mtrxNames.Add(new string[nrows]);
-                for (int j = 0; j < nrows; j++)
-                {
-                    mtrxNames[mtrxNames.Count - 1][j] = "";
-                }
-            }
-            for (int i = 0; i < MatrixNames.Length; i++)
-            {
-                if (dic1.ContainsKey(MatrixNames[i]))
-                {
-                    int ind = dic1[MatrixNames[i]];
-                    for (int j = 0; j < nrows1; j++)
-                    {
-                        mtrxNames[i][j] = mdata1.StringColumns[ind][j];
-                    }
-                }
-                if (dic2.ContainsKey(MatrixNames[i]))
-                {
-                    int ind = dic2[MatrixNames[i]];
-                    for (int j = 0; j < nrows2; j++)
-                    {
-                        mtrxNames[i][nrows1 + j] = mdata2.StringColumns[ind][j];
-                    }
-                }
-            } */
 
 
  
@@ -319,38 +287,24 @@ namespace PerseusPluginLib.Join
             string MatrixName = "Matrix Name";
             string MatrixDescription = "Description";
             string[] listnames = header1.Concat(header2).ToArray();
-            IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
-            // result.ColumnDescriptions = result.ColumnNames;
-        //    result.AddStringColumn(MatrixName, MatrixDescription, MatrixNames);
-        //    result.AddStringColumn(MatrixName, MatrixDescription, listnames);
 
+            //IMPORTANT!!!!! TODO: check if the name of the matrix if changed
+            IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
             result.NumericColumnNames = new List<string>(numColNames);
             result.NumericColumnDescriptions = result.NumericColumnNames;
             result.NumericColumns = numCols;
             result.StringColumnNames = new List<string>(stringColNames);
-          // result.MatrixNames = new List<string>(MatrixNames);
-            //	result.StringColumnDescriptions = result.ColumnNames;
             result.StringColumns = stringCols;
-        //    result.Matrix = mtrxNames;
             result.CategoryColumnNames = new List<string>(catColNames);
-            //  result.CategoryColumnNames = new List<string>(MatrixNames);
-            //    result.Name = new List<string>(MatrixNames);
-         //   result.AltName = MatrixNames;
             result.CategoryColumnDescriptions = result.CategoryColumnNames;
             result.CategoryColumns = catCols;
             result.MultiNumericColumnNames = new List<string>(multiNumColNames);
             result.MultiNumericColumnDescriptions = result.MultiNumericColumnNames;
             result.MultiNumericColumns = multiNumCols;
+            HashSet<string> taken = new HashSet<string>(result.StringColumnNames);
+            result.AddStringColumn(MatrixName, MatrixName, listnames);
+            taken.Add(MatrixName);
 
-
-        //    foreach (string i in stringColNames)
-       //     {
-                HashSet<string> taken = new HashSet<string>(result.StringColumnNames);
-             //   string MatrixName = "Matrix Name";
-                result.AddStringColumn(MatrixName, MatrixName, listnames);
-                taken.Add(MatrixName);
-         //   }
-            //   result.AddStringColumn(MatrixName, MatrixDescription, header1.Concat(header2).ToList<string>);
             return result;
         }
     }
