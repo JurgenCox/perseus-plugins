@@ -121,14 +121,26 @@ namespace PerseusPluginLib.Join
             string[] header1 = new string[mdata1.RowCount];
             for (int i = 0; i < mdata1.RowCount; i++)
             {
-                header1[i] = mdata1.Name;
-
+                if (mdata1.Name == mdata1.AltName)
+                { header1[i] = mdata1.Name; }
+                else
+                {
+                    
+                    header1[i] = mdata1.AltName;
+                }
             }
 
             string[] header2 = new string[mdata2.RowCount];
             for (int i = 0; i < mdata2.RowCount; i++)
             {
-                header2[i] = mdata2.Name;
+                if (mdata2.Name == mdata2.AltName)
+                {
+                    header2[i] = mdata2.Name;
+                }
+                else
+                {
+                    header2[i] = mdata2.AltName;
+                }
             }
 
             int nrows1 = mdata1.RowCount;
@@ -286,6 +298,7 @@ namespace PerseusPluginLib.Join
             }
             string MatrixName = "Matrix Name";
             string MatrixDescription = "Description";
+
             string[] listnames = header1.Concat(header2).ToArray();
 
             //IMPORTANT!!!!! TODO: check if the name of the matrix if changed
