@@ -322,7 +322,7 @@ namespace PerseusPluginLib.Join
             IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
             // result.ColumnDescriptions = result.ColumnNames;
         //    result.AddStringColumn(MatrixName, MatrixDescription, MatrixNames);
-            result.AddStringColumn(MatrixName, MatrixDescription, listnames);
+        //    result.AddStringColumn(MatrixName, MatrixDescription, listnames);
 
             result.NumericColumnNames = new List<string>(numColNames);
             result.NumericColumnDescriptions = result.NumericColumnNames;
@@ -345,7 +345,7 @@ namespace PerseusPluginLib.Join
 
         //    foreach (string i in stringColNames)
        //     {
-                HashSet<string> taken = new HashSet<string>(result.MatrixNames);
+                HashSet<string> taken = new HashSet<string>(result.StringColumnNames);
              //   string MatrixName = "Matrix Name";
                 result.AddStringColumn(MatrixName, MatrixName, listnames);
                 taken.Add(MatrixName);
