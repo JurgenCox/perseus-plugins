@@ -87,7 +87,6 @@ namespace PerseusApi.Generic{
 
 		int StringColumnCount { get; }
 		List<string> StringColumnNames { get; set; }
-        List<string> MatrixNames { get; set; }
         //	List<string> ColumnDescription { get; set; }
         //    List<string> MainColumnNames { get; set; }
         List<string> StringColumnDescriptions { get; set; }
