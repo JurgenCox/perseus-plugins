@@ -41,7 +41,7 @@ namespace PerseusApi.Generic{
 		void AddCategoryColumn(string name, string description, string[][] vals);
 		int CategoryColumnCount { get; }
 		List<string> CategoryColumnNames { get; set; }
-		List<string> CategoryColumnDescriptions { get; set; }
+        List<string> CategoryColumnDescriptions { get; set; }
 		List<string[][]> CategoryColumns { set; }
 
         /// <summary>
@@ -76,6 +76,7 @@ namespace PerseusApi.Generic{
         /// </summary>
 		List<string[]> StringColumns { get; set; }
 
+
         /// <summary>
         /// Get string column values at the specified column and row
         /// </summary>
@@ -86,8 +87,9 @@ namespace PerseusApi.Generic{
 
 		int StringColumnCount { get; }
 		List<string> StringColumnNames { get; set; }
-	//	List<string> ColumnDescription { get; set; }
-    //    List<string> MainColumnNames { get; set; }
+        List<string> MatrixNames { get; set; }
+        //	List<string> ColumnDescription { get; set; }
+        //    List<string> MainColumnNames { get; set; }
         List<string> StringColumnDescriptions { get; set; }
         void ClearMultiNumericColumns();
 		void AddMultiNumericColumn(string name, string description, double[][] vals);
