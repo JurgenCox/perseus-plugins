@@ -35,7 +35,7 @@ namespace PerseusPluginLib.Join
 
         public string Url
             =>
-                "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixMultiProcessing:Basic:MatchingColumnsByName"
+                ""
             ;
 
         public string GetInputName(int index)
@@ -119,23 +119,30 @@ namespace PerseusPluginLib.Join
             IMatrixData mdata2 = inputData[1];
 
             string[] header1 = new string[mdata1.RowCount];
-            for (int i = 0; i < mdata1.RowCount; i++)
+ //check if it works!!!!
+            if (mdata1.Name != mdata1.AltName)
             {
-                if (mdata1.Name == mdata1.AltName)
-                { header1[i] = mdata1.Name; }
-                else
+                for (int i = 0; i < mdata1.RowCount; i++)
                 {
-                    
                     header1[i] = mdata1.AltName;
                 }
             }
+            else
+            {
+                for (int i = 0; i < mdata1.RowCount; i++)
+                {
+                    header1[i] = mdata1.Name;
+                }
 
-            string[] header2 = new string[mdata2.RowCount];
+            }    
+
+
+                string[] header2 = new string[mdata2.RowCount];
             for (int i = 0; i < mdata2.RowCount; i++)
             {
                 if (mdata2.Name == mdata2.AltName)
                 {
-                    header2[i] = mdata2.Name;
+                    header2[i] = mdata1.AltName;
                 }
                 else
                 {
