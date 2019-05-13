@@ -40,6 +40,7 @@ namespace PerseusPluginLib.Join
 
         public string GetInputName(int index)
         {
+            MessageBox.Show("Please before rename your samples");
             return index == 0 ? "Base matrix" : "Other matrix";
         }
 
@@ -119,22 +120,21 @@ namespace PerseusPluginLib.Join
             IMatrixData mdata2 = inputData[1];
 
             string[] header1 = new string[mdata1.RowCount];
- //check if it works!!!!
-            if (mdata1.Name != mdata1.AltName)
-            {
-                for (int i = 0; i < mdata1.RowCount; i++)
-                {
-                    header1[i] = mdata1.AltName;
-                }
-            }
-            else
-            {
-                for (int i = 0; i < mdata1.RowCount; i++)
-                {
-                    header1[i] = mdata1.Name;
-                }
 
-            }    
+
+                for (int i = 0; i < mdata1.RowCount; i++)
+                {
+                    if (mdata1.Name != mdata1.AltName)
+                    {
+                        header1[i] = mdata1.AltName;
+                    }
+                    else
+                    {
+                        header1[i] = mdata1.Name;
+                    }
+                    
+                }
+     
 
 
                 string[] header2 = new string[mdata2.RowCount];
