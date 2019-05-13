@@ -40,7 +40,6 @@ namespace PerseusPluginLib.Join
 
         public string GetInputName(int index)
         {
-            MessageBox.Show("Please before rename your samples");
             return index == 0 ? "Base matrix" : "Other matrix";
         }
 
