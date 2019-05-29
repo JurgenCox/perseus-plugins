@@ -151,31 +151,32 @@ namespace PerseusPluginLib.Basic
         }
 
 
-        public static int GetColorBlue(double max, double min)
+
+        public static double GetColorBlue(double max, double min)
         {
             //val = ((percent * (max - min) / 100) + min
-            int blue = Convert.ToInt32(((20 * (max - min) / 100) + min));
+            double blue = ((20 * (max - min) / 100) + min);
             //  int blue = Convert.ToInt32(((array * 20) / max));
             return blue;
         }
 
-        public static int GetColorCyan(double max, double min)
+        public static double GetColorCyan(double max, double min)
         {
-            int blue = Convert.ToInt32(((40 * (max - min) / 100) + min));
+            double blue = ((40 * (max - min) / 100) + min);
             //  int blue = Convert.ToInt32(((array * 40) / max));
             return blue;
         }
 
-        public static int GetColorGreen(double max, double min)
+        public static double GetColorGreen(double max, double min)
         {
-            int blue = Convert.ToInt32(((60 * (max - min) / 100) + min));
+            double blue = ((60 * (max - min) / 100) + min);
             //   int blue = Convert.ToInt32(((array * 60) / max));
             return blue;
         }
 
-        public static int GetColorYellow(double max, double min)
+        public static double GetColorYellow(double max, double min)
         {
-            int blue = Convert.ToInt32(((80 * (max - min) / 100) + min));
+            double blue = ((80 * (max - min) / 100) + min);
             //   int blue = Convert.ToInt32(((array * 80) / max));
             return blue;
         }
