@@ -13,24 +13,7 @@ namespace PerseusPluginLib.Basic
 {
     public class AutomaticDensity
     {
-        private static void MakeConditional1(double[,] values)
-        {
-            double[] m = new double[values.GetLength(0)];
-            for (int i = 0; i < m.Length; i++)
-            {
-                for (int j = 0; j < values.GetLength(1); j++)
-                {
-                    m[i] += values[i, j];
-                }
-            }
-            for (int i = 0; i < m.Length; i++)
-            {
-                for (int j = 0; j < values.GetLength(1); j++)
-                {
-                    values[i, j] /= m[i];
-                }
-            }
-        }
+
 
         private static double[] GetColumn(IMatrixData matrixData, int ind)
         {
@@ -74,8 +57,6 @@ namespace PerseusPluginLib.Basic
             DensityEstimation.CalcRanges(xvals1, yvals1, out double xmin, out double xmax, out double ymin, out double ymax);
             double[,] values = DensityEstimation.GetValuesOnGrid(xvals1, xmin, (xmax - xmin) / points, points, yvals1, ymin,
                 (ymax - ymin) / points, points);
-
-            MakeConditional1(values);
 
             DensityEstimation.DivideByMaximum(values);
             double[] xmat = new double[points];
