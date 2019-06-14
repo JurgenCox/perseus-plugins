@@ -39,8 +39,7 @@ namespace PerseusApi.Generic{
 		void RemoveCategoryColumnAt(int column);
 		void ClearCategoryColumns();
 		void AddCategoryColumn(string name, string description, string[][] vals);
-        void AddCategoryColumnNoDesc(string name,  string[][] vals);
-        int CategoryColumnCount { get; }
+		int CategoryColumnCount { get; }
 		List<string> CategoryColumnNames { get; set; }
         List<string> CategoryColumnDescriptions { get; set; }
 		List<string[][]> CategoryColumns { set; }
@@ -62,8 +61,7 @@ namespace PerseusApi.Generic{
 		int NumericColumnCount { get; }
 		void ClearNumericColumns();
 		void AddNumericColumn(string name, string description, double[] vals);
-        void AddNumericColumnNoDesc(string name,  double[] vals);
-        void RemoveNumericColumnAt(int index);
+		void RemoveNumericColumnAt(int index);
 		List<string> NumericColumnNames { get; set; }
 		List<string> NumericColumnDescriptions { get; set; }
 	
