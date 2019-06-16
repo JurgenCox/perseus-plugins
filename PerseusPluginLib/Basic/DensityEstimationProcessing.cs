@@ -52,7 +52,19 @@ namespace PerseusPluginLib.Basic {
 			for (int k = 0; k < colIndx.Length; k++) {
 				double[] xvals = GetColumn(mdata, colIndx[k]);
 				double[] yvals = GetColumn(mdata, colIndy[k]);
-				(double[] dvals, double[] pvals) = DensityEstimation.Calc(xvals, yvals, points, typeInd);
+				DensityEstimationType type = DensityEstimationType.JointDistribution;
+				switch (typeInd) {
+					case 1:
+						type = DensityEstimationType.DivideByX;
+						break;
+					case 2:
+						type = DensityEstimationType.DivideByY;
+						break;
+					case 3:
+						type = DensityEstimationType.DivideByXY;
+						break;
+				}
+				(double[] dvals, double[] pvals) = DensityEstimation.Calc(xvals, yvals, points, type);
 				string xname = GetColumnName(mdata, colIndx[k]);
 				string yname = GetColumnName(mdata, colIndy[k]);
 				mdata.AddNumericColumn("Density_" + xname + "_" + yname,
