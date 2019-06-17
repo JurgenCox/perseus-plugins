@@ -63,7 +63,7 @@ namespace PerseusPluginLib.Utils {
 				Values = new[] {"Mark matching rows", "Mark non-matching rows"},
 				Help =
 					"If 'Mark matching rows' is selected, rows having the value specified above will be indicated with a '+' in the output column. " +
-					"If 'Keep matching rows' is selected, the opposite will happen."
+					"If 'Mark non-matching rows' is selected, the opposite will happen."
 			};
 		}
 
@@ -254,7 +254,7 @@ namespace PerseusPluginLib.Utils {
 		}
 
 		public static Parameter GetMinValuesParam(IMatrixData mdata, bool rows) {
-			int maxValue = rows ? mdata.ColumnCount : mdata.RowCount;
+			var maxValue = rows ? mdata.ColumnCount : mdata.RowCount;
 			return new SingleChoiceWithSubParams("Min. valids") {
 				Values = new[] {"Number", "Percentage"},
 				SubParams = new[] {
@@ -319,8 +319,7 @@ namespace PerseusPluginLib.Utils {
 					all.Add(numCol[x]);
 				}
 			}
-			double y = ArrayUtils.Median(all.ToArray());
-			return y;
+			return ArrayUtils.Median(all.ToArray());
 		}
 
 		/// <summary>
@@ -487,24 +486,24 @@ namespace PerseusPluginLib.Utils {
 				return new string[0][];
 			}
 			int[] order = ArrayUtils.Order(pvaluesUnsorted);
-			double[] sortedValid = order.Select(o => pvaluesUnsorted[o]).Where(p => !double.IsNaN(p)).ToArray();
-			int n = sortedValid.Length;
-			double[] fdrsRaw = new double[n];
+			var sortedValid = order.Select(o => pvaluesUnsorted[o]).Where(p => !double.IsNaN(p)).ToArray();
+			var n = sortedValid.Length;
+			var fdrsRaw = new double[n];
 			for (int i = 0; i < n; i++) {
 				fdrsRaw[i] = sortedValid[i] * n / (1.0 + i);
 			}
-			double[] fdrs = new double[n];
+			var fdrs = new double[n];
 			double previousFdr = fdrsRaw[n - 1];
 			fdrs[n - 1] = previousFdr;
 			for (int i = n - 2; i > -1; i--) {
-				double currentFdr = fdrsRaw[i];
+				var currentFdr = fdrsRaw[i];
 				if (previousFdr > currentFdr) {
 					previousFdr = currentFdr;
 				}
 				fdrs[i] = previousFdr;
 			}
 			int validIndex = 0;
-			foreach (int unsortedIndex in order) {
+			foreach (var unsortedIndex in order) {
 				if (!double.IsNaN(pvaluesUnsorted[unsortedIndex])) {
 					fdrsUnsorted[unsortedIndex] = fdrs[validIndex];
 					validIndex++;
