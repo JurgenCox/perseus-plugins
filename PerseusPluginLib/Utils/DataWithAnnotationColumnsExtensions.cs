@@ -65,11 +65,11 @@ namespace PerseusPluginLib.Utils
 		/// </summary>
 		private static void ExtendMainColumns(this IMatrixData mdata, int length)
 		{
-			var values = new float[mdata.RowCount + length, mdata.ColumnCount];
-			var hasQuality = mdata.Quality.IsInitialized();
-			var quality = hasQuality ? new float[mdata.Quality.RowCount + length, mdata.Quality.ColumnCount] : new float[0, 0];
-			var hasImputation = mdata.IsImputed.IsInitialized();
-			var isImputed = hasImputation ? new bool[mdata.IsImputed.RowCount + length, mdata.IsImputed.ColumnCount] : new bool[0, 0];
+			float[,] values = new float[mdata.RowCount + length, mdata.ColumnCount];
+			bool hasQuality = mdata.Quality.IsInitialized();
+			float[,] quality = hasQuality ? new float[mdata.Quality.RowCount + length, mdata.Quality.ColumnCount] : new float[0, 0];
+			bool hasImputation = mdata.IsImputed.IsInitialized();
+			bool[,] isImputed = hasImputation ? new bool[mdata.IsImputed.RowCount + length, mdata.IsImputed.ColumnCount] : new bool[0, 0];
 			for (int i = 0; i < mdata.Values.RowCount; i++)
 			{
 				for (int j = 0; j < mdata.Values.ColumnCount; j++)
