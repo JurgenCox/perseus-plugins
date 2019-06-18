@@ -61,7 +61,7 @@ namespace PerseusApi.Generic{
 		int NumericColumnCount { get; }
 		void ClearNumericColumns();
 		void AddNumericColumn(string name, string description, double[] vals);
-		void RemoveNumericColumnAt(int index);
+        void RemoveNumericColumnAt(int index);
 		List<string> NumericColumnNames { get; set; }
 		List<string> NumericColumnDescriptions { get; set; }
 	

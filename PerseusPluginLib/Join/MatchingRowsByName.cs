@@ -405,7 +405,7 @@ namespace PerseusPluginLib.Join
 			}
 			for (int i = 0; i < columns.Length; i++)
 			{
-				result.AddNumericColumn(newNumColNames[i], "", newNumericalColumns[i]);
+				result.AddNumericColumn(newNumColNames[i],"",  newNumericalColumns[i]);
 			}
 		}
 
