@@ -64,7 +64,7 @@ namespace PerseusPluginLib.Basic {
 						type = DensityEstimationType.DivideByXY;
 						break;
 				}
-				(double[] dvals, double[] pvals) = DensityEstimation.Calc(xvals, yvals, points, type);
+				(double[] dvals, double[] pvals) = DensityEstimation.CalcDensitiesAtData(xvals, yvals, points, type);
 				string xname = GetColumnName(mdata, colIndx[k]);
 				string yname = GetColumnName(mdata, colIndy[k]);
 				mdata.AddNumericColumn("Density_" + xname + "_" + yname,
