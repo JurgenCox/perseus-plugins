@@ -69,7 +69,7 @@ namespace PerseusPluginLib.Rearrange{
 			foreach (int ind in textColInds){
 				HashSet<string> taken = new HashSet<string>(data.StringColumnNames);
 				string s = StringUtils.GetNextAvailableName(data.StringColumnNames[ind], taken);
-				data.AddStringColumn(s, data.ColumnDescriptions[ind], (string[]) data.StringColumns[ind].Clone());
+				data.AddStringColumn(s, data.StringColumnDescriptions[ind], (string[]) data.StringColumns[ind].Clone());
 				taken.Add(s);
 			}
 		}
