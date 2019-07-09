@@ -138,7 +138,7 @@ namespace PerseusApi.Utils {
 			IMatrixData matrixData) {
 			if (colDescriptions != null) {
 				string[] columnDesc = ArrayUtils.SubArray(colDescriptions, mainColIndices);
-				matrixData.ColumnDescriptions = new List<string>(columnDesc);
+				matrixData.StringColumnDescriptions = new List<string>(columnDesc);
 			}
 		}
 
@@ -967,29 +967,24 @@ namespace PerseusApi.Utils {
 		private static IEnumerable<string> ColumnDescriptions(IDataWithAnnotationColumns data) {
 			List<string> words = new List<string>();
                 for (int i = 0; i < data.CategoryColumnCount; i++) {
-                if (data.CategoryColumnDescriptions[i] != null && data.CategoryColumnDescriptions[i].Length > 0)
-                {
                     words.Add(data.CategoryColumnDescriptions[i] ?? "");
                 
-                }
+             
 			}
 			for (int i = 0; i < data.NumericColumnCount; i++) {
-                if (data.NumericColumnDescriptions[i] != null && data.NumericColumnDescriptions[i].Length > 0)
-                {
+
                     words.Add(data.NumericColumnDescriptions[i] ?? "");
-                }
+                
 			}
 			for (int i = 0; i < data.StringColumnCount; i++) {
-                    if (data.StringColumnDescriptions[i] != null && data.StringColumnDescriptions[i].Length > 0)
-                    {
+        
                         words.Add(data.StringColumnDescriptions[i] ?? "");
-                    }
+                    
 			}
 			for (int i = 0; i < data.MultiNumericColumnCount; i++) {
-                        if (data.MultiNumericColumnDescriptions[i] != null && data.MultiNumericColumnDescriptions[i].Length > 0)
-                        {
+          
                             words.Add(data.MultiNumericColumnDescriptions[i] ?? "");
-                        }
+                        
 			}
 			return words;
 		}

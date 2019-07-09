@@ -63,7 +63,7 @@ namespace PerseusPluginLib.Rearrange{
 			List<string> categoryColumnNames = mdata.CategoryColumnNames;
 			List<string> numericColumnNames = mdata.NumericColumnNames;
 			List<string> multiNumericColumnNames = mdata.MultiNumericColumnNames;
-			List<string> stringColumnDescriptions = mdata.ColumnDescriptions;
+			List<string> stringColumnDescriptions = mdata.StringColumnDescriptions;
 			List<string> categoryColumnDescriptions = mdata.CategoryColumnDescriptions;
 			List<string> numericColumnDescriptions = mdata.NumericColumnDescriptions;
 			List<string> multiNumericColumnDescriptions = mdata.MultiNumericColumnDescriptions;
