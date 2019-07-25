@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BaseLibS.Num;
+using System;
+using System.Linq;
 
 namespace PerseusPluginLib.Basic
 {
@@ -43,7 +45,7 @@ namespace PerseusPluginLib.Basic
             y1 = y2.ToArray();
         }
 
-        public double[] GetInterval(IMatrixData mdata, int colIndx, int colIndy, int points)
+        public double[] GetInterval(IMatrixData mdata, int colIndx, int colIndy, int method)
         {
 
             List<double> getval = new List<double>();
@@ -51,29 +53,81 @@ namespace PerseusPluginLib.Basic
             double[] xvals = GetColumn(mdata, colIndx);
             double[] yvals = GetColumn(mdata, colIndy);
             GetValidPairs(xvals, yvals, out double[] xvals1, out double[] yvals1);
-            for (int i = 0; i < yvals.Length; i++)
+            double[] result = new double[0];
+            for (double z = 0; z < yvals.Length; z += 5)
             {
-                for (int y = 0; y < xvals.Length; y++)
+                for (double i = 0; i < xvals.Length; i += 5)
                 {
-                    if (xvals[y] >= 0 && xvals[y]<= 0.01)
-                    {
-
+                    timeval.Add(xvals.Max());
+                    if (method == 1) {
+                        //calculate median
+                        getval.Add(CalculateMedian(yvals));
                     }
-
-                        }
+                    if (method == 2)
+                    {
+                        //calculate mean
+                        getval.Add(CalculateMedian(yvals));
+                    }
+                }
             }
-
-
             return xvals;
         }
 
-        public double calculatemedian(double[] range)
+
+        public double[] GetIntervalPercentile(IMatrixData mdata, int colIndx, int colIndy, int method, int percentile)
+        {
+
+            List<double> getval = new List<double>();
+            List<double> timeval = new List<double>();
+            double[] xvals = GetColumn(mdata, colIndx);
+            double[] yvals = GetColumn(mdata, colIndy);
+            GetValidPairs(xvals, yvals, out double[] xvals1, out double[] yvals1);
+            double[] result = new double[0];
+            for (double z = 0; z < yvals.Length; z += 5)
+            {
+                for (double i = 0; i < xvals.Length; i += 5)
+                {
+                    timeval.Add(xvals.Max());
+                    if (method == 3)
+                    {
+                        //calculate median
+                        getval.Add(calculatepercentile(yvals, percentile));
+                    }
+                }
+            }
+            return xvals;
+        }
+
+
+        public double CalculateMedian(double[] range)
         {
             double median = 0;
             int counts = range.Length;
             for (int i = 0; i < range.Length; i++)
             {
                 median = (range.Sum()/counts) ;
+            }
+            return median;
+        }
+
+        public double calculatemean(double[] range)
+        {
+            double median = 0;
+            int counts = range.Length;
+            for (int i = 0; i < range.Length; i++)
+            {
+                median = (range.Sum() / counts);
+            }
+            return median;
+        }
+
+        public double calculatepercentile(double[] range, int percentile)
+        {
+            double median = 0;
+            int counts = range.Length;
+            for (int i = 0; i < range.Length; i++)
+            {
+                median = (range.Sum() / counts);
             }
             return median;
         }
