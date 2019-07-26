@@ -74,6 +74,9 @@ namespace PerseusPluginLib.Basic
         }
 
 
+
+
+
         public double[] GetIntervalPercentile(IMatrixData mdata, int colIndx, int colIndy, int method, int percentile)
         {
 
