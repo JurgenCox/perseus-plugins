@@ -20,12 +20,12 @@ namespace PerseusPluginLib.Join
     {
         public bool HasButton => true;
         public Bitmap2 DisplayImage => PerseusPluginUtils.GetImage("combineButton.Image.png");
-        public string Name => "Matching SAMPLES columns by name";
-        public bool IsActive => false;
+        public string Name => "Matching columns by name with Matrix Name";
+        public bool IsActive => true;
         public float DisplayRank => -3;
         public string HelpOutput => "";
         public string Description => "Two matrices are merged by matching columns by their names. " +
-                                     "The resulting matrix contains the rows of both matrices.";
+                                     "The resulting matrix contains the rows of both matrices and a string column with the matrix names.";
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
         public string[] HelpDocuments => new string[0];
