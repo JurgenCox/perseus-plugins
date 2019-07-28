@@ -51,7 +51,6 @@ namespace PerseusPluginLib.Join
 
         public Parameters GetParameters(IMatrixData[] inputData, ref string errString)
         {
-
             return new Parameters();
         }
 
@@ -112,38 +111,7 @@ namespace PerseusPluginLib.Join
         }
 
 
-        private static void StringToCategorical(IList<int> colInds, IMatrixData mdata)
-        {
-            int[] inds = ArrayUtils.Complement(colInds, mdata.StringColumnCount);
-            string[] names = ArrayUtils.SubArray(mdata.StringColumnNames, colInds);
-            string[] descriptions = ArrayUtils.SubArray(mdata.StringColumnDescriptions, colInds);
-            string[][] str = ArrayUtils.SubArray(mdata.StringColumns, colInds);
-            string[][][] newCat = new string[str.Length][][];
-            for (int j = 0; j < str.Length; j++)
-            {
-                newCat[j] = new string[str[j].Length][];
-                for (int i = 0; i < newCat[j].Length; i++)
-                {
-                    if (str[j][i] == null || str[j][i].Length == 0)
-                    {
-                        newCat[j][i] = new string[0];
-                    }
-                    else
-                    {
-                        string[] x = str[j][i].Split(';');
-                        Array.Sort(x);
-                        newCat[j][i] = x;
-                    }
-                }
-            }
-            for (int i = 0; i < names.Length; i++)
-            {
-                mdata.AddCategoryColumn(names[i], descriptions[i], newCat[i]);
-            }
-            mdata.StringColumns = ArrayUtils.SubList(mdata.StringColumns, inds);
-            mdata.StringColumnNames = ArrayUtils.SubList(mdata.StringColumnNames, inds);
-            mdata.ColumnDescriptions = ArrayUtils.SubList(mdata.StringColumnDescriptions, inds);
-        }
+
 
         public IMatrixData ProcessData(IMatrixData[] inputData, Parameters param, ref IMatrixData[] supplTables,
             ref IDocumentData[] documents, ProcessInfo processInfo)
@@ -153,22 +121,12 @@ namespace PerseusPluginLib.Join
 
             string[] header1 = new string[mdata1.RowCount];
             for (int i = 0; i < mdata1.RowCount; i++)
-            {   if (mdata1.AltName != null)
-                { if (mdata1.AltName != mdata1.Name) { header1[i] = mdata1.AltName; }
-                  else {  header1[i] = mdata1.Name;  }  }
-                else  { header1[i] = mdata1.AltName; }
-            }
+            {  header1[i] = mdata1.Name;  }
+
 
             string[] header2 = new string[mdata2.RowCount];
             for (int i = 0; i < mdata2.RowCount; i++)
-            {
-                if (mdata2.AltName != null)
-                {
-                    if (mdata2.AltName != mdata2.Name) { header1[i] = mdata2.AltName; }
-                    else { header2[i] = mdata2.Name; }
-                }
-                else { header2[i] = mdata2.AltName; }
-            }
+            {  header2[i] = mdata2.Name;   }
 
             int nrows1 = mdata1.RowCount;
             int nrows2 = mdata2.RowCount;
@@ -327,40 +285,7 @@ namespace PerseusPluginLib.Join
             string MatrixDescription = "Description";
 
             string[] listnames = header1.Concat(header2).ToArray();
-            List<string[][]> catlistnames = new List<string[][]>();
-
-         
-            for (int i = 0; i < listnames.Length; i++)
-            {
-                catlistnames.Add(new string[nrows][]);
-                for (int j = 0; j < nrows; j++)
-                {
-                    catlistnames[catlistnames.Count - 1][j] = new string[0];
-                }
-            }
-            for (int i = 0; i < listnames.Length; i++)
-            {
-                if (dic1.ContainsKey(listnames[i]))
-                {
-                    int ind = dic1[listnames[i]];
-                    for (int j = 0; j < nrows1; j++)
-                    {
-                        catlistnames[i][j] = mdata1.GetCategoryColumnEntryAt(ind, j);
-                    }
-                }
-                if (dic2.ContainsKey(listnames[i]))
-                {
-                    int ind = dic2[listnames[i]];
-                    for (int j = 0; j < nrows2; j++)
-                    {
-                        catlistnames[i][nrows1 + j] = mdata2.GetCategoryColumnEntryAt(ind, j);
-                    }
-                }
-            }
-
-
-            string[][][] myArray = catlistnames.ToArray();
-           // string[][] resultarray = catlistnames.Select(x => x.ToArray()).ToArray();
+            // string[][] resultarray = catlistnames.Select(x => x.ToArray()).ToArray();
             //IMPORTANT!!!!! TODO: check if the name of the matrix if changed
             IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
             result.NumericColumnNames = new List<string>(numColNames);
@@ -377,15 +302,12 @@ namespace PerseusPluginLib.Join
             HashSet<string> taken = new HashSet<string>(result.StringColumnNames);
 
             result.AddStringColumn(MatrixName, MatrixName, listnames);
-            for (int i = 0; i < listnames.Length; i++)
-            {
-                result.AddCategoryColumn(MatrixName, MatrixName, myArray[i]);
-            }
-
-         //   result.AddCategoryColumn(MatrixName, MatrixName, myArray);
             taken.Add(MatrixName);
 
             return result;
         }
+
+
+
     }
 }
