@@ -17,6 +17,8 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusPluginLib.Utils;
+using System.Windows.Forms;
+
 namespace PerseusPluginLib.Rearrange
 {
     public class RenameColumnTemplate : IMatrixProcessing
@@ -55,51 +57,186 @@ namespace PerseusPluginLib.Rearrange
                 case 0:
                     ProcessDataCreate(mdata, spar, processInfo);
                     break;
-       /*         case 1:
-                    ProcessDataCreateFromGoupNames(mdata, spar, processInfo);
-                    break;
-                case 2:
-                    ProcessDataEdit(mdata, spar);
-                    break;
-                case 3:
-                    ProcessDataRename(mdata, spar);
-                    break;
-                case 4:
-                    ProcessDataDelete(mdata, spar);
-                    break;
-                case 5:
+                case 1:
                     ProcessDataWriteTemplateFile(mdata, spar);
                     break;
-                case 6:
-                    string err = ProcessDataReadFromFile(mdata, spar);
+                case 2:
+                    string err = ProcessDataReadFromFileList(mdata, spar);
                     if (err != null)
                     {
                         processInfo.ErrString = err;
                     }
-                    break; */
+                    break; 
             }
         }
 
+        private static string ProcessDataReadFromFile(IDataWithAnnotationRows mdata, Parameters param)
+        {
+            Parameter<string> fp = param.GetParam<string>("Input file");
+            string filename = fp.Value;
+            string[] colNames;
+            try
+            {
+                colNames = TabSep.GetColumnNames(filename, '\t');
+            }
+            catch (Exception)
+            {
+                return "Could not open file " + filename + ". It maybe open in another program.";
+            }
+            int nameIndex = GetNameIndex(colNames);
+            if (nameIndex < 0)
+            {
+                return "Error: the file has to contain a column called 'Name'.";
+            }
+            if (colNames.Length < 2)
+            {
+                return "Error: the file does not contain a grouping column.";
+            }
+            string[] nameCol = TabSep.GetColumn(colNames[nameIndex], filename, '\t');
+            Dictionary<string, int> map = ArrayUtils.InverseMap(nameCol);
+            for (int i = 0; i < colNames.Length; i++)
+            {
+                if (i == nameIndex)
+                {
+                    continue;
+                }
+                string groupName = colNames[i];
+                string[] groupCol = TabSep.GetColumn(groupName, filename, '\t');
+                string[][] newCol = new string[mdata.ColumnCount][];
+                for (int j = 0; j < newCol.Length; j++)
+                {
+                    string colName = mdata.ColumnNames[j];
+                    if (!map.ContainsKey(colName))
+                    {
+                        newCol[j] = new string[0];
+                        continue;
+                    }
+                    int ind = map[colName];
+                    string group = groupCol[ind] ?? "";
+                    group = group.Trim();
+                    if (string.IsNullOrEmpty(group))
+                    {
+                        newCol[j] = new string[0];
+                    }
+                    else
+                    {
+                        string[] w = group.Split(';');
+                        Array.Sort(w);
+                        for (int k = 0; k < w.Length; k++)
+                        {
+                            w[k] = w[k].Trim();
+                        }
+                        newCol[j] = w;
+                    }
+                }
+                mdata.AddCategoryRow(groupName, groupName, newCol);
+            }
+            return null;
+        }
+
+
+        private static string ProcessDataReadFromFileList(IDataWithAnnotationRows mdata, Parameters param)
+        {
+            Parameter<string> fp = param.GetParam<string>("Input file");
+            string filename = fp.Value;
+            string[] colNames;
+            try
+            {
+                colNames = TabSep.GetColumnNames(filename, '\t');
+            }
+            catch (Exception)
+            {
+                return "Could not open file " + filename + ". It maybe open in another program.";
+            }
+            int nameIndex = GetNameIndex(colNames);
+            string[] nameCol = TabSep.GetColumn(colNames[nameIndex], filename, '\t');
+            MessageBox.Show(nameCol.Length.ToString());
+            MessageBox.Show(mdata.ColumnCount.ToString());
+            for (int i = 0; i < mdata.ColumnCount; i++)
+            {
+                MessageBox.Show(nameCol.Length.ToString());
+                MessageBox.Show(mdata.ColumnCount.ToString());
+            /*    if (nameCol.Length != mdata.ColumnCount)
+                    {
+                        return "ERROR";
+                    }
+                    else { mdata.ColumnNames[i] = nameCol[i]; } */
+            }
+            
+            return null;
+        }
+
+        private static int GetNameIndex(IList<string> colNames)
+        {
+            for (int i = 0; i < colNames.Count; i++)
+            {
+                if (colNames[i].ToLower().Equals("ColumnNames"))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        private static List<string[]> GetSelectableRegexes()
+        {
+            return new List<string[]> {
+                new[] {"..._01,02,03", "^(.*)_[0-9]*$"},
+                new[] {"(LFQ) intensity ..._01,02,03", "^(?:LFQ )?[Ii]ntensity (.*)_[0-9]*$"},
+                new[] {"(Normalized) ratio H/L ..._01,02,03", "^(?:Normalized )?[Rr]atio(?: [HML]/[HML]) (.*)_[0-9]*$"}
+            };
+        }
+
+        public Parameters GetWriteTemplateFileParameters(IMatrixData mdata)
+        {
+            List<Parameter> par = new List<Parameter> {
+                new FileParam("Output file", "ColumnNames.txt") {Filter = "Tab separated file (*.txt)|*.txt", Save = true}
+            };
+            return new Parameters(par);
+        }
+
+
+        private static void ProcessDataWriteTemplateFile(IDataWithAnnotationRows mdata, Parameters param)
+        {
+            Parameter<string> fp = param.GetParam<string>("Output file");
+            StreamWriter writer = new StreamWriter(fp.Value);
+            writer.WriteLine("ColumnNames");
+            for (int i = 0; i < mdata.ColumnCount; i++)
+            {
+                string colName = mdata.ColumnNames[i];
+                writer.WriteLine(colName);
+            }
+            writer.Close();
+        }
         public Parameters GetParameters(IMatrixData mdata, ref string errorString)
         {
             SingleChoiceWithSubParams scwsp = new SingleChoiceWithSubParams("Action")
             {
                 Values =
                     new[] {
-                        "Create"
-                   //     , "Create from experiment name", "Edit", "Rename", "Delete",
+                        "Edit" , "Write template file", "Read from file"
+                     // , "Rename", "Delete",
                    //     "Write template file", "Read from file"
                     },
                 SubParams = new[] {
-                    GetCreateParameters(mdata)
-           //         , GetCreateFromExperimentNamesParameters(mdata),
-            //        GetEditParameters(mdata), GetRenameParameters(mdata), GetDeleteParameters(mdata),
-            //        GetWriteTemplateFileParameters(mdata), GetReadFromFileParameters(mdata)
+                    GetEditParameters(mdata), GetWriteTemplateFileParameters(mdata),
+                    // GetRenameParameters(mdata), GetDeleteParameters(mdata),
+                 //   GetWriteTemplateFileParameters(mdata), 
+                    GetReadFromFileParameters(mdata)
                 },
                 ParamNameWidth = 136,
                 TotalWidth = 731
             };
             return new Parameters(new Parameter[] { scwsp });
+        }
+
+
+        public Parameters GetReadFromFileParameters(IMatrixData mdata)
+        {
+            List<Parameter> par = new List<Parameter> {
+                new FileParam("Input file") {Filter = "Tab separated file (*.txt)|*.txt", Save = false}
+            };
+            return new Parameters(par);
         }
 
         public void ProcessDataCreate(IMatrixData mdata, Parameters param,  ProcessInfo processInfo)
@@ -175,7 +312,7 @@ namespace PerseusPluginLib.Rearrange
             }
             mdata.MultiNumericColumnNames = multiNumericColumnNames;
         }
-        public Parameters GetCreateParameters(IMatrixData mdata)
+        public Parameters GetEditParameters(IMatrixData mdata)
         {
             List<Parameter> par = new List<Parameter>();
             foreach (string t in mdata.ColumnNames)
