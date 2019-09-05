@@ -113,7 +113,15 @@ namespace PerseusPluginLib.Rearrange
             var fp = param.GetParam<string>("Input file").Value;
            // string filename = fp.Value;
             string[] newNames = new string[mdata.ColumnCount];
+            string[] newNamesCategory = new string[mdata.ColumnCount];
+            string[] newNamesString = new string[mdata.ColumnCount];
+            string[] newNamesNumeric = new string[mdata.ColumnCount];
+            string[] newNamesMultiNumeric = new string[mdata.ColumnCount];
             List<string> expressionColumnNames = new List<string>();
+            List<string> expressionColumnCategory = new List<string>();
+            List<string> expressionColumnString = new List<string>();
+            List<string> expressionColumnNumeric = new List<string>();
+            List<string> expressionColumnMultiNumeric = new List<string>();
             try
             {
                 using (var reader = new StreamReader(new FileStream(fp, FileMode.Open)))
@@ -121,10 +129,33 @@ namespace PerseusPluginLib.Rearrange
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
-                            var colnames = mdata.ColumnNames.Select(columnName => new { Old = columnName, New = line }).ToList();
-                            expressionColumnNames.Add(line);
+                        var colnames = mdata.ColumnNames.Select(columnName => new { Old = columnName, New = line }).ToList();
+                        if (line.StartsWith("D:"))
+                        {
+                            expressionColumnNames.Add(line.Substring(2, line.Length - 2));
+                        } else
+                       if (line.StartsWith("C:"))
+                        {
+                            expressionColumnCategory.Add(line.Substring(2, line.Length - 2));
+                        }
+                        if (line.StartsWith("S:"))
+                        {
+                            expressionColumnString.Add(line.Substring(2, line.Length - 2));
+                        }
+                        if (line.StartsWith("N:"))
+                        {
+                            expressionColumnNumeric.Add(line.Substring(2, line.Length - 2));
+                        }
+                        if (line.StartsWith("M:"))
+                        {
+                            expressionColumnMultiNumeric.Add(line.Substring(2, line.Length - 2));
+                        }
                     }
                     newNames = GetStringArray(expressionColumnNames);
+                    newNamesCategory = GetStringArray(expressionColumnCategory);
+                    newNamesString = GetStringArray(expressionColumnString);
+                    newNamesNumeric = GetStringArray(expressionColumnNumeric);
+                    newNamesMultiNumeric = GetStringArray(expressionColumnMultiNumeric);
                     for (int i = 0; i < mdata.ColumnCount; i++)
                     {
                         if (newNames[i] != mdata.ColumnNames[i])
@@ -132,15 +163,24 @@ namespace PerseusPluginLib.Rearrange
                     }
                     for (int i = 0; i < mdata.CategoryColumnCount; i++)
                     {
-                        if (newNames[i] != mdata.CategoryColumnNames[i])
-                            mdata.CategoryColumnNames[i] = newNames[i];
+                        if (newNamesCategory[i] != mdata.CategoryColumnNames[i])
+                            mdata.CategoryColumnNames[i] = newNamesCategory[i];
                     }
                     for (int i = 0; i < mdata.StringColumnCount; i++)
                     {
-                        if (newNames[i] != mdata.StringColumnNames[i])
-                            mdata.StringColumnNames[i] = newNames[i];
+                        if (newNamesString[i] != mdata.StringColumnNames[i])
+                            mdata.StringColumnNames[i] = newNamesString[i];
                     }
-
+                    for (int i = 0; i < mdata.NumericColumnCount; i++)
+                    {
+                        if (newNamesNumeric[i] != mdata.NumericColumnNames[i])
+                            mdata.NumericColumnNames[i] = newNamesNumeric[i];
+                    }
+                    for (int i = 0; i < mdata.MultiNumericColumnCount; i++)
+                    {
+                        if (newNamesMultiNumeric[i] != mdata.MultiNumericColumnNames[i])
+                            mdata.MultiNumericColumnNames[i] = newNamesMultiNumeric[i];
+                    }
                 }
             }
             catch (Exception)
@@ -218,27 +258,27 @@ namespace PerseusPluginLib.Rearrange
             for (int i = 0; i < mdata.ColumnCount; i++)
             {
                 string colName = mdata.ColumnNames[i];
-                writer.WriteLine(colName);
+                writer.WriteLine("D:"+ colName);
             }
             for (int i = 0; i < mdata.NumericColumnCount; i++)
             {
                 string colName = mdata.NumericColumnNames[i];
-                writer.WriteLine(colName);
+                writer.WriteLine("N:" + colName);
             }
             for (int i = 0; i < mdata.CategoryColumnCount; i++)
             {
                 string colName = mdata.CategoryColumnNames[i];
-                writer.WriteLine(colName);
+                writer.WriteLine("C:" + colName);
             }
             for (int i = 0; i < mdata.StringColumnCount; i++)
             {
                 string colName = mdata.StringColumnNames[i];
-                writer.WriteLine(colName);
+                writer.WriteLine("S:" + colName);
             }
             for (int i = 0; i < mdata.MultiNumericColumnCount; i++)
             {
                 string colName = mdata.MultiNumericColumnNames[i];
-                writer.WriteLine(colName);
+                writer.WriteLine("M:" + colName);
             }
             writer.Close();
         }
