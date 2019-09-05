@@ -821,7 +821,7 @@ namespace PerseusApi.Utils {
 			if (HasAnyDescription(data)) {
 				IEnumerable<string> columnDescriptions = ColumnDescriptions(data);
 				writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
-			}
+	    	}
 			IEnumerable<string> columnTypes = ColumnTypes(data);
 			writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", columnTypes));
 			IEnumerable<string> numAnnotRows = NumericalAnnotationRows(data);
