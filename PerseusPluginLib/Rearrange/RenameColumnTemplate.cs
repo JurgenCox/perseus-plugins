@@ -18,6 +18,7 @@ using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using PerseusPluginLib.Utils;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace PerseusPluginLib.Rearrange
 {
@@ -61,7 +62,7 @@ namespace PerseusPluginLib.Rearrange
                     ProcessDataWriteTemplateFile(mdata, spar);
                     break;
                 case 2:
-                    string err = ProcessDataReadFromFileList(mdata, spar);
+                    string err = ProcessDataReadFromFileListNew(mdata, spar);
                     if (err != null)
                     {
                         processInfo.ErrString = err;
@@ -93,49 +94,63 @@ namespace PerseusPluginLib.Rearrange
                 return "Error: the file does not contain a grouping column.";
             }
             string[] nameCol = TabSep.GetColumn(colNames[nameIndex], filename, '\t');
-            Dictionary<string, int> map = ArrayUtils.InverseMap(nameCol);
-            for (int i = 0; i < colNames.Length; i++)
+            for (int i = 0; i < nameCol.Length; i++)
             {
-                if (i == nameIndex)
+                MessageBox.Show(nameCol[i].ToString());
+            }
+                return null;
+        }
+
+        private static string[] GetStringArray(List<string> getlistpoli)
+        {
+            List<string> doubles = getlistpoli.Select(i => (string)i).ToList();
+            string[] check = doubles.ToArray();
+
+            return check;
+        }
+        private static string ProcessDataReadFromFileListNew(IMatrixData mdata, Parameters param)
+        {
+            var fp = param.GetParam<string>("Input file").Value;
+           // string filename = fp.Value;
+            string[] newNames = new string[mdata.ColumnCount];
+            List<string> expressionColumnNames = new List<string>();
+            try
+            {
+                using (var reader = new StreamReader(new FileStream(fp, FileMode.Open)))
                 {
-                    continue;
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                            var colnames = mdata.ColumnNames.Select(columnName => new { Old = columnName, New = line }).ToList();
+                            expressionColumnNames.Add(line);
+                    }
+                    newNames = GetStringArray(expressionColumnNames);
+                    for (int i = 0; i < mdata.ColumnCount; i++)
+                    {
+                        if (newNames[i] != mdata.ColumnNames[i])
+                            mdata.ColumnNames[i] = newNames[i];
+                    }
+                    for (int i = 0; i < mdata.CategoryColumnCount; i++)
+                    {
+                        if (newNames[i] != mdata.CategoryColumnNames[i])
+                            mdata.CategoryColumnNames[i] = newNames[i];
+                    }
+                    for (int i = 0; i < mdata.StringColumnCount; i++)
+                    {
+                        if (newNames[i] != mdata.StringColumnNames[i])
+                            mdata.StringColumnNames[i] = newNames[i];
+                    }
+
                 }
-                string groupName = colNames[i];
-                string[] groupCol = TabSep.GetColumn(groupName, filename, '\t');
-                string[][] newCol = new string[mdata.ColumnCount][];
-                for (int j = 0; j < newCol.Length; j++)
-                {
-                    string colName = mdata.ColumnNames[j];
-                    if (!map.ContainsKey(colName))
-                    {
-                        newCol[j] = new string[0];
-                        continue;
-                    }
-                    int ind = map[colName];
-                    string group = groupCol[ind] ?? "";
-                    group = group.Trim();
-                    if (string.IsNullOrEmpty(group))
-                    {
-                        newCol[j] = new string[0];
-                    }
-                    else
-                    {
-                        string[] w = group.Split(';');
-                        Array.Sort(w);
-                        for (int k = 0; k < w.Length; k++)
-                        {
-                            w[k] = w[k].Trim();
-                        }
-                        newCol[j] = w;
-                    }
-                }
-                mdata.AddCategoryRow(groupName, groupName, newCol);
+            }
+            catch (Exception)
+            {
+                return "The File cannot be opened. It might be open in another software.";
             }
             return null;
         }
 
-
-        private static string ProcessDataReadFromFileList(IDataWithAnnotationRows mdata, Parameters param)
+        private static string ProcessDataReadFromFileList(IMatrixData mdata, Parameters param)
         {
             Parameter<string> fp = param.GetParam<string>("Input file");
             string filename = fp.Value;
@@ -196,14 +211,33 @@ namespace PerseusPluginLib.Rearrange
         }
 
 
-        private static void ProcessDataWriteTemplateFile(IDataWithAnnotationRows mdata, Parameters param)
+        private static void ProcessDataWriteTemplateFile(IMatrixData mdata, Parameters param)
         {
             Parameter<string> fp = param.GetParam<string>("Output file");
             StreamWriter writer = new StreamWriter(fp.Value);
-            writer.WriteLine("ColumnNames");
             for (int i = 0; i < mdata.ColumnCount; i++)
             {
                 string colName = mdata.ColumnNames[i];
+                writer.WriteLine(colName);
+            }
+            for (int i = 0; i < mdata.NumericColumnCount; i++)
+            {
+                string colName = mdata.NumericColumnNames[i];
+                writer.WriteLine(colName);
+            }
+            for (int i = 0; i < mdata.CategoryColumnCount; i++)
+            {
+                string colName = mdata.CategoryColumnNames[i];
+                writer.WriteLine(colName);
+            }
+            for (int i = 0; i < mdata.StringColumnCount; i++)
+            {
+                string colName = mdata.StringColumnNames[i];
+                writer.WriteLine(colName);
+            }
+            for (int i = 0; i < mdata.MultiNumericColumnCount; i++)
+            {
+                string colName = mdata.MultiNumericColumnNames[i];
                 writer.WriteLine(colName);
             }
             writer.Close();
