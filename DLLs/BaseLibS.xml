@@ -691,6 +691,11 @@
             <param name="i"></param>
             <returns></returns>
         </member>
+        <member name="T:BaseLibS.Ms.CentroidPosition">
+            <summary>
+            Either gaussian or weightedMean.
+            </summary>
+        </member>
         <member name="P:BaseLibS.Ms.Data.Protein.Protein.FastaFileName">
             <summary>
             Name of the fasta file this protein sequence originates from. It is just the name, not the complete path.
