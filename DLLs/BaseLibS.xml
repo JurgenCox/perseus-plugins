@@ -691,6 +691,16 @@
             <param name="i"></param>
             <returns></returns>
         </member>
+        <member name="T:BaseLibS.Ms.CentroidPosition">
+            <summary>
+            Either gaussian or weightedMean.
+            </summary>
+        </member>
+        <member name="P:BaseLibS.Ms.Data.Protein.Protein.FastaFileName">
+            <summary>
+            Name of the fasta file this protein sequence originates from. It is just the name, not the complete path.
+            </summary>
+        </member>
         <member name="T:BaseLibS.Ms.InfoLists">
             <summary>
             Fields, other than allMassRanges, are Ms1Lists, SimLists, and Ms2Lists, only one of which 
@@ -714,6 +724,11 @@
             <summary>
             Only field is an array of double deltaM. Not used yet (2014-04-01), 
             but will be soon. (See also field NeedsGrid of class RawFile.)
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Ms.PepUtils.CreateProteinAndPeptideLists(System.Collections.Generic.Dictionary{System.String,System.Collections.Generic.Dictionary{System.String,System.Byte}},System.String[][]@,System.String[][]@,System.Byte[][]@,System.Boolean,BaseLibS.Mol.TaxonomyRank,BaseLibS.Ms.Data.Protein.ProteinSet)">
+            <summary>
+            Pre-cluster proteins that have identical peptide sets.
             </summary>
         </member>
         <member name="T:BaseLibS.Ms.RawFile">
@@ -907,6 +922,78 @@
             <summary>
             A collection of fields describing a scan. Information on scans is set in a device-dependent way.
             </summary>
+        </member>
+        <member name="T:BaseLibS.Ms.Search.AaMutationType">
+            <summary>
+            List of situations that can happen on the amino acid sequence level for a single mutation.
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.SingleAaSubstitution">
+            <summary>
+            A single aa letter is replaced by another one which is not a stop codon.
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.SingleAaDeletion">
+            <summary>
+            A single aa letter is removed from the sequence
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.SingleAaInsertion">
+            <summary>
+            A single aa letter is added to the sequence
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.MultiAaInsertion">
+            <summary>
+            A consecutive stretch of more than one aa is inserted into the sequence
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.MultiAaDeletion">
+            <summary>
+            A consecutive stretch of more than one aa is removed from the sequence
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.StopCodonInsertion">
+            <summary>
+            A stop codon is inserted into the sequence
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.MultiAaInsertionWithStopCodon">
+            <summary>
+            A consecutive stretch of more than one aa is inserted into the sequence followed by a new stop codon.
+            </summary>
+        </member>
+        <member name="F:BaseLibS.Ms.Search.AaMutationType.ComplexSubstitution">
+            <summary>
+            Remaining cases of replacement of one aa sequence by another without stop codon.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Ms.Search.DigestionUtil.AddPeptideMultipleSubstitutions(System.String,System.Boolean,System.Boolean,System.Action{System.String,System.Boolean,System.Boolean,System.Byte,System.String[],System.String},BaseLibS.Mol.Enzyme[],System.Int32,System.Int32,System.Int32,System.Int32,System.Int32[],System.Char[],System.String[],System.Text.RegularExpressions.Regex)">
+            <summary>
+            Apply multiple different single amino acid substititions to the same peptide.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Ms.Search.DigestionUtil.AddPeptideKnownMutations(System.String,System.Char,System.Char,System.Boolean,System.Boolean,System.Action{System.String,System.Boolean,System.Boolean,System.Byte,System.String[],System.String},BaseLibS.Mol.Enzyme[],System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.String,BaseLibS.Ms.Search.AaMutationType,System.String,System.Text.RegularExpressions.Regex)">
+            <summary>
+            Apply exhaustively all mutations to a peptide. There can be only one mutation per peptide here.
+            </summary>
+        </member>
+        <member name="M:BaseLibS.Ms.Search.DigestionUtil.GetMutationType(System.String,System.String)">
+            <summary>
+            Determine from the amino acid sequences stretches before and after the mutation what the type of the mutation is
+            </summary>
+            <param name="oldAa">Amino acid sequence stretch before the mutation has been applied.</param>
+            <param name="newAa">Amino acid sequence stretch after the mutation has been applied.</param>
+            <returns>The type of the mutation</returns>
+        </member>
+        <member name="M:BaseLibS.Ms.Search.DigestionUtil.Cleaves(System.Char,System.Char,System.Collections.Generic.IEnumerable{BaseLibS.Mol.Enzyme})">
+            <summary>
+            Determines if the set of enzymes all applied between the two amimo acids would cleave the protein sequence.
+            </summary>
+            <param name="a">Amino acid before the potential cleavage position.</param>
+            <param name="b">Amino acid after the potential cleavage position.</param>
+            <param name="enzymes">Enzyme rules applied to the two amino acids.</param>
+            <returns>True if cleaves.</returns>
         </member>
         <member name="T:BaseLibS.Ms.SignalType">
             <summary>

@@ -69,6 +69,8 @@
     <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />
     <Compile Include="Basic\AddNoise.cs" />
     <Compile Include="Basic\DeHyphenateIds.cs" />
+    <Compile Include="Basic\KineticsTimeMeasure.cs" />
+    <Compile Include="Basic\KineticsStatisticalMeasures.cs" />
     <Compile Include="Filter\FilterNumericalColumn.cs" />
     <Compile Include="Filter\FilterDuplicateRows.cs" />
     <Compile Include="Join\MatchingSamplesbyColumnName.cs" />
@@ -132,6 +134,7 @@
     <Compile Include="Rearrange\ChangeColumnType.cs" />
     <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
     <Compile Include="Rearrange\RenameColumnByAnnoRows.cs" />
+    <Compile Include="Rearrange\RenameColumnTemplate.cs" />
     <Compile Include="Rearrange\ReorderColumnsByNumAnnotationRow.cs" />
     <Compile Include="Utils\MatrixDataExtensions.cs" />
     <Compile Include="Rearrange\UniqueRows.cs" />

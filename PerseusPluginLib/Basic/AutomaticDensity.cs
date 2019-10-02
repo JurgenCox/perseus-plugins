@@ -46,13 +46,30 @@ namespace PerseusPluginLib.Basic
             y1 = y2.ToArray();
         }
 
+        private static double[] getLog(double[] array)
+        {
+            double[] newlog = new double[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                newlog[i] = Math.Log(array[i]);
+            }
+                return newlog;
+        }
+
         public static double[] CalcDensity(IMatrixData mdata, int colIndx, int colIndy,
-     int points)
+     int points, bool logarithmic)
         {
             double[] dvals = new double[0];
-
-            double[] xvals = GetColumn(mdata, colIndx);
-            double[] yvals = GetColumn(mdata, colIndy);
+            double[] xvals = new double[0];
+            double[] yvals = new double[0];
+            if (logarithmic == true)
+            {
+                xvals = getLog(GetColumn(mdata, colIndx));
+                yvals = getLog(GetColumn(mdata, colIndy));
+            } else {
+                xvals = GetColumn(mdata, colIndx);
+                yvals = GetColumn(mdata, colIndy);
+            }
             GetValidPairs(xvals, yvals, out double[] xvals1, out double[] yvals1);
             DensityEstimation.CalcRanges(xvals1, yvals1, out double xmin, out double xmax, out double ymin, out double ymax);
             double[,] values = DensityEstimation.GetValuesOnGrid(xvals1, xmin, (xmax - xmin) / points, points, yvals1, ymin,

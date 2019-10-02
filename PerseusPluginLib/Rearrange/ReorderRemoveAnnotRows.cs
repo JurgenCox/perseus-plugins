@@ -48,6 +48,7 @@ namespace PerseusPluginLib.Rearrange{
 			data.StringRows = ArrayUtils.SubList(data.StringRows, textColInds);
 			data.StringRowNames = ArrayUtils.SubList(data.StringRowNames, textColInds);
 			data.StringRowDescriptions = ArrayUtils.SubList(data.StringRowDescriptions, textColInds);
+           
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
