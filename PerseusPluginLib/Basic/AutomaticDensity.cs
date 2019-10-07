@@ -57,16 +57,27 @@ namespace PerseusPluginLib.Basic
         }
 
         public static double[] CalcDensity(IMatrixData mdata, int colIndx, int colIndy,
-     int points, bool logarithmic)
+     int points, bool logarithmicx, bool logaritmicy)
         {
             double[] dvals = new double[0];
             double[] xvals = new double[0];
             double[] yvals = new double[0];
-            if (logarithmic == true)
+            if (logarithmicx == true && logaritmicy == false)
+            {
+                xvals = getLog(GetColumn(mdata, colIndx));
+                yvals = GetColumn(mdata, colIndy);
+            } else if (logarithmicx == false && logaritmicy == true)
+            {
+                xvals = GetColumn(mdata, colIndx);
+                yvals = getLog(GetColumn(mdata, colIndy));
+            }
+            else if (logarithmicx == true && logaritmicy == true)
             {
                 xvals = getLog(GetColumn(mdata, colIndx));
                 yvals = getLog(GetColumn(mdata, colIndy));
-            } else {
+            }
+            else 
+            {
                 xvals = GetColumn(mdata, colIndx);
                 yvals = GetColumn(mdata, colIndy);
             }
