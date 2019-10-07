@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Windows.Forms;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -52,9 +53,9 @@ namespace PerseusPluginLib.Rearrange{
 			data.CategoryColumnDescriptions = ArrayUtils.SubList(data.CategoryColumnDescriptions, catColInds);
 			data.StringColumns = ArrayUtils.SubList(data.StringColumns, textColInds);
 			data.StringColumnNames = ArrayUtils.SubList(data.StringColumnNames, textColInds);
-			data.ColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, exColInds);
+            data.ColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, exColInds);
             data.ColumnNames = ArrayUtils.SubList(data.ColumnNames, exColInds);
-            data.StringColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, textColInds);
+            data.StringColumnDescriptions = ArrayUtils.SubList(data.StringColumnDescriptions, textColInds);
 
         }
 
