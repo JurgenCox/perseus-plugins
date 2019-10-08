@@ -41,7 +41,7 @@ namespace PerseusPluginLib.Rearrange{
 			int[] multiNumColInds = param.GetParam<int[]>("Multi-numerical columns").Value;
 			int[] catColInds = param.GetParam<int[]>("Categorical columns").Value;
 			int[] textColInds = param.GetParam<int[]>("Text columns").Value;
-		//	data.ExtractColumns(exColInds);
+			data.ExtractColumns(exColInds);
 			data.NumericColumns = ArrayUtils.SubList(data.NumericColumns, numColInds);
 			data.NumericColumnNames = ArrayUtils.SubList(data.NumericColumnNames, numColInds);
 			data.NumericColumnDescriptions = ArrayUtils.SubList(data.NumericColumnDescriptions, numColInds);
@@ -53,9 +53,9 @@ namespace PerseusPluginLib.Rearrange{
 			data.CategoryColumnDescriptions = ArrayUtils.SubList(data.CategoryColumnDescriptions, catColInds);
 			data.StringColumns = ArrayUtils.SubList(data.StringColumns, textColInds);
 			data.StringColumnNames = ArrayUtils.SubList(data.StringColumnNames, textColInds);
-            data.ColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, exColInds);
-            data.ColumnNames = ArrayUtils.SubList(data.ColumnNames, exColInds);
-            data.StringColumnDescriptions = ArrayUtils.SubList(data.StringColumnDescriptions, textColInds);
+            data.ColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, textColInds);
+          //  data.ColumnNames = ArrayUtils.SubList(data.ColumnNames, exColInds);
+     //       data.StringColumnDescriptions = ArrayUtils.SubList(data.StringColumnDescriptions, textColInds);
 
         }
 

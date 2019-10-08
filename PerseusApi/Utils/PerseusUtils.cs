@@ -816,12 +816,14 @@ namespace PerseusApi.Utils {
 		/// <param name="writer"></param>
 		/// <param name="addtlMatrices"></param>
 		public static void WriteMatrix(IMatrixData data, StreamWriter writer, bool addtlMatrices = false) {
-			IEnumerable<string> columnNames = ColumnNames(data);
-			writer.WriteLine(StringUtils.Concat("\t", columnNames));
-			if (HasAnyDescription(data)) {
-				IEnumerable<string> columnDescriptions = ColumnDescriptions(data);
-				writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
-	    	}
+
+                IEnumerable<string> columnNames = ColumnNames(data);
+                writer.WriteLine(StringUtils.Concat("\t", columnNames));
+           
+		//	if (HasAnyDescription(data)) {
+		//		IEnumerable<string> columnDescriptions = ColumnDescriptions(data);
+		//		writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
+	   // 	}
 			IEnumerable<string> columnTypes = ColumnTypes(data);
 			writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", columnTypes));
 			IEnumerable<string> numAnnotRows = NumericalAnnotationRows(data);
