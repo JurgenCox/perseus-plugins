@@ -53,7 +53,7 @@ namespace PerseusPluginLib.Rearrange{
 			data.CategoryColumnDescriptions = ArrayUtils.SubList(data.CategoryColumnDescriptions, catColInds);
 			data.StringColumns = ArrayUtils.SubList(data.StringColumns, textColInds);
 			data.StringColumnNames = ArrayUtils.SubList(data.StringColumnNames, textColInds);
-            data.ColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, textColInds);
+      //      data.ColumnDescriptions = ArrayUtils.SubList(data.ColumnDescriptions, textColInds);
           //  data.ColumnNames = ArrayUtils.SubList(data.ColumnNames, exColInds);
      //       data.StringColumnDescriptions = ArrayUtils.SubList(data.StringColumnDescriptions, textColInds);
 
