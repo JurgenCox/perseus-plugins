@@ -133,6 +133,7 @@
     <Compile Include="Quality\CreateQualityMatrix.cs" />
     <Compile Include="Rearrange\ChangeColumnType.cs" />
     <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
+    <Compile Include="Rearrange\RenameColumnMetabolomics.cs" />
     <Compile Include="Rearrange\RenameColumnByAnnoRows.cs" />
     <Compile Include="Rearrange\RenameColumnTemplate.cs" />
     <Compile Include="Rearrange\ReorderColumnsByNumAnnotationRow.cs" />
