@@ -22,7 +22,7 @@ namespace PerseusPluginLib.Rearrange
             public string HelpOutput => "Same matrix but with the new expression column names.";
             public string[] HelpSupplTables => new string[0];
             public int NumSupplTables => 0;
-            public string Name => "Rename columns";
+            public string Name => "Rename columns Metabolomics";
             public string Heading => "Rearrange";
             public bool IsActive => false;
             public float DisplayRank => 0;
