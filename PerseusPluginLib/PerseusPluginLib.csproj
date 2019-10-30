@@ -73,6 +73,7 @@
     <Compile Include="Basic\KineticsStatisticalMeasures.cs" />
     <Compile Include="Filter\FilterNumericalColumn.cs" />
     <Compile Include="Filter\FilterDuplicateRows.cs" />
+    <Compile Include="Join\MatchingMatrixbyColumnName.cs" />
     <Compile Include="Join\MatchingSamplesbyColumnName.cs" />
     <Compile Include="Join\ReplaceStrings.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
