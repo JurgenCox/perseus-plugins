@@ -13,7 +13,7 @@ using PerseusPluginLib.Filter;
 namespace PerseusPluginLib.Utils {
 	public static class PerseusPluginUtils {
 		/// <summary>
-		/// Create 'Filter mode' parameter. To upack the value see <see cref="UnpackFilterModeParam"/>.
+		/// Create 'Filter mode' parameter. To unpack the value see <see cref="UnpackFilterModeParam"/>.
 		/// </summary>
 		/// <param name="column"></param>
 		/// <returns></returns>
@@ -299,7 +299,7 @@ namespace PerseusPluginLib.Utils {
 			foreach (int x in collapse) {
 				all.UnionWith(catCol[x]);
 			}
-			string[] y = ArrayUtils.ToArray(all);
+			string[] y = all.ToArray();
 			Array.Sort(y);
 			return y;
 		}

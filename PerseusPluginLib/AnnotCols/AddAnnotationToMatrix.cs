@@ -9,7 +9,6 @@ using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusApi.Utils;
 using PerseusPluginLib.AnnotCols.AnnotationProvider;
 using PerseusPluginLib.Utils;
 
@@ -279,13 +278,13 @@ namespace PerseusPluginLib.AnnotCols
                 }
                 for (int j = 0; j < catVals.Length; j++)
                 {
-                    string[] q = ArrayUtils.ToArray(catVals[j]);
+                    string[] q = catVals[j].ToArray();
                     Array.Sort(q);
                     catCols[j][i] = q;
                 }
                 for (int j = 0; j < textVals.Length; j++)
                 {
-                    string[] q = ArrayUtils.ToArray(textVals[j]);
+                    string[] q = textVals[j].ToArray();
                     Array.Sort(q);
                     textCols[j][i] = StringUtils.Concat(";", q);
                 }

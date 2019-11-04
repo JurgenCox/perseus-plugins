@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibS.Data;
 using BaseLibS.Graph;
 using BaseLibS.Num;
@@ -160,7 +161,7 @@ namespace PerseusPluginLib.Basic{
 					}
 				}
 			}
-			string[] w = ArrayUtils.ToArray(result);
+			string[] w = result.ToArray();
 			Array.Sort(w);
 			return StringUtils.Concat(";", w);
 		}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -126,11 +127,11 @@ namespace PerseusPluginLib.Mods{
 				}
 				if (wins.Count > 0){
 					newCatCol[i] = new[]{"+"};
-					function2[i] = ArrayUtils.ToArray(function1);
-					process2[i] = ArrayUtils.ToArray(process1);
-					protInteract2[i] = ArrayUtils.ToArray(protInteract1);
-					otherInteract2[i] = ArrayUtils.ToArray(otherInteract1);
-					notes2[i] = ArrayUtils.ToArray(notes1);
+					function2[i] = function1.ToArray();
+					process2[i] = process1.ToArray();
+					protInteract2[i] = protInteract1.ToArray();
+					otherInteract2[i] = otherInteract1.ToArray();
+					notes2[i] = notes1.ToArray();
 				} else{
 					newCatCol[i] = new string[0];
 					function2[i] = new string[0];

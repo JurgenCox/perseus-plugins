@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -76,9 +77,9 @@ namespace PerseusPluginLib.Mods{
 						}
 					}
 				}
-				kinaseNameColumn[i] = kinaseNamesHits.Count > 0 ? StringUtils.Concat(";", ArrayUtils.ToArray(kinaseNamesHits)) : "";
+				kinaseNameColumn[i] = kinaseNamesHits.Count > 0 ? StringUtils.Concat(";", kinaseNamesHits.ToArray()) : "";
 				kinaseUniprotColumn[i] = kinaseUniprotHits.Count > 0
-					? StringUtils.Concat(";", ArrayUtils.ToArray(kinaseUniprotHits))
+					? StringUtils.Concat(";", kinaseUniprotHits.ToArray())
 					: "";
 			}
 			mdata.AddStringColumn("PhosphoSitePlus kinase", "", kinaseNameColumn);
