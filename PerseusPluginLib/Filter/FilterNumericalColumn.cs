@@ -35,7 +35,7 @@ namespace PerseusPluginLib.Filter{
 			string[] selection = ArrayUtils.Concat(mdata.NumericColumnNames, mdata.ColumnNames);
 			return
 				new Parameters(ArrayUtils.Concat(PerseusUtils.GetNumFilterParams(selection),
-					PerseusPluginUtils.CreateFilterModeParam(true)));
+					PerseusPluginUtils.CreateFilterModeParamNew(true)));
 		}
 
 		public int GetMaxThreads(Parameters parameters){
@@ -44,12 +44,16 @@ namespace PerseusPluginLib.Filter{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			Relation[] relations = PerseusUtils.GetRelationsNumFilter(param, out string errString, out int[] colInds, out bool and);
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
+            }
+            Relation[] relations = PerseusUtils.GetRelationsNumFilter(param, out string errString, out int[] colInds, out bool and);
 			if (errString != null){
 				processInfo.ErrString = errString;
 				return;
 			}
-			PerseusPluginUtils.FilterRows(mdata, param, GetValids(mdata, colInds, relations, and));
+			PerseusPluginUtils.FilterRowsNew(mdata, param, GetValids(mdata, colInds, relations, and));
 		}
 
 		private static int[] GetValids(IMatrixData mdata, int[] colInds, Relation[] relations, bool and){

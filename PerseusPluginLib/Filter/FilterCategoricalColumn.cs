@@ -4,6 +4,7 @@ using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusApi.Utils;
 using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Filter{
@@ -56,12 +57,13 @@ namespace PerseusPluginLib.Filter{
 					Help =
 						"If 'Remove matching rows' is selected, rows having the values specified above will be removed while " +
 						"all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen."
-				}, PerseusPluginUtils.CreateFilterModeParam(true));
+				}, PerseusPluginUtils.CreateFilterModeParamNew(true));
 		}
 
-		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo){
-			ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Column");
+        public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
+            ref IDocumentData[] documents, ProcessInfo processInfo)
+        {
+            ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Column");
 			int colInd = p.Value;
 			if (colInd < 0){
 				processInfo.ErrString = "No categorical columns available.";
@@ -73,7 +75,11 @@ namespace PerseusPluginLib.Filter{
 				processInfo.ErrString = "Please select at least one term for filtering.";
 				return;
 			}
-			string[] values = new string[inds.Length];
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
+            }
+            string[] values = new string[inds.Length];
 			string[] v = mdata.GetCategoryColumnValuesAt(colInd);
 			for (int i = 0; i < values.Length; i++){
 				values[i] = v[inds[i]];
@@ -93,7 +99,8 @@ namespace PerseusPluginLib.Filter{
 					valids.Add(i);
 				}
 			}
-			PerseusPluginUtils.FilterRows(mdata, param, valids.ToArray());
-		}
-	}
+			PerseusPluginUtils.FilterRowsNew(mdata, param, valids.ToArray());
+        }
+
+    }
 }

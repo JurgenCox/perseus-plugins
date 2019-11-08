@@ -8,6 +8,7 @@ using BaseLibS.Graph.Image;
 using BaseLibS.Num;
 using BaseLibS.Param;
 using PerseusApi.Matrix;
+using PerseusApi.Utils;
 using PerseusPluginLib.Filter;
 
 namespace PerseusPluginLib.Utils {
@@ -23,13 +24,21 @@ namespace PerseusPluginLib.Utils {
 			};
 		}
 
-		/// <summary>
-		/// Filter mode used 
-		/// </summary>
-		public enum FilterMode {
+        public static SingleChoiceParam CreateFilterModeParamNew(bool column)
+        {
+            return new SingleChoiceParam("Filter mode")
+            {
+                Values = new[] { "Reduce matrix", column ? "Add categorical column" : "Add categorical row", "Split Matrix (Original Matrix and Matrix Reduced)" }
+            };
+        }
+
+        /// <summary>
+        /// Filter mode used 
+        /// </summary>
+        public enum FilterMode {
 			Reduce,
 			Mark,
-			//Split
+			Split
 		}
 
 		/// <summary>
@@ -73,19 +82,40 @@ namespace PerseusPluginLib.Utils {
 		/// <returns></returns>
 		internal static SingleChoiceWithSubParams GetFilterModeParamNew() {
 			SingleChoiceWithSubParams p = new SingleChoiceWithSubParams("Filter mode") {
-				Values = new[] {"Reduce matrix", "Add categorical column", "Split matrix"},
+				Values = new[] {"Reduce matrix", "Add categorical column", "Split Matrix (Original Matrix and Matrix Reduced)" },
 				SubParams = new List<Parameters>(new[] {
-					new Parameters(GetReduceModeParam()), new Parameters(GetMarkModeParam()), new Parameters()
+					new Parameters(GetReduceModeParam()), new Parameters(GetMarkModeParam()), new Parameters(GetReduceModeParam())
 				})
 			};
 			return p;
 		}
 
-		public static void FilterRows(IMatrixData mdata, Parameters parameters, int[] rows) {
+        public static void FilterRows(IMatrixData mdata, Parameters parameters, int[] rows)
+        {
+            bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
+            if (reduceMatrix)
+            {
+                mdata.ExtractRows(rows);
+            }
+            else
+            {
+                Array.Sort(rows);
+                string[][] col = new string[mdata.RowCount][];
+                for (int i = 0; i < col.Length; i++)
+                {
+                    bool contains = Array.BinarySearch(rows, i) >= 0;
+                    col[i] = contains ? new[] { "Keep" } : new[] { "Discard" };
+                }
+                mdata.AddCategoryColumn("Filter", "", col);
+            }
+        }
+
+        public static void FilterRowsNew(IMatrixData mdata, Parameters parameters, int[] rows) {
 			bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
-			if (reduceMatrix) {
+			if (parameters.GetParam<int>("Filter mode").Value == 0) {
 				mdata.ExtractRows(rows);
-			} else {
+			} else if (parameters.GetParam<int>("Filter mode").Value == 1)
+            {
 				Array.Sort(rows);
 				string[][] col = new string[mdata.RowCount][];
 				for (int i = 0; i < col.Length; i++) {
@@ -94,9 +124,45 @@ namespace PerseusPluginLib.Utils {
 				}
 				mdata.AddCategoryColumn("Filter", "", col);
 			}
-		}
+            else if (parameters.GetParam<int>("Filter mode").Value == 2)
+            {
+                mdata.ExtractRows(rows);               
+            }
+        }
 
-		public static void FilterColumns(IMatrixData mdata, Parameters parameters, int[] cols) {
+        public static IMatrixData CreateSupplTab(IMatrixData mdata)
+        {
+            IMatrixData supplTab = (IMatrixData)mdata.Clone();
+
+            return supplTab;
+        }
+
+        public static void FilterColumnsNew(IMatrixData mdata, Parameters parameters, int[] cols)
+        {
+            bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
+            if (parameters.GetParam<int>("Filter mode").Value == 0)
+            {
+                
+                mdata.ExtractColumns(cols);
+            }
+            else if (parameters.GetParam<int>("Filter mode").Value == 1)
+            {
+                Array.Sort(cols);
+                string[][] row = new string[mdata.ColumnCount][];
+                for (int i = 0; i < row.Length; i++)
+                {
+                    bool contains = Array.BinarySearch(cols, i) >= 0;
+                    row[i] = contains ? new[] { "Keep" } : new[] { "Discard" };
+                }
+                mdata.AddCategoryRow("Filter", "", row);
+            }
+            else if (parameters.GetParam<int>("Filter mode").Value == 2)
+            {
+                mdata.ExtractColumns(cols);
+            }
+        }
+
+        public static void FilterColumns(IMatrixData mdata, Parameters parameters, int[] cols) {
 			bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
 			if (reduceMatrix) {
 				mdata.ExtractColumns(cols);
@@ -228,7 +294,7 @@ namespace PerseusPluginLib.Utils {
 						valids.Add(i);
 					}
 				}
-				FilterRows(mdata, param, valids.ToArray());
+				FilterRowsNew(mdata, param, valids.ToArray());
 			} else {
 				List<int> valids = new List<int>();
 				for (int j = 0; j < mdata.ColumnCount; j++) {
@@ -242,7 +308,7 @@ namespace PerseusPluginLib.Utils {
 						valids.Add(j);
 					}
 				}
-				FilterColumns(mdata, param, valids.ToArray());
+				FilterColumnsNew(mdata, param, valids.ToArray());
 			}
 		}
 

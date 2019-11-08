@@ -33,7 +33,11 @@ namespace PerseusPluginLib.Filter{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			int colInd = param.GetParam<int>("Column").Value;
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
+            }
+            int colInd = param.GetParam<int>("Column").Value;
 			string searchString = param.GetParam<string>("Search string").Value;
 			bool remove = param.GetParam<int>("Mode").Value == 0;
 			bool matchCase = param.GetParam<bool>("Match case").Value;
@@ -52,7 +56,7 @@ namespace PerseusPluginLib.Filter{
 					valids.Add(i);
 				}
 			}
-			PerseusPluginUtils.FilterRows(mdata, param, valids.ToArray());
+			PerseusPluginUtils.FilterRowsNew(mdata, param, valids.ToArray());
 		}
 
 		private static bool Matches(string text, string searchString, bool matchCase, bool matchWholeWord){
@@ -100,7 +104,7 @@ namespace PerseusPluginLib.Filter{
                             "all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen.",
                         Value = 0
                     },
-                    PerseusPluginUtils.CreateFilterModeParam(true)
+                    PerseusPluginUtils.CreateFilterModeParamNew(true)
                 );
 		}
 	}

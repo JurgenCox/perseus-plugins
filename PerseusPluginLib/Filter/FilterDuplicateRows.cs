@@ -54,13 +54,17 @@ namespace PerseusPluginLib.Filter{
                 {
                     Values = mdata.MultiNumericColumnNames
                 },
-                PerseusPluginUtils.CreateFilterModeParam(true));
+                PerseusPluginUtils.CreateFilterModeParamNew(true));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo)
 		{
-		    var mainSubset = param.GetParam<int[]>("Main").Value;
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
+            }
+            var mainSubset = param.GetParam<int[]>("Main").Value;
 		    var mainColumns = mainSubset.Select(mdata.Values.GetColumn).ToArray();
 		    var numericSubset = param.GetParam<int[]>("Numeric").Value;
 		    var numericColumns = ArrayUtils.SubList(mdata.NumericColumns, numericSubset);
@@ -85,7 +89,7 @@ namespace PerseusPluginLib.Filter{
 		        }
             }
 
-            PerseusPluginUtils.FilterRows(mdata, param, rows.Values.ToArray());
+            PerseusPluginUtils.FilterRowsNew(mdata, param, rows.Values.ToArray());
 		}
 	}
 }

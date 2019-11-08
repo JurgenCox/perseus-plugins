@@ -48,10 +48,14 @@ namespace PerseusPluginLib.Filter{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			const bool rows = true;
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
+            }
+            const bool rows = true;
 			int minValids = PerseusPluginUtils.GetMinValids(param, out bool percentage);
 			ParameterWithSubParams<int> modeParam = param.GetParamWithSubParams<int>("Mode");
-			int modeInd = modeParam.Value;
+            int modeInd = modeParam.Value;
 			if (modeInd != 0 && mdata.CategoryRowNames.Count == 0){
 				processInfo.ErrString = "No grouping is defined.";
 				return;
@@ -64,7 +68,7 @@ namespace PerseusPluginLib.Filter{
 			} else{
 				PerseusPluginUtils.NonzeroFilter1(rows, minValids, percentage, mdata, param, threshold, threshold2, filterMode);
 			}
-		}
+        }
 
 		private static void NonzeroFilterGroup(int minValids, bool percentage, IMatrixData mdata, Parameters param,
 			bool oneGroup, double threshold, double threshold2, FilteringMode filterMode, IList<string[]> groupCol){
@@ -97,7 +101,7 @@ namespace PerseusPluginLib.Filter{
 					valids.Add(i);
 				}
 			}
-			PerseusPluginUtils.FilterRows(mdata, param, valids.ToArray());
+			PerseusPluginUtils.FilterRowsNew(mdata, param, valids.ToArray());
 		}
 
 		private static int[][] CalcGroupInds(string[] groupVals, IList<string[]> groupCol){
@@ -122,7 +126,7 @@ namespace PerseusPluginLib.Filter{
 					},
 					ParamNameWidth = 50,
 					TotalWidth = 731
-				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParam(false));
+				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParamNew(false));
 		}
 	}
 }

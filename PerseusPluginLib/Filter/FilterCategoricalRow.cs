@@ -58,7 +58,7 @@ namespace PerseusPluginLib.Filter{
 					Help =
 						"If 'Remove matching columns' is selected, rows having the values specified above will be removed while " +
 						"all other rows will be kept. If 'Keep matching columns' is selected, the opposite will happen."
-				}, PerseusPluginUtils.CreateFilterModeParam(false));
+				}, PerseusPluginUtils.CreateFilterModeParamNew(false));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
@@ -75,7 +75,11 @@ namespace PerseusPluginLib.Filter{
 				processInfo.ErrString = "Please select at least one term for filtering.";
 				return;
 			}
-			string[] values = new string[inds.Length];
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
+            }
+            string[] values = new string[inds.Length];
 			string[] v = mdata.GetCategoryRowValuesAt(colInd);
 			for (int i = 0; i < values.Length; i++){
 				values[i] = v[inds[i]];
@@ -96,7 +100,7 @@ namespace PerseusPluginLib.Filter{
 					valids.Add(i);
 				}
 			}
-			PerseusPluginUtils.FilterColumns(mdata, param, valids.ToArray());
+			PerseusPluginUtils.FilterColumnsNew(mdata, param, valids.ToArray());
 		}
 	}
 }
