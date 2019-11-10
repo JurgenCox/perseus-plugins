@@ -51,7 +51,11 @@ namespace PerseusPluginLib.Filter{
 			if (modeInd != 0){
 				//TODO
 			} else{
-				PerseusPluginUtils.NonzeroFilter1(rows, minValids, percentage, mdata, param, threshold, threshold2, filterMode);
+                if (param.GetParam<int>("Filter mode").Value == 2)
+                {
+                    supplTables = new[] { PerseusPluginUtils.NonzeroFilter1Split(rows, minValids, percentage, mdata, param, threshold, threshold2, filterMode) };
+                }
+                PerseusPluginUtils.NonzeroFilter1(rows, minValids, percentage, mdata, param, threshold, threshold2, filterMode);
 			}
 		}
 
@@ -62,7 +66,7 @@ namespace PerseusPluginLib.Filter{
 					SubParams ={new Parameters(new Parameter[0])},
 					ParamNameWidth = 50,
 					TotalWidth = 731
-				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParam(true));
+				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParamNew(true));
 		}
 	}
 }

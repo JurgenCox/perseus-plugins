@@ -60,16 +60,73 @@ namespace PerseusPluginLib.Filter{
 			if (modeInd != 0){
 				int gind = modeParam.GetSubParameters().GetParam<int>("Grouping").Value;
 				string[][] groupCol = mdata.GetCategoryRowAt(gind);
-				NonzeroFilterGroup(minValids, percentage, mdata, param, modeInd == 2, threshold, threshold2, filterMode, groupCol);
+                if (param.GetParam<int>("Filter mode").Value == 2)
+                {
+                    //discarded
+                    List<int> valids = new List<int>();
+                    List<int> notvalids = new List<int>();
+                    string[] groupVals = ArrayUtils.UniqueValuesPreserveOrder(groupCol);
+                    Array.Sort(groupVals);
+                    int[][] groupInds = CalcGroupInds(groupVals, groupCol);
+                    for (int i = 0; i < mdata.RowCount; i++)
+                    {
+                        int[] counts = new int[groupVals.Length];
+                        int[] totals = new int[groupVals.Length];
+                        for (int j = 0; j < groupInds.Length; j++)
+                        {
+                            for (int k = 0; k < groupInds[j].Length; k++)
+                            {
+                                if (groupInds[j][k] >= 0)
+                                {
+                                    totals[groupInds[j][k]]++;
+                                }
+                            }
+                            if (PerseusPluginUtils.IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode))
+                            {
+                                for (int k = 0; k < groupInds[j].Length; k++)
+                                {
+                                    if (groupInds[j][k] >= 0)
+                                    {
+                                        counts[groupInds[j][k]]++;
+                                    }
+                                }
+                            }
+                        }
+                        bool[] groupValid = new bool[counts.Length];
+                        for (int j = 0; j < groupValid.Length; j++)
+                        {
+                            groupValid[j] = PerseusPluginUtils.Valid(counts[j], minValids, percentage, totals[j]);
+                        }
+                        if (modeInd == 2 ? ArrayUtils.Or(groupValid) : ArrayUtils.And(groupValid))
+                        {
+                            valids.Add(i);
+                        }
+                        else
+                        {
+                            notvalids.Add(i);
+                        }
+                    }
+                    supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, notvalids.ToArray()) };
+
+                }
+                NonzeroFilterGroup(minValids, percentage, mdata, param, modeInd == 2, threshold, threshold2, filterMode, groupCol) ;
 			} else{
-				PerseusPluginUtils.NonzeroFilter1(rows, minValids, percentage, mdata, param, threshold, threshold2, filterMode);
-			}
+                if (param.GetParam<int>("Filter mode").Value == 2)
+                {
+                    supplTables = new[] { PerseusPluginUtils.NonzeroFilter1Split(rows, minValids, percentage, mdata, param, threshold, threshold2, filterMode) };
+                }
+                    PerseusPluginUtils.NonzeroFilter1(rows, minValids, percentage, mdata, param, threshold, threshold2, filterMode);
+			
+            }
         }
 
 		private static void NonzeroFilterGroup(int minValids, bool percentage, IMatrixData mdata, Parameters param,
-			bool oneGroup, double threshold, double threshold2, FilteringMode filterMode, IList<string[]> groupCol){
+			bool oneGroup, double threshold, double threshold2, FilteringMode filterMode, IList<string[]> groupCol
+            )
+        {
 			List<int> valids = new List<int>();
-			string[] groupVals = ArrayUtils.UniqueValuesPreserveOrder(groupCol);
+            List<int> notvalids = new List<int>();
+            string[] groupVals = ArrayUtils.UniqueValuesPreserveOrder(groupCol);
 			Array.Sort(groupVals);
 			int[][] groupInds = CalcGroupInds(groupVals, groupCol);
 			for (int i = 0; i < mdata.RowCount; i++){
@@ -95,7 +152,10 @@ namespace PerseusPluginLib.Filter{
 				}
 				if (oneGroup ? ArrayUtils.Or(groupValid) : ArrayUtils.And(groupValid)){
 					valids.Add(i);
-				}
+				} else
+                {
+                    notvalids.Add(i);
+                }
 			}
 			PerseusPluginUtils.FilterRowsNew(mdata, param, valids.ToArray());
 		}
@@ -122,7 +182,7 @@ namespace PerseusPluginLib.Filter{
 					},
 					ParamNameWidth = 50,
 					TotalWidth = 731
-				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParam(false));
+				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParamNew(false));
 		}
 	}
 }

@@ -83,16 +83,26 @@ namespace PerseusPluginLib.Filter{
 		        if (!rows.ContainsKey(row))
 		        {
 		            rows[row] = i;
-		        } else
-                {
-                    discardrows[row] = i;
-                }
+		        } 
             }
 
             PerseusPluginUtils.FilterRowsNew(mdata, param, rows.Values.ToArray());
             if (param.GetParam<int>("Filter mode").Value == 2)
             {
-                supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, discardrows.Values.ToArray()) };
+                for (int j = 0; j < mdata.RowCount; j++)
+                {
+                    int i = j;
+                    var row = string.Join("\t", mainColumns.Select(col => $"{col[i]}")
+                        .Concat(numericColumns.Select(col => $"{col[i]}"))
+                        .Concat(stringColumns.Select(col => $"{col[i]}"))
+                        .Concat(categoryColumns.Select(col => string.Join(";", col[i])))
+                        .Concat(multiNumericColumns.Select(col => string.Join(";", col[i].Select(d => $"{d}")))));
+                    if (rows.ContainsKey(row))
+                    {
+                        discardrows[row] = j;
+                    }
+                }
+                    supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, discardrows.Values.ToArray()) };
             }
         }
 	}

@@ -14,16 +14,16 @@ using PerseusPluginLib.Filter;
 
 namespace PerseusPluginLib.Utils {
     public static class PerseusPluginUtils {
-		/// <summary>
-		/// Create 'Filter mode' parameter. To unpack the value see <see cref="UnpackFilterModeParam"/>.
-		/// </summary>
-		/// <param name="column"></param>
-		/// <returns></returns>
-		public static SingleChoiceParam CreateFilterModeParam(bool column) {
-			return new SingleChoiceParam("Filter mode") {
-				Values = new[] {"Reduce matrix", column ? "Add categorical column" : "Add categorical row"}
-			};
-		}
+        /// <summary>
+        /// Create 'Filter mode' parameter. To unpack the value see <see cref="UnpackFilterModeParam"/>.
+        /// </summary>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public static SingleChoiceParam CreateFilterModeParam(bool column) {
+            return new SingleChoiceParam("Filter mode") {
+                Values = new[] { "Reduce matrix", column ? "Add categorical column" : "Add categorical row" }
+            };
+        }
 
         public static SingleChoiceParam CreateFilterModeParamNew(bool column)
         {
@@ -37,59 +37,59 @@ namespace PerseusPluginLib.Utils {
         /// Filter mode used 
         /// </summary>
         public enum FilterMode {
-			Reduce,
-			Mark,
-			Split
-		}
+            Reduce,
+            Mark,
+            Split
+        }
 
-		/// <summary>
-		/// Unpack a filter mode param. To create the parameter see <see cref="CreateFilterModeParam"/>.
-		/// </summary>
-		/// <param name="parameters"></param>
-		/// <returns></returns>
-		public static FilterMode UnpackFilterModeParam(Parameters parameters) {
-			return parameters.GetParam<int>("Filter mode").Value == 0 ? FilterMode.Reduce : FilterMode.Mark;
-		}
+        /// <summary>
+        /// Unpack a filter mode param. To create the parameter see <see cref="CreateFilterModeParam"/>.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <returns></returns>
+        public static FilterMode UnpackFilterModeParam(Parameters parameters) {
+            return parameters.GetParam<int>("Filter mode").Value == 0 ? FilterMode.Reduce : FilterMode.Mark;
+        }
 
-		/// <summary>
-		/// Reduce 'Mode' param with options for 'Remove matching rows' and 'Keep matching rows'.
-		/// </summary>
-		/// <returns></returns>
-		private static SingleChoiceParam GetReduceModeParam() {
-			return new SingleChoiceParam("Mode") {
-				Values = new[] {"Remove matching rows", "Keep matching rows"},
-				Help =
-					"If 'Remove matching rows' is selected, rows having the value specified above will be removed while " +
-					"all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen."
-			};
-		}
+        /// <summary>
+        /// Reduce 'Mode' param with options for 'Remove matching rows' and 'Keep matching rows'.
+        /// </summary>
+        /// <returns></returns>
+        private static SingleChoiceParam GetReduceModeParam() {
+            return new SingleChoiceParam("Mode") {
+                Values = new[] { "Remove matching rows", "Keep matching rows" },
+                Help =
+                    "If 'Remove matching rows' is selected, rows having the value specified above will be removed while " +
+                    "all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen."
+            };
+        }
 
-		/// <summary>
-		/// Mark 'Mode' param with options for 'Mark matching rows' and 'Mark non-matching rows'.
-		/// </summary>
-		/// <returns></returns>
-		private static SingleChoiceParam GetMarkModeParam() {
-			return new SingleChoiceParam("Mode") {
-				Values = new[] {"Mark matching rows", "Mark non-matching rows"},
-				Help =
-					"If 'Mark matching rows' is selected, rows having the value specified above will be indicated with a '+' in the output column. " +
-					"If 'Mark non-matching rows' is selected, the opposite will happen."
-			};
-		}
+        /// <summary>
+        /// Mark 'Mode' param with options for 'Mark matching rows' and 'Mark non-matching rows'.
+        /// </summary>
+        /// <returns></returns>
+        private static SingleChoiceParam GetMarkModeParam() {
+            return new SingleChoiceParam("Mode") {
+                Values = new[] { "Mark matching rows", "Mark non-matching rows" },
+                Help =
+                    "If 'Mark matching rows' is selected, rows having the value specified above will be indicated with a '+' in the output column. " +
+                    "If 'Mark non-matching rows' is selected, the opposite will happen."
+            };
+        }
 
-		/// <summary>
-		/// 'Filter mode' parameter with reduce, mark and split options.
-		/// </summary>
-		/// <returns></returns>
-		internal static SingleChoiceWithSubParams GetFilterModeParamNew() {
-			SingleChoiceWithSubParams p = new SingleChoiceWithSubParams("Filter mode") {
-				Values = new[] {"Reduce matrix", "Add categorical column", "Split Matrix" },
-				SubParams = new List<Parameters>(new[] {
-					new Parameters(GetReduceModeParam()), new Parameters(GetMarkModeParam()), new Parameters(GetReduceModeParam())
-				})
-			};
-			return p;
-		}
+        /// <summary>
+        /// 'Filter mode' parameter with reduce, mark and split options.
+        /// </summary>
+        /// <returns></returns>
+        internal static SingleChoiceWithSubParams GetFilterModeParamNew() {
+            SingleChoiceWithSubParams p = new SingleChoiceWithSubParams("Filter mode") {
+                Values = new[] { "Reduce matrix", "Add categorical column", "Split Matrix" },
+                SubParams = new List<Parameters>(new[] {
+                    new Parameters(GetReduceModeParam()), new Parameters(GetMarkModeParam()), new Parameters(GetReduceModeParam())
+                })
+            };
+            return p;
+        }
 
 
         public static void FilterRows(IMatrixData mdata, Parameters parameters, int[] rows)
@@ -113,22 +113,22 @@ namespace PerseusPluginLib.Utils {
         }
 
         public static void FilterRowsNew(IMatrixData mdata, Parameters parameters, int[] rows) {
-			bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
-			if (parameters.GetParam<int>("Filter mode").Value == 0) {
-				mdata.ExtractRows(rows);
-			} else if (parameters.GetParam<int>("Filter mode").Value == 1)
+            bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
+            if (parameters.GetParam<int>("Filter mode").Value == 0) {
+                mdata.ExtractRows(rows);
+            } else if (parameters.GetParam<int>("Filter mode").Value == 1)
             {
-				Array.Sort(rows);
-				string[][] col = new string[mdata.RowCount][];
-				for (int i = 0; i < col.Length; i++) {
-					bool contains = Array.BinarySearch(rows, i) >= 0;
-					col[i] = contains ? new[] {"Keep"} : new[] {"Discard"};
-				}
-				mdata.AddCategoryColumn("Filter", "", col);
-			}
+                Array.Sort(rows);
+                string[][] col = new string[mdata.RowCount][];
+                for (int i = 0; i < col.Length; i++) {
+                    bool contains = Array.BinarySearch(rows, i) >= 0;
+                    col[i] = contains ? new[] { "Keep" } : new[] { "Discard" };
+                }
+                mdata.AddCategoryColumn("Filter", "", col);
+            }
             else if (parameters.GetParam<int>("Filter mode").Value == 2)
             {
-                mdata.ExtractRows(rows);               
+                mdata.ExtractRows(rows);
             }
         }
 
@@ -141,8 +141,14 @@ namespace PerseusPluginLib.Utils {
         public static IMatrixData CreateSupplTabSplit(IMatrixData mdata, int[] rows)
         {
             IMatrixData supplTab = (IMatrixData)mdata.Clone();
-            supplTab.AltName = "Discard";
             supplTab.ExtractRows(rows);
+            return supplTab;
+        }
+
+        public static IMatrixData CreateSupplTabSplitColumns(IMatrixData mdata, int[] rows)
+        {
+            IMatrixData supplTab = (IMatrixData)mdata.Clone();
+            supplTab.ExtractColumns(rows);
             return supplTab;
         }
 
@@ -151,7 +157,7 @@ namespace PerseusPluginLib.Utils {
             bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
             if (parameters.GetParam<int>("Filter mode").Value == 0)
             {
-                
+
                 mdata.ExtractColumns(cols);
             }
             else if (parameters.GetParam<int>("Filter mode").Value == 1)
@@ -172,156 +178,228 @@ namespace PerseusPluginLib.Utils {
         }
 
         public static void FilterColumns(IMatrixData mdata, Parameters parameters, int[] cols) {
-			bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
-			if (reduceMatrix) {
-				mdata.ExtractColumns(cols);
-			} else {
-				Array.Sort(cols);
-				string[][] row = new string[mdata.ColumnCount][];
-				for (int i = 0; i < row.Length; i++) {
-					bool contains = Array.BinarySearch(cols, i) >= 0;
-					row[i] = contains ? new[] {"Keep"} : new[] {"Discard"};
-				}
-				mdata.AddCategoryRow("Filter", "", row);
-			}
-		}
+            bool reduceMatrix = UnpackFilterModeParam(parameters) == FilterMode.Reduce;
+            if (reduceMatrix) {
+                mdata.ExtractColumns(cols);
+            } else {
+                Array.Sort(cols);
+                string[][] row = new string[mdata.ColumnCount][];
+                for (int i = 0; i < row.Length; i++) {
+                    bool contains = Array.BinarySearch(cols, i) >= 0;
+                    row[i] = contains ? new[] { "Keep" } : new[] { "Discard" };
+                }
+                mdata.AddCategoryRow("Filter", "", row);
+            }
+        }
 
-		internal static void ReadValuesShouldBeParams(Parameters param, out FilteringMode filterMode,
-			out double threshold, out double threshold2) {
-			ParameterWithSubParams<int> x = param.GetParamWithSubParams<int>("Values should be");
-			Parameters subParams = x.GetSubParameters();
-			int shouldBeIndex = x.Value;
-			threshold = double.NaN;
-			threshold2 = double.NaN;
-			switch (shouldBeIndex) {
-				case 0:
-					filterMode = FilteringMode.Valid;
-					break;
-				case 1:
-					filterMode = FilteringMode.GreaterThan;
-					threshold = subParams.GetParam<double>("Minimum").Value;
-					break;
-				case 2:
-					filterMode = FilteringMode.GreaterEqualThan;
-					threshold = subParams.GetParam<double>("Minimum").Value;
-					break;
-				case 3:
-					filterMode = FilteringMode.LessThan;
-					threshold = subParams.GetParam<double>("Maximum").Value;
-					break;
-				case 4:
-					filterMode = FilteringMode.LessEqualThan;
-					threshold = subParams.GetParam<double>("Maximum").Value;
-					break;
-				case 5:
-					filterMode = FilteringMode.Between;
-					threshold = subParams.GetParam<double>("Minimum").Value;
-					threshold2 = subParams.GetParam<double>("Maximum").Value;
-					break;
-				case 6:
-					filterMode = FilteringMode.Outside;
-					threshold = subParams.GetParam<double>("Minimum").Value;
-					threshold2 = subParams.GetParam<double>("Maximum").Value;
-					break;
-				default:
-					throw new Exception("Should not happen.");
-			}
-		}
+        internal static void ReadValuesShouldBeParams(Parameters param, out FilteringMode filterMode,
+            out double threshold, out double threshold2) {
+            ParameterWithSubParams<int> x = param.GetParamWithSubParams<int>("Values should be");
+            Parameters subParams = x.GetSubParameters();
+            int shouldBeIndex = x.Value;
+            threshold = double.NaN;
+            threshold2 = double.NaN;
+            switch (shouldBeIndex) {
+                case 0:
+                    filterMode = FilteringMode.Valid;
+                    break;
+                case 1:
+                    filterMode = FilteringMode.GreaterThan;
+                    threshold = subParams.GetParam<double>("Minimum").Value;
+                    break;
+                case 2:
+                    filterMode = FilteringMode.GreaterEqualThan;
+                    threshold = subParams.GetParam<double>("Minimum").Value;
+                    break;
+                case 3:
+                    filterMode = FilteringMode.LessThan;
+                    threshold = subParams.GetParam<double>("Maximum").Value;
+                    break;
+                case 4:
+                    filterMode = FilteringMode.LessEqualThan;
+                    threshold = subParams.GetParam<double>("Maximum").Value;
+                    break;
+                case 5:
+                    filterMode = FilteringMode.Between;
+                    threshold = subParams.GetParam<double>("Minimum").Value;
+                    threshold2 = subParams.GetParam<double>("Maximum").Value;
+                    break;
+                case 6:
+                    filterMode = FilteringMode.Outside;
+                    threshold = subParams.GetParam<double>("Minimum").Value;
+                    threshold2 = subParams.GetParam<double>("Maximum").Value;
+                    break;
+                default:
+                    throw new Exception("Should not happen.");
+            }
+        }
 
-		public static SingleChoiceWithSubParams GetValuesShouldBeParam() {
-			return new SingleChoiceWithSubParams("Values should be") {
-				Values =
-					new[] {
-						"Valid", "Greater than", "Greater or equal", "Less than", "Less or equal", "Between", "Outside"
-					},
-				SubParams = new[] {
-					new Parameters(new Parameter[0]),
-					new Parameters(new Parameter[] {
-						new DoubleParam("Minimum", 0) {Help = "Value defining which entry is counted as a valid value."}
-					}),
-					new Parameters(new Parameter[] {
-						new DoubleParam("Minimum", 0) {Help = "Value defining which entry is counted as a valid value."}
-					}),
-					new Parameters(new Parameter[] {
-						new DoubleParam("Maximum", 0) {Help = "Value defining which entry is counted as a valid value."}
-					}),
-					new Parameters(new Parameter[] {
-						new DoubleParam("Maximum", 0) {Help = "Value defining which entry is counted as a valid value."}
-					}),
-					new Parameters(
-						new DoubleParam("Minimum", 0) {
-							Help = "Value defining which entry is counted as a valid value."
-						},
-						new DoubleParam("Maximum", 0) {
-							Help = "Value defining which entry is counted as a valid value."
-						}),
-					new Parameters(
-						new DoubleParam("Minimum", 0) {
-							Help = "Value defining which entry is counted as a valid value."
-						},
-						new DoubleParam("Maximum", 0) {
-							Help = "Value defining which entry is counted as a valid value."
-						})
-				},
-				ParamNameWidth = 50,
-				TotalWidth = 731
-			};
-		}
+        public static SingleChoiceWithSubParams GetValuesShouldBeParam() {
+            return new SingleChoiceWithSubParams("Values should be") {
+                Values =
+                    new[] {
+                        "Valid", "Greater than", "Greater or equal", "Less than", "Less or equal", "Between", "Outside"
+                    },
+                SubParams = new[] {
+                    new Parameters(new Parameter[0]),
+                    new Parameters(new Parameter[] {
+                        new DoubleParam("Minimum", 0) {Help = "Value defining which entry is counted as a valid value."}
+                    }),
+                    new Parameters(new Parameter[] {
+                        new DoubleParam("Minimum", 0) {Help = "Value defining which entry is counted as a valid value."}
+                    }),
+                    new Parameters(new Parameter[] {
+                        new DoubleParam("Maximum", 0) {Help = "Value defining which entry is counted as a valid value."}
+                    }),
+                    new Parameters(new Parameter[] {
+                        new DoubleParam("Maximum", 0) {Help = "Value defining which entry is counted as a valid value."}
+                    }),
+                    new Parameters(
+                        new DoubleParam("Minimum", 0) {
+                            Help = "Value defining which entry is counted as a valid value."
+                        },
+                        new DoubleParam("Maximum", 0) {
+                            Help = "Value defining which entry is counted as a valid value."
+                        }),
+                    new Parameters(
+                        new DoubleParam("Minimum", 0) {
+                            Help = "Value defining which entry is counted as a valid value."
+                        },
+                        new DoubleParam("Maximum", 0) {
+                            Help = "Value defining which entry is counted as a valid value."
+                        })
+                },
+                ParamNameWidth = 50,
+                TotalWidth = 731
+            };
+        }
 
-		internal static bool IsValid(double data, double threshold, double threshold2, FilteringMode filterMode) {
-			switch (filterMode) {
-				case FilteringMode.Valid:
-					return !double.IsNaN(data) && !double.IsNaN(data);
-				case FilteringMode.GreaterThan:
-					return data > threshold;
-				case FilteringMode.GreaterEqualThan:
-					return data >= threshold;
-				case FilteringMode.LessThan:
-					return data < threshold;
-				case FilteringMode.LessEqualThan:
-					return data <= threshold;
-				case FilteringMode.Between:
-					return data >= threshold && data <= threshold2;
-				case FilteringMode.Outside:
-					return data < threshold || data > threshold2;
-			}
-			throw new Exception("Never get here.");
-		}
+        internal static bool IsValid(double data, double threshold, double threshold2, FilteringMode filterMode) {
+            switch (filterMode) {
+                case FilteringMode.Valid:
+                    return !double.IsNaN(data) && !double.IsNaN(data);
+                case FilteringMode.GreaterThan:
+                    return data > threshold;
+                case FilteringMode.GreaterEqualThan:
+                    return data >= threshold;
+                case FilteringMode.LessThan:
+                    return data < threshold;
+                case FilteringMode.LessEqualThan:
+                    return data <= threshold;
+                case FilteringMode.Between:
+                    return data >= threshold && data <= threshold2;
+                case FilteringMode.Outside:
+                    return data < threshold || data > threshold2;
+            }
+            throw new Exception("Never get here.");
+        }
 
-		internal static void NonzeroFilter1(bool rows, int minValids, bool percentage, IMatrixData mdata,
-			Parameters param, double threshold, double threshold2, FilteringMode filterMode) {
-			if (rows) {
-				List<int> valids = new List<int>();
-				for (int i = 0; i < mdata.RowCount; i++) {
-					int count = 0;
-					for (int j = 0; j < mdata.ColumnCount; j++) {
-						if (IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)) {
-							count++;
-						}
-					}
-					if (Valid(count, minValids, percentage, mdata.ColumnCount)) {
-						valids.Add(i);
-					}
-				}
-				FilterRowsNew(mdata, param, valids.ToArray());
-			} else {
-				List<int> valids = new List<int>();
-				for (int j = 0; j < mdata.ColumnCount; j++) {
-					int count = 0;
-					for (int i = 0; i < mdata.RowCount; i++) {
-						if (IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)) {
-							count++;
-						}
-					}
-					if (Valid(count, minValids, percentage, mdata.RowCount)) {
-						valids.Add(j);
-					}
-				}
-				FilterColumnsNew(mdata, param, valids.ToArray());
-			}
-		}
+        internal static void NonzeroFilter1(bool rows, int minValids, bool percentage, IMatrixData mdata,
+            Parameters param, double threshold, double threshold2, FilteringMode filterMode) {
+            if (rows) {
+                List<int> valids = new List<int>();
+                for (int i = 0; i < mdata.RowCount; i++) {
+                    int count = 0;
+                    for (int j = 0; j < mdata.ColumnCount; j++) {
+                        if (IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)) {
+                            count++;
+                        }
+                    }
+                    if (Valid(count, minValids, percentage, mdata.ColumnCount)) {
+                        valids.Add(i);
+                    }
+                }
+                FilterRowsNew(mdata, param, valids.ToArray());
+            } else {
+                List<int> valids = new List<int>();
+                for (int j = 0; j < mdata.ColumnCount; j++) {
+                    int count = 0;
+                    for (int i = 0; i < mdata.RowCount; i++) {
+                        if (IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)) {
+                            count++;
+                        }
+                    }
+                    if (Valid(count, minValids, percentage, mdata.RowCount)) {
+                        valids.Add(j);
+                    }
+                    //TO DO
 
-		internal static bool Valid(int count, int minValids, bool percentage, int total) {
+                }
+                FilterColumnsNew(mdata, param, valids.ToArray());
+            }
+        }
+
+        public static IMatrixData CreateSupplTabSplitValids(IMatrixData mdata, int[] rows)
+        {
+            IMatrixData supplTab = (IMatrixData)mdata.Clone();
+            supplTab.ExtractRows(rows);
+            return supplTab;
+        }
+
+
+        internal static IMatrixData NonzeroFilter1Split(bool rows, int minValids, bool percentage, IMatrixData mdata,
+            Parameters param, double threshold, double threshold2, FilteringMode filterMode)
+        {
+            if (rows)
+            {
+                IMatrixData supplTab = (IMatrixData)mdata.Clone();
+                List<int> valids = new List<int>();
+                List<int> notvalids = new List<int>();
+                for (int i = 0; i < mdata.RowCount; i++)
+                {
+                    int count = 0;
+                    for (int j = 0; j < mdata.ColumnCount; j++)
+                    {
+                        if ((IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode)))
+                        {
+                            count++;
+                        }
+                    }
+                    if ((Valid(count, minValids, percentage, mdata.ColumnCount)))
+                    {
+                        valids.Add(i);
+                    }
+                    else
+                    {
+                        notvalids.Add(i);
+                    }
+                }
+              //  FilterRowsNew(mdata, param, valids.ToArray());
+                supplTab.ExtractRows(notvalids.ToArray());
+                return supplTab;
+            }
+            else
+            {
+                IMatrixData supplTab = (IMatrixData)mdata.Clone();
+                List<int> valids = new List<int>();
+                List<int> notvalids = new List<int>();
+                for (int j = 0; j < mdata.ColumnCount; j++)
+                {
+                    int count = 0;
+                    for (int i = 0; i < mdata.RowCount; i++)
+                    {
+                        if (IsValid(mdata.Values.Get(i, j), threshold, threshold2, filterMode))
+                        {
+                            count++;
+                        }
+                    }
+                    if (Valid(count, minValids, percentage, mdata.RowCount))
+                    {
+                        valids.Add(j);
+                    }
+                    else
+                    {
+                        notvalids.Add(j);
+                    }
+
+                }
+                supplTab.ExtractColumns(notvalids.ToArray());
+               // FilterColumnsNew(mdata, param, valids.ToArray());
+                return supplTab;
+            }
+        }
+
+        internal static bool Valid(int count, int minValids, bool percentage, int total) {
 			if (percentage) {
 				return count * 100 >= minValids * total;
 			}

@@ -60,7 +60,7 @@ namespace PerseusPluginLib.Filter{
                 {
                     valids.Add(i);
                 }
-                else if (!remove)
+                else 
                 {
                     notvalids.Add(i);
                 }
@@ -120,7 +120,7 @@ namespace PerseusPluginLib.Filter{
                             "all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen.",
                         Value = 0
                     },
-                    PerseusPluginUtils.CreateFilterModeParam(true)
+                    PerseusPluginUtils.CreateFilterModeParamNew(true)
                 );
 		}
 	}
