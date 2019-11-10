@@ -9,10 +9,11 @@ using BaseLibS.Num;
 using BaseLibS.Param;
 using PerseusApi.Matrix;
 using PerseusApi.Utils;
+using PerseusLibS.Workflow;
 using PerseusPluginLib.Filter;
 
 namespace PerseusPluginLib.Utils {
-	public static class PerseusPluginUtils {
+    public static class PerseusPluginUtils {
 		/// <summary>
 		/// Create 'Filter mode' parameter. To unpack the value see <see cref="UnpackFilterModeParam"/>.
 		/// </summary>
@@ -28,7 +29,7 @@ namespace PerseusPluginLib.Utils {
         {
             return new SingleChoiceParam("Filter mode")
             {
-                Values = new[] { "Reduce matrix", column ? "Add categorical column" : "Add categorical row", "Split Matrix (Original Matrix and Matrix Reduced)" }
+                Values = new[] { "Reduce matrix", column ? "Add categorical column" : "Add categorical row", "Split Matrix" }
             };
         }
 
@@ -82,13 +83,14 @@ namespace PerseusPluginLib.Utils {
 		/// <returns></returns>
 		internal static SingleChoiceWithSubParams GetFilterModeParamNew() {
 			SingleChoiceWithSubParams p = new SingleChoiceWithSubParams("Filter mode") {
-				Values = new[] {"Reduce matrix", "Add categorical column", "Split Matrix (Original Matrix and Matrix Reduced)" },
+				Values = new[] {"Reduce matrix", "Add categorical column", "Split Matrix" },
 				SubParams = new List<Parameters>(new[] {
 					new Parameters(GetReduceModeParam()), new Parameters(GetMarkModeParam()), new Parameters(GetReduceModeParam())
 				})
 			};
 			return p;
 		}
+
 
         public static void FilterRows(IMatrixData mdata, Parameters parameters, int[] rows)
         {
@@ -133,7 +135,14 @@ namespace PerseusPluginLib.Utils {
         public static IMatrixData CreateSupplTab(IMatrixData mdata)
         {
             IMatrixData supplTab = (IMatrixData)mdata.Clone();
+            return supplTab;
+        }
 
+        public static IMatrixData CreateSupplTabSplit(IMatrixData mdata, int[] rows)
+        {
+            IMatrixData supplTab = (IMatrixData)mdata.Clone();
+            supplTab.AltName = "Discard";
+            supplTab.ExtractRows(rows);
             return supplTab;
         }
 

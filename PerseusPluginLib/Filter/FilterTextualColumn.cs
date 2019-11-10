@@ -48,15 +48,31 @@ namespace PerseusPluginLib.Filter{
 			}
 			string[] vals = mdata.StringColumns[colInd];
 			List<int> valids = new List<int>();
-			for (int i = 0; i < vals.Length; i++){
-				bool matches = Matches(vals[i], searchString, matchCase, matchWholeWord);
-				if (matches && !remove){
-					valids.Add(i);
-				} else if (!matches && remove){
-					valids.Add(i);
-				}
-			}
-			PerseusPluginUtils.FilterRowsNew(mdata, param, valids.ToArray());
+            List<int> notvalids = new List<int>();
+            for (int i = 0; i < vals.Length; i++)
+            {
+                bool matches = Matches(vals[i], searchString, matchCase, matchWholeWord);
+                if (matches && !remove)
+                {
+                    valids.Add(i);
+                }
+                else if (!matches && remove)
+                {
+                    valids.Add(i);
+                }
+                else if (!remove)
+                {
+                    notvalids.Add(i);
+                }
+            }
+
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, notvalids.ToArray()) };
+
+            }
+            PerseusPluginUtils.FilterRowsNew(mdata, param, valids.ToArray());
 		}
 
 		private static bool Matches(string text, string searchString, bool matchCase, bool matchWholeWord){
@@ -104,7 +120,7 @@ namespace PerseusPluginLib.Filter{
                             "all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen.",
                         Value = 0
                     },
-                    PerseusPluginUtils.CreateFilterModeParamNew(true)
+                    PerseusPluginUtils.CreateFilterModeParam(true)
                 );
 		}
 	}

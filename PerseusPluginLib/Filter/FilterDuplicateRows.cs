@@ -54,16 +54,12 @@ namespace PerseusPluginLib.Filter{
                 {
                     Values = mdata.MultiNumericColumnNames
                 },
-                PerseusPluginUtils.CreateFilterModeParamNew(true));
+                PerseusPluginUtils.CreateFilterModeParam(true));
 		}
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo)
 		{
-            if (param.GetParam<int>("Filter mode").Value == 2)
-            {
-                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
-            }
             var mainSubset = param.GetParam<int[]>("Main").Value;
 		    var mainColumns = mainSubset.Select(mdata.Values.GetColumn).ToArray();
 		    var numericSubset = param.GetParam<int[]>("Numeric").Value;
@@ -75,7 +71,8 @@ namespace PerseusPluginLib.Filter{
 		    var multiNumericSubset = param.GetParam<int[]>("MultiNumeric").Value;
 		    var multiNumericColumns = ArrayUtils.SubList(mdata.MultiNumericColumns, multiNumericSubset);
 		    var rows = new Dictionary<string, int>();
-		    for (int j = 0; j < mdata.RowCount; j++)
+            var discardrows = new Dictionary<string, int>();
+            for (int j = 0; j < mdata.RowCount; j++)
 		    {
 		        int i = j;
 		        var row = string.Join("\t", mainColumns.Select(col => $"{col[i]}")
@@ -86,10 +83,17 @@ namespace PerseusPluginLib.Filter{
 		        if (!rows.ContainsKey(row))
 		        {
 		            rows[row] = i;
-		        }
+		        } else
+                {
+                    discardrows[row] = i;
+                }
             }
 
             PerseusPluginUtils.FilterRowsNew(mdata, param, rows.Values.ToArray());
-		}
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, discardrows.Values.ToArray()) };
+            }
+        }
 	}
 }

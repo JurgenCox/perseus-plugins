@@ -35,7 +35,7 @@ namespace PerseusPluginLib.Filter{
 			string[] selection = ArrayUtils.Concat(mdata.NumericColumnNames, mdata.ColumnNames);
 			return
 				new Parameters(ArrayUtils.Concat(PerseusUtils.GetNumFilterParams(selection),
-					PerseusPluginUtils.CreateFilterModeParamNew(true)));
+					PerseusPluginUtils.CreateFilterModeParam(true)));
 		}
 
 		public int GetMaxThreads(Parameters parameters){
@@ -53,8 +53,12 @@ namespace PerseusPluginLib.Filter{
 				processInfo.ErrString = errString;
 				return;
 			}
-			PerseusPluginUtils.FilterRowsNew(mdata, param, GetValids(mdata, colInds, relations, and));
-		}
+            PerseusPluginUtils.FilterRowsNew(mdata, param, GetValids(mdata, colInds, relations, and));
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, GetNotValids(mdata, colInds, relations, and)) };
+            }
+        }
 
 		private static int[] GetValids(IMatrixData mdata, int[] colInds, Relation[] relations, bool and){
 			double[][] rows = GetRows(mdata, colInds);
@@ -63,12 +67,27 @@ namespace PerseusPluginLib.Filter{
 				bool valid = PerseusUtils.IsValidRowNumFilter(rows[i], relations, and);
 				if (valid){
 					valids.Add(i);
-				}
+				}  
 			}
 			return valids.ToArray();
 		}
 
-		private static double[][] GetRows(IMatrixData mdata, int[] colInds){
+        private static int[] GetNotValids(IMatrixData mdata, int[] colInds, Relation[] relations, bool and)
+        {
+            double[][] rows = GetRows(mdata, colInds);
+            List<int> valids = new List<int>();
+            for (int i = 0; i < rows.Length; i++)
+            {
+                bool valid = PerseusUtils.IsValidRowNumFilter(rows[i], relations, and);
+                if (valid)
+                {
+                    valids.Add(i);
+                }
+            }
+            return valids.ToArray();
+        }
+
+        private static double[][] GetRows(IMatrixData mdata, int[] colInds){
 			double[][] cols = new double[colInds.Length][];
 			for (int i = 0; i < cols.Length; i++){
 				cols[i] = colInds[i] < mdata.NumericColumnCount

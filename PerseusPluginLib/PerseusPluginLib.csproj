@@ -46,6 +46,9 @@
     <Reference Include="BaseLibS">
       <HintPath>..\DLLs\BaseLibS.dll</HintPath>
     </Reference>
+    <Reference Include="PerseusLibS, Version=1.6.4.62, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PerseusLibS.1.6.4.62\lib\net472\PerseusLibS.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -198,6 +201,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\missingsButton.Image.png" />
   </ItemGroup>
   <ItemGroup>

@@ -48,10 +48,6 @@ namespace PerseusPluginLib.Filter{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-            if (param.GetParam<int>("Filter mode").Value == 2)
-            {
-                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
-            }
             const bool rows = true;
 			int minValids = PerseusPluginUtils.GetMinValids(param, out bool percentage);
 			ParameterWithSubParams<int> modeParam = param.GetParamWithSubParams<int>("Mode");
@@ -126,7 +122,7 @@ namespace PerseusPluginLib.Filter{
 					},
 					ParamNameWidth = 50,
 					TotalWidth = 731
-				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParamNew(false));
+				}, PerseusPluginUtils.GetValuesShouldBeParam(), PerseusPluginUtils.CreateFilterModeParam(false));
 		}
 	}
 }
