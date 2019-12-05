@@ -22,7 +22,7 @@ namespace PerseusPluginLib.AnnotCols
         public string Description
             =>
                 "Based on a column containing protein (or gene or transcript) identifies this activity adds columns with " +
-                "annotations. These are read from specificially formatted files contained in the folder '\\conf\\annotations' in " +
+                "annotations. These are read from specifically formatted files contained in the folder '\\conf\\annotations' in " +
                 "your Perseus installation. Species-specific annotation files generated from UniProt can be downloaded from " +
                 "the link specified in the menu at the blue box in the upper left corner.";
 

@@ -77,7 +77,7 @@ namespace PerseusPluginLib.Rearrange{
 				new List<string>(), new List<double[][]>());
 			mdata.ColumnNames = colNames;
 			List<string> colDescr = new List<string>();
-			foreach (string s in colNames) {
+			foreach (string _ in colNames) {
 				colDescr.Add("");
 			}
 			mdata.ColumnDescriptions = colDescr;
