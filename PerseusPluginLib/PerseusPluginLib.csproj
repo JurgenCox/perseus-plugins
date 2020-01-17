@@ -87,12 +87,6 @@
     <Compile Include="Load\PerseusLoadMatrixControl.Designer.cs">
       <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Manual\SelectRowsManuallyControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Manual\SelectRowsManuallyControl.Designer.cs">
-      <DependentUpon>SelectRowsManuallyControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Mods\AddKnownSites.cs" />
     <Compile Include="Mods\AddModificationCounts.cs" />
     <Compile Include="Mods\AddRegulatorySites.cs" />
@@ -131,9 +125,6 @@
     <Compile Include="Load\GenericMatrixUpload.cs" />
     <Compile Include="Load\PerseusLoadMatrixParam.cs" />
     <Compile Include="Load\UnstructuredTxtUpload.cs" />
-    <Compile Include="Manual\MatrixDataTable.cs" />
-    <Compile Include="Manual\SelectRowsManually.cs" />
-    <Compile Include="Manual\SelectRowsManuallyResult.cs" />
     <Compile Include="Quality\CreateQualityMatrix.cs" />
     <Compile Include="Rearrange\ChangeColumnType.cs" />
     <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
@@ -190,9 +181,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Load\PerseusLoadMatrixControl.resx">
       <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Manual\SelectRowsManuallyControl.resx">
-      <DependentUpon>SelectRowsManuallyControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
