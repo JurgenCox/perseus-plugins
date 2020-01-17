@@ -50,8 +50,6 @@
       <HintPath>..\packages\PerseusLibS.1.6.4.62\lib\net472\PerseusLibS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -81,12 +79,6 @@
     <Compile Include="Join\ReplaceStrings.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
     <Compile Include="Load\CreateRandomMatrix.cs" />
-    <Compile Include="Load\PerseusLoadMatrixControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Load\PerseusLoadMatrixControl.Designer.cs">
-      <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Mods\AddKnownSites.cs" />
     <Compile Include="Mods\AddModificationCounts.cs" />
     <Compile Include="Mods\AddRegulatorySites.cs" />
@@ -122,8 +114,6 @@
     <Compile Include="Impute\ReplaceMissingByConstant.cs" />
     <Compile Include="Impute\ReplaceMissingFromGaussian.cs" />
     <Compile Include="Load\BinaryUpload.cs" />
-    <Compile Include="Load\GenericMatrixUpload.cs" />
-    <Compile Include="Load\PerseusLoadMatrixParam.cs" />
     <Compile Include="Load\UnstructuredTxtUpload.cs" />
     <Compile Include="Quality\CreateQualityMatrix.cs" />
     <Compile Include="Rearrange\ChangeColumnType.cs" />
@@ -179,9 +169,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Load\PerseusLoadMatrixControl.resx">
-      <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
