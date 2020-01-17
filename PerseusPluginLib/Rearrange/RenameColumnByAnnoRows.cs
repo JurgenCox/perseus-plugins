@@ -8,8 +8,6 @@ using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using System.IO;
 
 namespace PerseusPluginLib.Rearrange
 {
