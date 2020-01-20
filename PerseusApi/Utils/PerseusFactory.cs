@@ -24,21 +24,14 @@ namespace PerseusApi.Utils{
 		/// Create minimally initialized <see cref="IMatrixData"/>.
 		/// </summary>
 		public static IMatrixData CreateMatrixData(double[,] values, List<string> columnNames){
-			IMatrixData mdata = CreateMatrixData();
+			ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Matrix.MatrixData");
+			IMatrixData mdata=(IMatrixData)o.Unwrap();
 			mdata.Values.Set(values);
 			mdata.ColumnNames = columnNames;
 			BoolMatrixIndexer imputed = new BoolMatrixIndexer();
 			imputed.Init(mdata.RowCount, mdata.ColumnCount);
 			mdata.IsImputed = imputed;
 			return mdata;
-		}
-
-		/// <summary>
-		/// Creates an empty default implementation of <see cref="INetworkData"/>.
-		/// </summary>
-		public static INetworkData CreateNetworkData(){
-			ObjectHandle o = Activator.CreateInstance("PerseusLibS", "PerseusLibS.Data.Network.NetworkData");
-			return (INetworkData) o.Unwrap();
 		}
 
 		/// <summary>
