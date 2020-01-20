@@ -1183,5 +1183,17 @@ namespace PerseusApi.Utils{
 			}
 			GC.Collect();
 		}
+
+		/// <summary>
+		/// Create minimally initialized <see cref="IMatrixData"/>.
+		/// </summary>
+		public static IMatrixData CreateMatrixData(IMatrixData mdata, double[,] values, List<string> columnNames){
+			mdata.Values.Set(values);
+			mdata.ColumnNames = columnNames;
+			BoolMatrixIndexer imputed = new BoolMatrixIndexer();
+			imputed.Init(mdata.RowCount, mdata.ColumnCount);
+			mdata.IsImputed = imputed;
+			return mdata;
+		}
 	}
 }

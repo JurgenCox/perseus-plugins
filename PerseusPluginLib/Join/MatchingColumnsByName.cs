@@ -20,8 +20,11 @@ namespace PerseusPluginLib.Join{
 		public bool IsActive => true;
 		public float DisplayRank => -4;
 		public string HelpOutput => "";
-		public string Description => "Two matrices are merged by matching columns by their names. " +
-		                             "The resulting matrix contains the rows of both matrices.";
+
+		public string Description =>
+			"Two matrices are merged by matching columns by their names. " +
+			"The resulting matrix contains the rows of both matrices.";
+
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string[] HelpDocuments => new string[0];
@@ -30,10 +33,8 @@ namespace PerseusPluginLib.Join{
 		public int MaxNumInput => 2;
 		public string Heading => "Basic";
 
-		public string Url
-			=>
-				"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixMultiProcessing:Basic:MatchingColumnsByName"
-			;
+		public string Url =>
+			"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixMultiProcessing:Basic:MatchingColumnsByName";
 
 		public string GetInputName(int index){
 			return index == 0 ? "Base matrix" : "Other matrix";
@@ -91,13 +92,14 @@ namespace PerseusPluginLib.Join{
 		}
 
 		public IMatrixData ProcessData(IMatrixData[] inputData, Parameters param, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo) {
+			ref IDocumentData[] documents, ProcessInfo processInfo){
 			IMatrixData mdata1 = inputData[0];
 			IMatrixData mdata2 = inputData[1];
 			int nrows1 = mdata1.RowCount;
 			int nrows2 = mdata2.RowCount;
 			int nrows = nrows1 + nrows2;
-			string[] expColNames = SpecialSort(mdata1.ColumnNames, mdata2.ColumnNames, out Dictionary<string, int> dic1, out Dictionary<string, int> dic2);
+			string[] expColNames = SpecialSort(mdata1.ColumnNames, mdata2.ColumnNames, out Dictionary<string, int> dic1,
+				out Dictionary<string, int> dic2);
 			double[,] ex = new double[nrows, expColNames.Length];
 			for (int i = 0; i < ex.GetLength(0); i++){
 				for (int j = 0; j < ex.GetLength(1); j++){
@@ -118,7 +120,8 @@ namespace PerseusPluginLib.Join{
 					}
 				}
 			}
-			string[] numColNames = SpecialSort(mdata1.NumericColumnNames, mdata2.NumericColumnNames, out dic1, out dic2);
+			string[] numColNames =
+				SpecialSort(mdata1.NumericColumnNames, mdata2.NumericColumnNames, out dic1, out dic2);
 			List<double[]> numCols = new List<double[]>();
 			for (int i = 0; i < numColNames.Length; i++){
 				numCols.Add(new double[nrows]);
@@ -140,7 +143,8 @@ namespace PerseusPluginLib.Join{
 					}
 				}
 			}
-			string[] stringColNames = SpecialSort(mdata1.StringColumnNames, mdata2.StringColumnNames, out dic1, out dic2);
+			string[] stringColNames =
+				SpecialSort(mdata1.StringColumnNames, mdata2.StringColumnNames, out dic1, out dic2);
 			List<string[]> stringCols = new List<string[]>();
 			for (int i = 0; i < stringColNames.Length; i++){
 				stringCols.Add(new string[nrows]);
@@ -162,7 +166,8 @@ namespace PerseusPluginLib.Join{
 					}
 				}
 			}
-			string[] catColNames = SpecialSort(mdata1.CategoryColumnNames, mdata2.CategoryColumnNames, out dic1, out dic2);
+			string[] catColNames =
+				SpecialSort(mdata1.CategoryColumnNames, mdata2.CategoryColumnNames, out dic1, out dic2);
 			List<string[][]> catCols = new List<string[][]>();
 			for (int i = 0; i < catColNames.Length; i++){
 				catCols.Add(new string[nrows][]);
@@ -184,8 +189,8 @@ namespace PerseusPluginLib.Join{
 					}
 				}
 			}
-			string[] multiNumColNames = SpecialSort(mdata1.MultiNumericColumnNames, mdata2.MultiNumericColumnNames, out dic1,
-				out dic2);
+			string[] multiNumColNames = SpecialSort(mdata1.MultiNumericColumnNames, mdata2.MultiNumericColumnNames,
+				out dic1, out dic2);
 			List<double[][]> multiNumCols = new List<double[][]>();
 			for (int i = 0; i < multiNumColNames.Length; i++){
 				multiNumCols.Add(new double[nrows][]);
@@ -207,10 +212,9 @@ namespace PerseusPluginLib.Join{
 					}
 				}
 			}
-		    IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
-           result.ColumnDescriptions = result.ColumnNames;
-     
-            result.NumericColumnNames = new List<string>(numColNames);
+			IMatrixData result = PerseusUtils.CreateMatrixData(inputData[0], ex, expColNames.ToList());
+			result.ColumnDescriptions = result.ColumnNames;
+			result.NumericColumnNames = new List<string>(numColNames);
 			result.NumericColumnDescriptions = result.NumericColumnNames;
 			result.NumericColumns = numCols;
 			result.StringColumnNames = new List<string>(stringColNames);
@@ -222,7 +226,6 @@ namespace PerseusPluginLib.Join{
 			result.MultiNumericColumnNames = new List<string>(multiNumColNames);
 			result.MultiNumericColumnDescriptions = result.MultiNumericColumnNames;
 			result.MultiNumericColumns = multiNumCols;
-
 			return result;
 		}
 	}

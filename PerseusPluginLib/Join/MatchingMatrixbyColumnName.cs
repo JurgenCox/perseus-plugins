@@ -285,7 +285,7 @@ namespace PerseusPluginLib.Join{
 				string[] listnames = header1.Concat(header2).ToArray();
 				// string[][] resultarray = catlistnames.Select(x => x.ToArray()).ToArray();
 				//IMPORTANT!!!!! TODO: check if the name of the matrix if changed
-				IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
+				IMatrixData result = PerseusUtils.CreateMatrixData(inputData[0], ex, expColNames.ToList());
 				result.NumericColumnNames = new List<string>(numColNames);
 				result.NumericColumnDescriptions = result.NumericColumnNames;
 				result.NumericColumns = numCols;
@@ -474,7 +474,7 @@ namespace PerseusPluginLib.Join{
 				string[] listnames3 = listnames.Concat(header3).ToArray();
 				// string[][] resultarray = catlistnames.Select(x => x.ToArray()).ToArray();
 				//IMPORTANT!!!!! TODO: check if the name of the matrix if changed
-				IMatrixData result = PerseusFactory.CreateMatrixData(ex, expColNames.ToList());
+				IMatrixData result = PerseusUtils.CreateMatrixData(inputData[0], ex, expColNames.ToList());
 				result.NumericColumnNames = new List<string>(numColNames);
 				result.NumericColumnDescriptions = result.NumericColumnNames;
 				result.NumericColumns = numCols;
