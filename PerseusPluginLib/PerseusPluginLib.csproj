@@ -157,12 +157,6 @@
     <Compile Include="Utils\TwoSampleTestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
-      <Project>{E92A537F-69F8-47D1-81CD-F7292CC021D2}</Project>
-      <Name>PerseusApi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -260,6 +254,12 @@
     <EmbeddedResource Include="img\trendline.Image.png" />
     <EmbeddedResource Include="img\uploadGeneric.png" />
     <EmbeddedResource Include="img\zscoreButton.Image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
+      <Project>{455A268B-B63B-4248-872C-6F3435EE1FEE}</Project>
+      <Name>PerseusApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

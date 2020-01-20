@@ -52,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
-      <Project>{e92a537f-69f8-47d1-81cd-f7292cc021d2}</Project>
+      <Project>{455A268B-B63B-4248-872C-6F3435EE1FEE}</Project>
       <Name>PerseusApi</Name>
     </ProjectReference>
   </ItemGroup>
