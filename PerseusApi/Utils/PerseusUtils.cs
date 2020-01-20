@@ -437,10 +437,10 @@ namespace PerseusApi.Utils{
 		}
 
 		private static string[] SplitLine(string line, char separator){
-			var tokens = line.Split(separator);
-			var words = tokens.Aggregate((words: new List<string>(), word: string.Empty), (acc, token) => {
-				var (wordList, word) = acc;
-				var hasUnbalancedQuotes = token.Count(x => x == '\"') % 2 != 0;
+			string[] tokens = line.Split(separator);
+			string[] words = tokens.Aggregate((words: new List<string>(), word: string.Empty), (acc, token) => {
+				(List<string> wordList, string word) = acc;
+				bool hasUnbalancedQuotes = token.Count(x => x == '\"') % 2 != 0;
 				if (string.IsNullOrEmpty(word) && hasUnbalancedQuotes){
 					word = token;
 				} else{
@@ -458,7 +458,7 @@ namespace PerseusApi.Utils{
 				}
 				return (wordList, word);
 			}, acc => {
-				var (wordList, word) = acc;
+				(List<string> wordList, string word) = acc;
 				if (!string.IsNullOrEmpty(word)){
 					throw new ArgumentException($"Line {line} contains unbalanced quotation marks.");
 				}
@@ -492,7 +492,7 @@ namespace PerseusApi.Utils{
 		/// <summary>
 		/// Search the annotation folder for annotations.
 		/// </summary>
-		/// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example Uniprot, ENSG</param>
+		/// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example UniProt, ENSG</param>
 		/// <param name="types"><see cref="AnnotType"/></param>
 		/// <param name="files"></param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
@@ -504,7 +504,7 @@ namespace PerseusApi.Utils{
 		/// <summary>
 		/// Search the annotation folder for annotations.
 		/// </summary>
-		/// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example Uniprot, ENSG</param>
+		/// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example UniProt, ENSG</param>
 		/// <param name="types"><see cref="AnnotType"/></param>
 		/// <param name="files"></param>
 		/// <param name="badFiles">List of files which could not be processed</param>

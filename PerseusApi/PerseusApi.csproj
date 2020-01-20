@@ -105,10 +105,10 @@
     <Compile Include="Network\INode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Generic\Settings.cs" />
-    <Compile Include="Utils\Network\FolderFormat.cs" />
     <Compile Include="Utils\PerseusFactory.cs" />
     <Compile Include="Utils\PerseusUtils.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>IF EXIST $(SolutionDir)..\net\net\DLLs\nul (
