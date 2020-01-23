@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -143,7 +144,7 @@ namespace PerseusPluginLib.Mods{
 		}
 
 		private static string[] ToArray(HashSet<string> pfams){
-			string[] q = ArrayUtils.ToArray(pfams);
+			string[] q = pfams.ToArray();
 			Array.Sort(q);
 			return q;
 		}

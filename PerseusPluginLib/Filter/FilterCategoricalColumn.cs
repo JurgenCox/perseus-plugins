@@ -4,6 +4,7 @@ using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusApi.Utils;
 using PerseusPluginLib.Utils;
 
 namespace PerseusPluginLib.Filter{
@@ -56,12 +57,13 @@ namespace PerseusPluginLib.Filter{
 					Help =
 						"If 'Remove matching rows' is selected, rows having the values specified above will be removed while " +
 						"all other rows will be kept. If 'Keep matching rows' is selected, the opposite will happen."
-				}, PerseusPluginUtils.CreateFilterModeParam(true));
+				}, PerseusPluginUtils.CreateFilterModeParamNew(true));
 		}
 
-		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
-			ref IDocumentData[] documents, ProcessInfo processInfo){
-			ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Column");
+        public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
+            ref IDocumentData[] documents, ProcessInfo processInfo)
+        {
+            ParameterWithSubParams<int> p = param.GetParamWithSubParams<int>("Column");
 			int colInd = p.Value;
 			if (colInd < 0){
 				processInfo.ErrString = "No categorical columns available.";
@@ -73,7 +75,7 @@ namespace PerseusPluginLib.Filter{
 				processInfo.ErrString = "Please select at least one term for filtering.";
 				return;
 			}
-			string[] values = new string[inds.Length];
+            string[] values = new string[inds.Length];
 			string[] v = mdata.GetCategoryColumnValuesAt(colInd);
 			for (int i = 0; i < values.Length; i++){
 				values[i] = v[inds[i]];
@@ -81,7 +83,8 @@ namespace PerseusPluginLib.Filter{
 			HashSet<string> value = new HashSet<string>(values);
 			bool remove = param.GetParam<int>("Mode").Value == 0;
 			List<int> valids = new List<int>();
-			for (int i = 0; i < mdata.RowCount; i++){
+            List<int> notvalids = new List<int>();
+            for (int i = 0; i < mdata.RowCount; i++){
 				bool valid = true;
 				foreach (string w in mdata.GetCategoryColumnEntryAt(colInd, i)){
 					if (value.Contains(w)){
@@ -91,9 +94,20 @@ namespace PerseusPluginLib.Filter{
 				}
 				if (valid && remove || !valid && !remove){
 					valids.Add(i);
-				}
+                }
+                else if (!valid)
+                {
+                    notvalids.Add(i);
+                }
 			}
-			PerseusPluginUtils.FilterRows(mdata, param, valids.ToArray());
-		}
-	}
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, notvalids.ToArray()) };
+                
+            }
+            PerseusPluginUtils.FilterRowsNew(mdata, param, valids.ToArray());
+        }
+
+    }
 }

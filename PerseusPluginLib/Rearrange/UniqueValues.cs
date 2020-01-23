@@ -46,7 +46,7 @@ namespace PerseusPluginLib.Rearrange{
 					new MultiChoiceParam("Text columns"){
 						Values = mdata.StringColumnNames,
 						Value = new int[0],
-						Help = "Select here the text colums that should be expanded."
+						Help = "Select here the text columns that should be expanded."
 					}
 				});
 		}

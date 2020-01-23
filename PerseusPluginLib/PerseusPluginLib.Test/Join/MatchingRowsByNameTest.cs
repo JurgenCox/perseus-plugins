@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using BaseLibS.Num.Matrix;
 using BaseLibS.Param;
 using NUnit.Framework;
 using PerseusApi.Document;
@@ -8,7 +7,6 @@ using PerseusApi.Matrix;
 using PerseusApi.Utils;
 using PerseusLibS.Data;
 using PerseusPluginLib.Join;
-using PerseusPluginLib.Manual;
 using PerseusPluginLib.Rearrange;
 
 namespace PerseusPluginLib.Test.Join

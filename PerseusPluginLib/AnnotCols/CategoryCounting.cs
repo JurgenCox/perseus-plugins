@@ -144,7 +144,7 @@ namespace PerseusPluginLib.AnnotCols{
 			foreach (string[] x in annot){
 				all.UnionWith(x);
 			}
-			string[] y = ArrayUtils.ToArray(all);
+			string[] y = all.ToArray();
 			Array.Sort(y);
 			y = ArrayUtils.Remove(y, "");
 			return y;

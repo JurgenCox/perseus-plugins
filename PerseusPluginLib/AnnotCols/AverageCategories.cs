@@ -23,7 +23,7 @@ namespace PerseusPluginLib.AnnotCols{
 
 		public string Description
 			=>
-				"Rows that have a common term in one of the selected categorical columns are avereged. " +
+				"Rows that have a common term in one of the selected categorical columns are averaged. " +
 				"Several different summarization methods can be selected.";
 
 		public string HelpOutput => "";

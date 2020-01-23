@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Param;
@@ -119,9 +120,9 @@ namespace PerseusPluginLib.Mods{
 					}
 				}
 				if (wins.Count > 0){
-					newCol[i] = StringUtils.Concat(";", ArrayUtils.ToArray(wins));
+					newCol[i] = StringUtils.Concat(";", wins.ToArray());
 					newCatCol[i] = new[]{"+"};
-					string[] x = ArrayUtils.ToArray(origins);
+					string[] x = origins.ToArray();
 					Array.Sort(x);
 					originCol[i] = x;
 				} else{

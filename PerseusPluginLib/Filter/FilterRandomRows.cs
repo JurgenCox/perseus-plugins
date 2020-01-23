@@ -36,11 +36,15 @@ namespace PerseusPluginLib.Filter{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			int nrows = param.GetParam<int>("Number of rows").Value;
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                supplTables = new[] { PerseusPluginUtils.CreateSupplTab(mdata) };
+            }
+            int nrows = param.GetParam<int>("Number of rows").Value;
 			nrows = Math.Min(nrows, mdata.RowCount);
 			Random2 rand = new Random2(7);
 			int[] rows = ArrayUtils.SubArray(rand.NextPermutation(mdata.RowCount), nrows);
-			PerseusPluginUtils.FilterRows(mdata, param, rows);
+			PerseusPluginUtils.FilterRowsNew(mdata, param, rows);
 		}
 	}
 }

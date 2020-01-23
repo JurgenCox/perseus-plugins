@@ -31,18 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BaseLib">
-      <HintPath>..\DLLs\BaseLib.dll</HintPath>
-    </Reference>
     <Reference Include="BaseLibS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\DLLs\BaseLibS.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.XML" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotateSequences.cs" />
@@ -58,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
-      <Project>{e92a537f-69f8-47d1-81cd-f7292cc021d2}</Project>
+      <Project>{455A268B-B63B-4248-872C-6F3435EE1FEE}</Project>
       <Name>PerseusApi</Name>
     </ProjectReference>
   </ItemGroup>

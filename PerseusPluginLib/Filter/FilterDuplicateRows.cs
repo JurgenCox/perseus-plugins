@@ -60,7 +60,7 @@ namespace PerseusPluginLib.Filter{
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo)
 		{
-		    var mainSubset = param.GetParam<int[]>("Main").Value;
+            var mainSubset = param.GetParam<int[]>("Main").Value;
 		    var mainColumns = mainSubset.Select(mdata.Values.GetColumn).ToArray();
 		    var numericSubset = param.GetParam<int[]>("Numeric").Value;
 		    var numericColumns = ArrayUtils.SubList(mdata.NumericColumns, numericSubset);
@@ -71,7 +71,8 @@ namespace PerseusPluginLib.Filter{
 		    var multiNumericSubset = param.GetParam<int[]>("MultiNumeric").Value;
 		    var multiNumericColumns = ArrayUtils.SubList(mdata.MultiNumericColumns, multiNumericSubset);
 		    var rows = new Dictionary<string, int>();
-		    for (int j = 0; j < mdata.RowCount; j++)
+            var discardrows = new Dictionary<string, int>();
+            for (int j = 0; j < mdata.RowCount; j++)
 		    {
 		        int i = j;
 		        var row = string.Join("\t", mainColumns.Select(col => $"{col[i]}")
@@ -82,10 +83,27 @@ namespace PerseusPluginLib.Filter{
 		        if (!rows.ContainsKey(row))
 		        {
 		            rows[row] = i;
-		        }
+		        } 
             }
 
-            PerseusPluginUtils.FilterRows(mdata, param, rows.Values.ToArray());
-		}
+            PerseusPluginUtils.FilterRowsNew(mdata, param, rows.Values.ToArray());
+            if (param.GetParam<int>("Filter mode").Value == 2)
+            {
+                for (int j = 0; j < mdata.RowCount; j++)
+                {
+                    int i = j;
+                    var row = string.Join("\t", mainColumns.Select(col => $"{col[i]}")
+                        .Concat(numericColumns.Select(col => $"{col[i]}"))
+                        .Concat(stringColumns.Select(col => $"{col[i]}"))
+                        .Concat(categoryColumns.Select(col => string.Join(";", col[i])))
+                        .Concat(multiNumericColumns.Select(col => string.Join(";", col[i].Select(d => $"{d}")))));
+                    if (rows.ContainsKey(row))
+                    {
+                        discardrows[row] = j;
+                    }
+                }
+                    supplTables = new[] { PerseusPluginUtils.CreateSupplTabSplit(mdata, discardrows.Values.ToArray()) };
+            }
+        }
 	}
 }

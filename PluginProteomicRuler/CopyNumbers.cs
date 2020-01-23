@@ -322,7 +322,7 @@ namespace PluginProteomicRuler{
 			// Summary matrix
 			if (param.GetParamWithSubParams<int>("Averaging mode").Value != 3 && ArrayUtils.Contains(outputColumns, 7)){
 				supplTables = new IMatrixData[1];
-			    IMatrixData supplTab = PerseusFactory.CreateMatrixData();
+			    IMatrixData supplTab = (IMatrixData)mdata.CreateNewInstance(DataType.Matrix);
 				supplTab.ColumnNames = new List<string>();
 				supplTab.Values.Init(totalProteinRow.Length, 0);
 				supplTab.SetAnnotationColumns(new List<string>{"Sample", "Input Column"},

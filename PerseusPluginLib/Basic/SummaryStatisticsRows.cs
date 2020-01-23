@@ -26,7 +26,6 @@ namespace PerseusPluginLib.Basic{
 				"For an odd number of values the middle value is taken. For an even number of values the average of the two values in " +
 				"the middle is calculated."),
 			new Tuple<string, Func<IList<double>, double>, string>("Tukey biweight", ArrayUtils.TukeyBiweight, ""),
-			//new Tuple<string, Func<IList<double>, double>, string>("Tukey biweight se", ArrayUtils.TukeyBiweightSe, ""),
 			new Tuple<string, Func<IList<double>, double>, string>("Standard deviation", ArrayUtils.StandardDeviation, ""),
 			new Tuple<string, Func<IList<double>, double>, string>("Coefficient of variation", ArrayUtils.CoefficientOfVariation,
 				"The coefficient of variation is defined as the standard deviation divided by the mean."),

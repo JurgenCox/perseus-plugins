@@ -40,15 +40,10 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BaseLib">
-      <HintPath>..\DLLs\BaseLib.dll</HintPath>
-    </Reference>
     <Reference Include="BaseLibS">
       <HintPath>..\DLLs\BaseLibS.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -73,22 +68,11 @@
     <Compile Include="Basic\KineticsStatisticalMeasures.cs" />
     <Compile Include="Filter\FilterNumericalColumn.cs" />
     <Compile Include="Filter\FilterDuplicateRows.cs" />
+    <Compile Include="Join\MatchingMatrixbyColumnName.cs" />
     <Compile Include="Join\MatchingSamplesbyColumnName.cs" />
     <Compile Include="Join\ReplaceStrings.cs" />
     <Compile Include="Load\CreateGeneList.cs" />
     <Compile Include="Load\CreateRandomMatrix.cs" />
-    <Compile Include="Load\PerseusLoadMatrixControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Load\PerseusLoadMatrixControl.Designer.cs">
-      <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Manual\SelectRowsManuallyControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Manual\SelectRowsManuallyControl.Designer.cs">
-      <DependentUpon>SelectRowsManuallyControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Mods\AddKnownSites.cs" />
     <Compile Include="Mods\AddModificationCounts.cs" />
     <Compile Include="Mods\AddRegulatorySites.cs" />
@@ -124,15 +108,11 @@
     <Compile Include="Impute\ReplaceMissingByConstant.cs" />
     <Compile Include="Impute\ReplaceMissingFromGaussian.cs" />
     <Compile Include="Load\BinaryUpload.cs" />
-    <Compile Include="Load\GenericMatrixUpload.cs" />
-    <Compile Include="Load\PerseusLoadMatrixParam.cs" />
     <Compile Include="Load\UnstructuredTxtUpload.cs" />
-    <Compile Include="Manual\MatrixDataTable.cs" />
-    <Compile Include="Manual\SelectRowsManually.cs" />
-    <Compile Include="Manual\SelectRowsManuallyResult.cs" />
     <Compile Include="Quality\CreateQualityMatrix.cs" />
     <Compile Include="Rearrange\ChangeColumnType.cs" />
     <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
+    <Compile Include="Rearrange\RenameColumnMetabolomics.cs" />
     <Compile Include="Rearrange\RenameColumnByAnnoRows.cs" />
     <Compile Include="Rearrange\RenameColumnTemplate.cs" />
     <Compile Include="Rearrange\ReorderColumnsByNumAnnotationRow.cs" />
@@ -177,18 +157,6 @@
     <Compile Include="Utils\TwoSampleTestUtil.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
-      <Project>{E92A537F-69F8-47D1-81CD-F7292CC021D2}</Project>
-      <Name>PerseusApi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Load\PerseusLoadMatrixControl.resx">
-      <DependentUpon>PerseusLoadMatrixControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Manual\SelectRowsManuallyControl.resx">
-      <DependentUpon>SelectRowsManuallyControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -196,6 +164,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Resources\missingsButton.Image.png" />
   </ItemGroup>
   <ItemGroup>
@@ -285,6 +254,12 @@
     <EmbeddedResource Include="img\trendline.Image.png" />
     <EmbeddedResource Include="img\uploadGeneric.png" />
     <EmbeddedResource Include="img\zscoreButton.Image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
+      <Project>{455A268B-B63B-4248-872C-6F3435EE1FEE}</Project>
+      <Name>PerseusApi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
