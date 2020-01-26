@@ -60,7 +60,7 @@ namespace PerseusApi.Utils{
 					return true;
 				}
 			}
-			string[] allColNames = ArrayUtils.SubArray(colNames, allInds);
+			string[] allColNames = colNames.SubArray(allInds);
 			Array.Sort(allColNames);
 			for (int i = 0; i < allColNames.Length - 1; i++){
 				if (allColNames[i + 1].Equals(allColNames[i])){
@@ -83,7 +83,7 @@ namespace PerseusApi.Utils{
 			//AddColumnDescriptions(colDescriptions, catColIndices, numColIndices, textColIndices, multiNumColIndices, matrixData);
 			//	AddMainColumnDescriptions(colDescriptions, mainColIndices, matrixData);
 			matrixData.Name = origin;
-			string[] columnNames = ArrayUtils.SubArray(colNames, mainColIndices);
+			string[] columnNames = colNames.SubArray(mainColIndices);
 			if (shortenExpressionNames){
 				columnNames = StringUtils.RemoveCommonSubstrings(columnNames, true);
 			}
@@ -134,10 +134,10 @@ namespace PerseusApi.Utils{
 				count++;
 			}
 			reader.Close();
-			string[] catColnames = ArrayUtils.SubArray(colNames, catColIndices);
-			string[] numColnames = ArrayUtils.SubArray(colNames, numColIndices);
-			string[] multiNumColnames = ArrayUtils.SubArray(colNames, multiNumColIndices);
-			string[] textColnames = ArrayUtils.SubArray(colNames, textColIndices);
+			string[] catColnames = colNames.SubArray(catColIndices);
+			string[] numColnames = colNames.SubArray(numColIndices);
+			string[] multiNumColnames = colNames.SubArray(multiNumColIndices);
+			string[] textColnames = colNames.SubArray(textColIndices);
 			matrixData.SetAnnotationColumns(RemoveQuotes(textColnames), stringAnnotation, RemoveQuotes(catColnames),
 				categoryAnnotation, RemoveQuotes(numColnames), numericAnnotation, RemoveQuotes(multiNumColnames),
 				multiNumericAnnotation);
@@ -146,7 +146,7 @@ namespace PerseusApi.Utils{
 		private static void AddMainColumnDescriptions(IList<string> colDescriptions, IList<int> mainColIndices,
 			IMatrixData matrixData){
 			if (colDescriptions != null){
-				string[] columnDesc = ArrayUtils.SubArray(colDescriptions, mainColIndices);
+				string[] columnDesc = colDescriptions.SubArray(mainColIndices);
 				matrixData.StringColumnDescriptions = new List<string>(columnDesc);
 			}
 		}
@@ -155,10 +155,10 @@ namespace PerseusApi.Utils{
 			IList<int> numColIndices, IList<int> textColIndices, IList<int> multiNumColIndices,
 			IDataWithAnnotationColumns matrixData){
 			if (colDescriptions != null){
-				string[] catColDesc = ArrayUtils.SubArray(colDescriptions, catColIndices);
-				string[] numColDesc = ArrayUtils.SubArray(colDescriptions, numColIndices);
-				string[] multiNumColDesc = ArrayUtils.SubArray(colDescriptions, multiNumColIndices);
-				string[] textColDesc = ArrayUtils.SubArray(colDescriptions, textColIndices);
+				string[] catColDesc = colDescriptions.SubArray(catColIndices);
+				string[] numColDesc = colDescriptions.SubArray(numColIndices);
+				string[] multiNumColDesc = colDescriptions.SubArray(multiNumColIndices);
+				string[] textColDesc = colDescriptions.SubArray(textColIndices);
 				matrixData.NumericColumnDescriptions = new List<string>(numColDesc);
 				matrixData.CategoryColumnDescriptions = new List<string>(catColDesc);
 				matrixData.StringColumnDescriptions = new List<string>(textColDesc);
@@ -172,7 +172,7 @@ namespace PerseusApi.Utils{
 				out Dictionary<string, string[]> numAnnotatRows);
 			foreach (string key in catAnnotatRows.Keys){
 				string name = key;
-				string[] svals = ArrayUtils.SubArray(catAnnotatRows[key], mainColIndices);
+				string[] svals = catAnnotatRows[key].SubArray(mainColIndices);
 				string[][] cat = new string[svals.Length][];
 				for (int i = 0; i < cat.Length; i++){
 					string s = svals[i].Trim();
@@ -184,14 +184,14 @@ namespace PerseusApi.Utils{
 							valids.Add(j);
 						}
 					}
-					cat[i] = ArrayUtils.SubArray(cat[i], valids);
+					cat[i] = cat[i].SubArray(valids);
 					Array.Sort(cat[i]);
 				}
 				matrixData.AddCategoryRow(name, name, cat);
 			}
 			foreach (string key in numAnnotatRows.Keys){
 				string name = key;
-				string[] svals = ArrayUtils.SubArray(numAnnotatRows[key], mainColIndices);
+				string[] svals = numAnnotatRows[key].SubArray(mainColIndices);
 				double[] num = new double[svals.Length];
 				for (int i = 0; i < num.Length; i++){
 					string s = svals[i].Trim();
@@ -255,7 +255,7 @@ namespace PerseusApi.Utils{
 							valids.Add(j);
 						}
 					}
-					ww = ArrayUtils.SubArray(ww, valids);
+					ww = ww.SubArray(valids);
 					Array.Sort(ww);
 					if (categoryAnnotation[i].Length > count){
 						categoryAnnotation[i][count] = ww;
@@ -480,7 +480,7 @@ namespace PerseusApi.Utils{
 		/// <summary>
 		/// Search the annotation folder for annotations.
 		/// </summary>
-		/// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example Uniprot, ENSG</param>
+		/// <param name="baseNames">The name of the base identifier from which the mapping will be performed. For example UniProt, ENSG</param>
 		/// <param name="files"></param>
 		/// <param name="badFiles">List of files which could not be processed</param>
 		/// <returns>A list of annotations for each file. For example <code>{{"Chromosome", "Orientation"},{"KEGG name", "Pfam"}}</code></returns>
@@ -543,7 +543,7 @@ namespace PerseusApi.Utils{
 			string[] desc = line.Split('\t');
 			reader.Close();
 			baseName = header[0];
-			string[] result = ArrayUtils.SubArray(header, 1, header.Length);
+			string[] result = header.SubArray(1, header.Length);
 			types = new AnnotType[desc.Length - 1];
 			for (int i = 0; i < types.Length; i++){
 				types[i] = FromString1(desc[i + 1]);
@@ -702,7 +702,7 @@ namespace PerseusApi.Utils{
 			}
 			split = SplitLine(line, separator);
 			foreach (Tuple<Relation[], int[], bool> filter in filters){
-				if (!IsValidRowNumFilter(ToDoubles(ArrayUtils.SubArray(split, filter.Item2), hasAddtlMatrices),
+				if (!IsValidRowNumFilter(ToDoubles(split.SubArray(filter.Item2), hasAddtlMatrices),
 					filter.Item1, filter.Item3)){
 					return false;
 				}
@@ -717,7 +717,7 @@ namespace PerseusApi.Utils{
 			}
 			string[] w = SplitLine(line, separator);
 			foreach (Tuple<Relation[], int[], bool> filter in filters){
-				if (!IsValidRowNumFilter(ToDoubles(ArrayUtils.SubArray(w, filter.Item2), hasAddtlMatrices),
+				if (!IsValidRowNumFilter(ToDoubles(w.SubArray(filter.Item2), hasAddtlMatrices),
 					filter.Item1, filter.Item3)){
 					return false;
 				}
@@ -771,7 +771,7 @@ namespace PerseusApi.Utils{
 			if (errString != null){
 				return;
 			}
-			colInds = ArrayUtils.SubArray(inds, colInds);
+			colInds = inds.SubArray(colInds);
 			if (relations != null){
 				filters.Add(new Tuple<Relation[], int[], bool>(relations, colInds, and));
 			}

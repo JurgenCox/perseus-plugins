@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PerseusApi.Network
 {
@@ -8,7 +7,7 @@ namespace PerseusApi.Network
     /// </summary>
     public interface IGraph : IReadOnlyCollection<INode>
     {
-        #warning This API is experimental and might change frequently
+        //warning This API is experimental and might change frequently
         /// <summary>
         /// Edges
         /// </summary>
