@@ -446,7 +446,7 @@ namespace PerseusPluginLib.Join{
 			}
 		}
 
-		private static string[][] GetColumnSplitBySemicolon(IDataWithAnnotationColumns mdata, int matchingColumn){
+		public static string[][] GetColumnSplitBySemicolon(IDataWithAnnotationColumns mdata, int matchingColumn){
 			string[] matchingColumn2;
 			if (matchingColumn < mdata.StringColumnCount){
 				matchingColumn2 = mdata.StringColumns[matchingColumn];
@@ -466,7 +466,7 @@ namespace PerseusPluginLib.Join{
 		/// <summary>
 		/// Create a mapping from id to row index from the specified <see cref="idColumn"/>.
 		/// </summary>
-		private static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn,
+		public static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn,
 			bool ignoreCase){
 			string[][] splitIds = GetColumnSplitBySemicolon(data, idColumn);
 			Dictionary<string, List<int>> idToRow = new Dictionary<string, List<int>>();
@@ -532,23 +532,28 @@ namespace PerseusPluginLib.Join{
 			HashSet<int> unmatchedIndices = new HashSet<int>(Enumerable.Range(0, rightData.RowCount));
 			int[][] indexMap = new int[matchCol.Length][];
 			for (int i = 0; i < matchCol.Length; i++){
-				List<int> matchingRows = new List<int>();
-				foreach (string s in matchCol[i]){
-					string id = s;
-					if (ignoreCase){
-						id = id.ToLower();
-					}
-					if (idToRows.TryGetValue(id, out List<int> rows)){
-						matchingRows.AddRange(rows);
-					}
-				}
-				int[] indices = ArrayUtils.UniqueValues(matchingRows.ToArray());
+				int[] indices = GetIndices(matchCol[i], ignoreCase, idToRows);
 				indexMap[i] = indices;
 				foreach (int index in indices){
 					unmatchedIndices.Remove(index);
 				}
 			}
 			return (indexMap, unmatchedIndices.OrderBy(i => i).ToArray());
+		}
+
+		public static int[] GetIndices(string[] m, bool ignoreCase, Dictionary<string, List<int>> idToRows){
+			List<int> matchingRows = new List<int>();
+			foreach (string s in m){
+				string id = s;
+				if (ignoreCase){
+					id = id.ToLower();
+				}
+				if (idToRows.TryGetValue(id, out List<int> rows)){
+					matchingRows.AddRange(rows);
+				}
+			}
+			int[] indices = ArrayUtils.UniqueValues(matchingRows.ToArray());
+			return indices;
 		}
 
 		private static string[][] GetColumnPair(IDataWithAnnotationColumns mdata1, int matchingColumnInMatrix1,
