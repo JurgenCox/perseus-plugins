@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="PerseusPluginLib.Test\**" />
+    <EmbeddedResource Remove="PerseusPluginLib.Test\**" />
+    <None Remove="PerseusPluginLib.Test\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="img\average.png" />
     <None Remove="img\binary.png" />
     <None Remove="img\combineButton.Image.png" />
