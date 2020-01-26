@@ -1,238 +1,32 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{5F1C1ABC-403D-4F96-A37D-B6CE1B791544}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PerseusPluginLib</RootNamespace>
-    <AssemblyName>PerseusPluginLib</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="BaseLibS">
-      <HintPath>..\DLLs\BaseLibS.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
+    <None Remove="img\average.png" />
+    <None Remove="img\binary.png" />
+    <None Remove="img\combineButton.Image.png" />
+    <None Remove="img\density.Image.png" />
+    <None Remove="img\filter2.png" />
+    <None Remove="img\groupButton.Image.png" />
+    <None Remove="img\hand.png" />
+    <None Remove="img\histo.png" />
+    <None Remove="img\impute.png" />
+    <None Remove="img\list.png" />
+    <None Remove="img\logButton.Image.png" />
+    <None Remove="img\missingsButton.Image.png" />
+    <None Remove="img\network.png" />
+    <None Remove="img\quantiles.png" />
+    <None Remove="img\raw.png" />
+    <None Remove="img\Save-icon.png" />
+    <None Remove="img\saveGeneric.png" />
+    <None Remove="img\trendline.Image.png" />
+    <None Remove="img\uploadGeneric.png" />
+    <None Remove="img\zscoreButton.Image.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="AnnotCols\AddAnnotationToMatrix.cs" />
-    <Compile Include="AnnotCols\AnnotationProvider\AnnotationFormat.cs" />
-    <Compile Include="AnnotCols\AnnotationProvider\AnnotationProviderExtensions.cs" />
-    <Compile Include="AnnotCols\AnnotationProvider\StreamAnnotationProvider.cs" />
-    <Compile Include="AnnotCols\AverageCategories.cs" />
-    <Compile Include="AnnotCols\BackToBaseIdentifiers.cs" />
-    <Compile Include="AnnotCols\CombineAnnotationColumns.cs" />
-    <Compile Include="AnnotCols\CategoryCounting.cs" />
-    <Compile Include="AnnotCols\AnnotationProvider\ConfFolderAnnotationProvider.cs" />
-    <Compile Include="AnnotCols\CountingResult.cs" />
-    <Compile Include="AnnotCols\AnnotationProvider\IAnnotationProvider.cs" />
-    <Compile Include="Basic\AutomaticDensity.cs" />
-    <Compile Include="Basic\CloneProcessing.cs" />
-    <Compile Include="Basic\CombineAnnotations.cs" />
-    <Compile Include="Basic\CombineByIdentifiersProcessing.cs" />
-    <Compile Include="Basic\AddNoise.cs" />
-    <Compile Include="Basic\DeHyphenateIds.cs" />
-    <Compile Include="Basic\KineticsTimeMeasure.cs" />
-    <Compile Include="Basic\KineticsStatisticalMeasures.cs" />
-    <Compile Include="Filter\FilterNumericalColumn.cs" />
-    <Compile Include="Filter\FilterDuplicateRows.cs" />
-    <Compile Include="Join\MatchingMatrixbyColumnName.cs" />
-    <Compile Include="Join\MatchingSamplesbyColumnName.cs" />
-    <Compile Include="Join\ReplaceStrings.cs" />
-    <Compile Include="Load\CreateGeneList.cs" />
-    <Compile Include="Load\CreateRandomMatrix.cs" />
-    <Compile Include="Mods\AddKnownSites.cs" />
-    <Compile Include="Mods\AddModificationCounts.cs" />
-    <Compile Include="Mods\AddRegulatorySites.cs" />
-    <Compile Include="Mods\AddSequenceFeatures.cs" />
-    <Compile Include="Mods\ExpandSiteTable.cs" />
-    <Compile Include="Mods\KinaseSubstrateRelations.cs" />
-    <Compile Include="Mods\ShortenMotifs.cs" />
-    <Compile Include="Norm\UnZScore.cs" />
-    <Compile Include="Rearrange\CombineCategoricalColumns.cs" />
-    <Compile Include="Basic\DensityEstimationProcessing.cs" />
-    <Compile Include="Basic\PerformanceCurves.cs" />
-    <Compile Include="Basic\Quantiles.cs" />
-    <Compile Include="Basic\PerformanceColumnType.cs" />
-    <Compile Include="Basic\PerformanceColumnTypeFpTp.cs" />
-    <Compile Include="Basic\PerformanceColumnTypePrecision.cs" />
-    <Compile Include="Basic\PerformanceColumnTypeRecall.cs" />
-    <Compile Include="Basic\PerformanceColumnTypeSensitivtiy.cs" />
-    <Compile Include="Basic\PerformanceColumnTypeSpecificity.cs" />
-    <Compile Include="Basic\PerformanceColumnTypeTpNp.cs" />
-    <Compile Include="Basic\SummaryStatisticsColumns.cs" />
-    <Compile Include="Basic\SummaryStatisticsRows.cs" />
-    <Compile Include="Join\MatchingColumnsByName.cs" />
-    <Compile Include="Join\MatchingRowsByName.cs" />
-    <Compile Include="Export\TabSeparatedExport.cs" />
-    <Compile Include="Filter\FilterRandomRows.cs" />
-    <Compile Include="Filter\FilterValidValuesColumns.cs" />
-    <Compile Include="Filter\FilterCategoricalRow.cs" />
-    <Compile Include="AnnotRows\AverageGroups.cs" />
-    <Compile Include="AnnotRows\ManageCategoricalAnnotRow.cs" />
-    <Compile Include="AnnotRows\ManageNumericalAnnotRow.cs" />
-    <Compile Include="AnnotRows\JoinTermsInCategoricalRow.cs" />
-    <Compile Include="Impute\ReplaceImputedByNan.cs" />
-    <Compile Include="Impute\ReplaceMissingByConstant.cs" />
-    <Compile Include="Impute\ReplaceMissingFromGaussian.cs" />
-    <Compile Include="Load\BinaryUpload.cs" />
-    <Compile Include="Load\UnstructuredTxtUpload.cs" />
-    <Compile Include="Quality\CreateQualityMatrix.cs" />
-    <Compile Include="Rearrange\ChangeColumnType.cs" />
-    <Compile Include="Rearrange\ConvertMultiNumeric.cs" />
-    <Compile Include="Rearrange\RenameColumnMetabolomics.cs" />
-    <Compile Include="Rearrange\RenameColumnByAnnoRows.cs" />
-    <Compile Include="Rearrange\RenameColumnTemplate.cs" />
-    <Compile Include="Rearrange\ReorderColumnsByNumAnnotationRow.cs" />
-    <Compile Include="Utils\MatrixDataExtensions.cs" />
-    <Compile Include="Rearrange\UniqueRows.cs" />
-    <Compile Include="Utils\DataWithAnnotationColumnsExtensions.cs" />
-    <Compile Include="Rearrange\ReorderRemoveAnnotRows.cs" />
-    <Compile Include="Rearrange\SearchTextColumns.cs" />
-    <Compile Include="Rearrange\DuplicateColumns.cs" />
-    <Compile Include="Rearrange\ProcessTextColumns.cs" />
-    <Compile Include="Rearrange\ExpandMultiNumeric.cs" />
-    <Compile Include="Rearrange\RemoveEmptyColumns.cs" />
-    <Compile Include="Rearrange\RenameColumns.cs" />
-    <Compile Include="Rearrange\RenameColumnsRegexp.cs" />
-    <Compile Include="Rearrange\ReorderRemoveColumns.cs" />
-    <Compile Include="Filter\FilterCategoricalColumn.cs" />
-    <Compile Include="Filter\FilterTextualColumn.cs" />
-    <Compile Include="Filter\FilterValidValuesRows.cs" />
-    <Compile Include="Significance\SignificanceA.cs" />
-    <Compile Include="Significance\SignificanceB.cs" />
-    <Compile Include="Utils\ColumnNameInfo.cs" />
-    <Compile Include="Utils\INameInfo.cs" />
-    <Compile Include="Utils\PerseusPluginUtils.cs" />
-    <Compile Include="Norm\Divide.cs" />
-    <Compile Include="Norm\Rank.cs" />
-    <Compile Include="Norm\ScaleToInterval.cs" />
-    <Compile Include="Norm\Subtract.cs" />
-    <Compile Include="Norm\SubtractRowCluster.cs" />
-    <Compile Include="Norm\UnitVector.cs" />
-    <Compile Include="Norm\WidthAdjustment.cs" />
-    <Compile Include="Norm\ZScore.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Rearrange\SortByColumn.cs" />
-    <Compile Include="Rearrange\Transpose.cs" />
-    <Compile Include="Rearrange\UniqueValues.cs" />
-    <Compile Include="Utils\RowNameInfo.cs" />
-    <Compile Include="Utils\TwoSampleTestUtil.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-    <None Include="Resources\missingsButton.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\sheepButton.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\zscoreButton.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\logButton.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\trendline.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\density.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\quantiles.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\impute.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\hand.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\combineButton.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\saveGeneric.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\uploadGeneric.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\groupButton.Image.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\filter2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\histo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\average.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\raw.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\binary.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\upload64.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\Save-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\dice.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\list.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\network.png" />
-  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="img\average.png" />
     <EmbeddedResource Include="img\binary.png" />
@@ -255,33 +49,15 @@
     <EmbeddedResource Include="img\uploadGeneric.png" />
     <EmbeddedResource Include="img\zscoreButton.Image.png" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj">
-      <Project>{455A268B-B63B-4248-872C-6F3435EE1FEE}</Project>
-      <Name>PerseusApi</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>IF EXIST $(SolutionDir)..\net\net\DLLs\nul (
-copy $(TargetDir)\$(TargetName).dll $(SolutionDir)..\net\net\DLLs\
-copy $(TargetDir)\$(TargetName).pdb $(SolutionDir)..\net\net\DLLs\
-) ELSE (
-echo "DLL folder not found"
-)
-IF EXIST $(SolutionDir)..\net\net\PerseusGui\bin\x64\Debug\nul (
-copy $(TargetDir)\$(TargetName).dll $(SolutionDir)..\net\net\PerseusGui\bin\x64\Debug\
-copy $(TargetDir)\$(TargetName).pdb $(SolutionDir)..\net\net\PerseusGui\bin\x64\Debug\
-) ELSE (
-echo "PerseusGui folder not found"
-)
-</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
+  <ItemGroup>
+    <Reference Include="BaseLibS">
+      <HintPath>..\..\net\net\DLLs\BaseLibS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
