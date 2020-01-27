@@ -187,7 +187,7 @@ namespace PerseusPluginLib.Join{
 			return result;
 		}
 
-		private void UpdateIdColumns(IMatrixData result, IMatrixData right, int originalLength,
+		private static void UpdateIdColumns(IMatrixData result, IMatrixData right, int originalLength,
 			int[] unmappedRightIndices, (int left, int right) first, (int left, int right)? second){
 			string[] GetColumn(IDataWithAnnotationColumns data, int index) =>
 				index < data.StringColumnCount
