@@ -14,7 +14,7 @@ namespace PerseusPluginLib.Quality{
 		public string Description
 			=>
 				"Create a matrix of quality values from a set of numerical columns. There has to " +
-				"be one numerical column per expression column.";
+				"be one numerical column per main column.";
 
 		public string HelpOutput => "";
 		public string[] HelpSupplTables => new string[0];

@@ -11,7 +11,7 @@ namespace PerseusPluginLib.Norm{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
 		public string Description => "Subtract the average pattern of the selected rows from all rows.";
-		public string HelpOutput => "Normalized expression matrix.";
+		public string HelpOutput => "Normalized matrix.";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string Name => "Subtract row cluster";

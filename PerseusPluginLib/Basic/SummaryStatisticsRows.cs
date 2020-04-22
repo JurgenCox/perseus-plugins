@@ -67,12 +67,12 @@ namespace PerseusPluginLib.Basic{
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Basic:SummaryStatisticsRows";
 
 		public string Description
-			=> "A set of simple descriptive quantities are calculated that help summarizing the expression data in each row.";
+			=> "A set of simple descriptive quantities are calculated that help summarizing the main data in each row.";
 
 		public string HelpOutput
 			=>
 				"For each selected summary statistic, a numerical column is added containing the specific quantity for each row of " +
-				"expression values. 'NaN' and 'Infinity' values are ignored for all calculations.";
+				"main values. 'NaN' and 'Infinity' values are ignored for all calculations.";
 
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;

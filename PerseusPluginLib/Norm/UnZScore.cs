@@ -14,7 +14,7 @@ namespace PerseusPluginLib.Norm{
 		public string Heading => "Normalization";
 		public bool IsActive => true;
 		public float DisplayRank => 50;
-		public string HelpOutput => "Normalized expression matrix.";
+		public string HelpOutput => "Normalized matrix.";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string[] HelpDocuments => new string[0];
