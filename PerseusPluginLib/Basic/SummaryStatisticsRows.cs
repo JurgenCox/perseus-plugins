@@ -67,12 +67,12 @@ namespace PerseusPluginLib.Basic{
 			=> "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Basic:SummaryStatisticsRows";
 
 		public string Description
-			=> "A set of simple descriptive quantities are calculated that help summarizing the expression data in each row.";
+			=> "A set of simple descriptive quantities are calculated that help summarizing the main data in each row.";
 
 		public string HelpOutput
 			=>
-				"For each selected summary statistic, a numerical column is added containing the specific quantitiy for each row of " +
-				"expression values. 'NaN' and 'Infinity' values are ignored for all calculations.";
+				"For each selected summary statistic, a numerical column is added containing the specific quantity for each row of " +
+				"main values. 'NaN' and 'Infinity' values are ignored for all calculations.";
 
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
@@ -83,7 +83,7 @@ namespace PerseusPluginLib.Basic{
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
-			ParameterWithSubParams<int> xp = param.GetParamWithSubParams<int>("Expression column selection");
+			ParameterWithSubParams<int> xp = param.GetParamWithSubParams<int>("Main column selection");
 			bool groups = xp.Value == 2;
 			string[] groupNames = null;
 			int[][] colIndsGroups = null;
@@ -165,8 +165,8 @@ namespace PerseusPluginLib.Basic{
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
 			return
 				new Parameters(new List<Parameter>{
-					new SingleChoiceWithSubParams("Expression column selection"){
-						Values = new[]{"Use all expression columns", "Select columns", "Within groups"},
+					new SingleChoiceWithSubParams("Main column selection"){
+						Values = new[]{"Use all main columns", "Select columns", "Within groups"},
 						SubParams =
 							new[]{
 								new Parameters(),

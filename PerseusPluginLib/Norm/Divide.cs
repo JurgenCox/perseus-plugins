@@ -13,7 +13,7 @@ namespace PerseusPluginLib.Norm{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
 		public string Description => "Divide all values by the specified quantity calculated on each row/column.";
-		public string HelpOutput => "Normalized expression matrix.";
+		public string HelpOutput => "Normalized matrix.";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string Name => "Divide";

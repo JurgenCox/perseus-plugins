@@ -27,11 +27,11 @@ namespace PerseusPluginLib.Filter{
 
 		public string Description
 			=>
-				"Columns of the expression matrix are filtered to contain at least the specified numbers of entries that are " +
+				"Columns of the matrix are filtered to contain at least the specified numbers of entries that are " +
 				"valid in the specified way.";
 
 		public string HelpOutput
-			=> "The matrix of expression values is constrained to contain only these columns that fulfill the requirement.";
+			=> "The matrix is constrained to contain only these columns that fulfill the requirement.";
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){

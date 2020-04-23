@@ -11,7 +11,7 @@ namespace PerseusPluginLib.Norm{
 		public bool HasButton => false;
 		public Bitmap2 DisplayImage => null;
 		public string Description => "The values in each row/column are replaced by ranks.";
-		public string HelpOutput => "Normalized expression matrix.";
+		public string HelpOutput => "Normalized matrix.";
 		public string[] HelpSupplTables => new string[0];
 		public int NumSupplTables => 0;
 		public string Name => "Rank";

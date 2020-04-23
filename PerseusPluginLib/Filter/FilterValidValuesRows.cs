@@ -40,11 +40,11 @@ namespace PerseusPluginLib.Filter{
 
 		public string Description
 			=>
-				"Rows of the expression matrix are filtered to contain at least the specified numbers of entries that are " +
+				"Rows of the matrix are filtered to contain at least the specified numbers of entries that are " +
 				"valid in the specified way.";
 
 		public string HelpOutput
-			=> "The matrix of expression values is constrained to contain only these rows that fulfil the requirement.";
+			=> "The matrix is constrained to contain only these rows that fulfil the requirement.";
 
 		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){

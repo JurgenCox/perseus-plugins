@@ -19,7 +19,7 @@ namespace PerseusPluginLib.Basic{
 
 		public string Description
 			=>
-				"A set of simple descriptive quantities are calculated that help summarizing the data in the selected expression " +
+				"A set of simple descriptive quantities are calculated that help summarizing the data in the selected main " +
 				"or numerical columns.";
 
 		public string HelpOutput
