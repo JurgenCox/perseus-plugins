@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using BaseLibS.Graph;
 using BaseLibS.Num;
 using BaseLibS.Num.Test;
@@ -75,14 +76,14 @@ namespace PerseusPluginLib.Significance{
 				BaseVector intens = icols[i] < mdata.ColumnCount
 					? mdata.Values.GetColumn(icols[i])
 					: new DoubleArrayVector(mdata.NumericColumns[icols[i] - mdata.ColumnCount]);
-				double[] pvals = CalcSignificanceB(r, intens, side);
+				double[] pvals = NumUtils.CalcSignificanceB(r.ToArray(), intens.ToArray(), side);
 				string[][] fdr;
 				switch (truncation){
 					case TestTruncation.Pvalue:
 						fdr = PerseusPluginUtils.CalcPvalueSignificance(pvals, threshold);
 						break;
 					case TestTruncation.BenjaminiHochberg:
-						fdr = PerseusPluginUtils.CalcBenjaminiHochbergFdr(pvals, threshold, out double[] fdrs);
+						fdr = PerseusPluginUtils.CalcBenjaminiHochbergFdr(pvals, threshold, out double[] _);
 						break;
 					default:
 						throw new Exception("Never get here.");
@@ -90,29 +91,6 @@ namespace PerseusPluginLib.Significance{
 				mdata.AddNumericColumn(mdata.ColumnNames[rcols[i]] + " Significance B", "", pvals);
 				mdata.AddCategoryColumn(mdata.ColumnNames[rcols[i]] + " B significant", "", fdr);
 			}
-		}
-
-		public static double[] CalcSignificanceB(BaseVector ratios, BaseVector intens, TestSide side){
-			double[] result = new double[ratios.Length];
-			for (int i = 0; i < result.Length; i++){
-				result[i] = 1;
-			}
-			List<double> lRatio = new List<double>();
-			List<double> lIntensity = new List<double>();
-			List<int> indices = new List<int>();
-			for (int i = 0; i < ratios.Length; i++){
-				if (!double.IsNaN(ratios[i]) && !double.IsInfinity(ratios[i]) && !double.IsNaN(intens[i]) &&
-					!double.IsInfinity(intens[i])){
-					lRatio.Add(ratios[i]);
-					lIntensity.Add(intens[i]);
-					indices.Add(i);
-				}
-			}
-			double[] ratioSignificanceB = NumUtils.MovingBoxPlot(lRatio.ToArray(), lIntensity.ToArray(), -1, side);
-			for (int i = 0; i < indices.Count; i++){
-				result[indices[i]] = ratioSignificanceB[i];
-			}
-			return result;
 		}
 
 		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
