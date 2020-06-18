@@ -636,5 +636,49 @@ namespace PerseusPluginLib.Utils{
 			file1.Close();
 			return bm;
 		}
+
+		public static double StandardError(IList<double> x)
+		{
+			double error = (double)StandardDeviation(x) / Math.Sqrt(x.Count);
+			return error;
+		}
+
+
+		public static double StandardDeviation(IList<double> x)
+		{
+			return Math.Sqrt(Variance(x));
+		}
+		public static double Variance(IList<double> x)
+		{
+			if (x.Count < 2)
+			{
+				return double.NaN;
+			}
+			int n = x.Count;
+			double mean = Mean(x);
+			double var = 0;
+			for (int i = 0; i < n; i++)
+			{
+				double w = x[i] - mean;
+				var += w * w;
+			}
+			var /= n - 1;
+			return var;
+		}
+
+		public static double Mean(this IList<double> x)
+		{
+			int n = x.Count;
+			if (n == 0)
+			{
+				return double.NaN;
+			}
+			double sum = 0;
+			for (int i = 0; i < n; i++)
+			{
+				sum += x[i];
+			}
+			return sum / n;
+		}
 	}
 }
