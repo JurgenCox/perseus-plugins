@@ -22,7 +22,9 @@ namespace PerseusPluginLib.Rearrange{
 		public float DisplayRank => 6;
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
-		public string Url => "http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Rearrange:SortByColumn";
+
+		public string Url =>
+			"http://coxdocs.org/doku.php?id=perseus:user:activities:MatrixProcessing:Rearrange:SortByColumn";
 
 		public int GetMaxThreads(Parameters parameters){
 			return 1;
@@ -32,41 +34,33 @@ namespace PerseusPluginLib.Rearrange{
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			int ind = param.GetParam<int>("Column").Value;
 			bool descending = param.GetParam<bool>("Descending").Value;
-            if (ind < mdata.Values.ColumnCount)
-            {
-                BaseVector v = mdata.Values.GetColumn(ind);
-                SortByValues(mdata, v.ToArray(), descending);
-            }
-            else if (ind < mdata.Values.ColumnCount + mdata.NumericColumnCount)
-            {
-                double[] v = mdata.NumericColumns[ind - mdata.ColumnCount];
-                SortByValues(mdata, v, descending);
-            }
-            else
-            {
-                string[] v = mdata.StringColumns[ind - mdata.ColumnCount - mdata.NumericColumnCount];
-                SortByValues(mdata, v, descending);
-            }
-        }
+			if (ind < mdata.Values.ColumnCount){
+				BaseVector v = mdata.Values.GetColumn(ind);
+				SortByValues(mdata, v.ToArray(), descending);
+			} else if (ind < mdata.Values.ColumnCount + mdata.NumericColumnCount){
+				double[] v = mdata.NumericColumns[ind - mdata.ColumnCount];
+				SortByValues(mdata, v, descending);
+			} else{
+				string[] v = mdata.StringColumns[ind - mdata.ColumnCount - mdata.NumericColumnCount];
+				SortByValues(mdata, v, descending);
+			}
+		}
 
-	    private static void SortByValues<T>(IMatrixData mdata, T[] v, bool descending) where T : IComparable<T>
-	    {
-	        int[] o = ArrayUtils.Order(v);
-	        if (descending)
-	        {
-	            ArrayUtils.Revert(o);
-	        }
-	        mdata.ExtractRows(o);
-	    }
+		private static void SortByValues<T>(IMatrixData mdata, T[] v, bool descending) where T : IComparable<T>{
+			int[] o = ArrayUtils.Order(v);
+			if (descending){
+				ArrayUtils.Revert(o);
+			}
+			mdata.ExtractRows(o);
+		}
 
-	    public Parameters GetParameters(IMatrixData mdata, ref string errorString)
-		{
-            string[] choice = new[] { mdata.ColumnNames, mdata.NumericColumnNames, mdata.StringColumnNames }.SelectMany(x => x).ToArray();
-            return
-                new Parameters(
-                    new SingleChoiceParam("Column") { Values = choice, Help = "Select here the column that should be used for sorting." },
-                    new BoolParam("Descending") { Help = "If checked the values will be sorted largest to smallest." }
-                );
-        }
-    }
+		public Parameters GetParameters(IMatrixData mdata, ref string errorString){
+			string[] choice = new[]{mdata.ColumnNames, mdata.NumericColumnNames, mdata.StringColumnNames}
+				.SelectMany(x => x).ToArray();
+			return new Parameters(
+				new SingleChoiceParam("Column"){
+					Values = choice, Help = "Select here the column that should be used for sorting."
+				}, new BoolParam("Descending"){Help = "If checked the values will be sorted largest to smallest."});
+		}
+	}
 }
