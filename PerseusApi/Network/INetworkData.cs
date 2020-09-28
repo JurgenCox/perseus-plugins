@@ -5,7 +5,7 @@ namespace PerseusApi.Network{
 	/// <summary>
 	/// Network collection table interface
 	/// </summary>
-	public interface INetworkData : IDataWithAnnotationColumns, IData, IEnumerable<INetworkInfo>{
+	public interface INetworkData : IDataWithAnnotationRows, IData, IEnumerable<INetworkInfo>{
 		/// <summary>
 		/// Get network by index.
 		/// </summary>
