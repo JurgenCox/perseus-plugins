@@ -1,11 +1,5 @@
 ﻿using PerseusApi.Matrix;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BaseLibS.Num;
-using System;
 using System.Linq;
 
 namespace PerseusPluginLib.Basic

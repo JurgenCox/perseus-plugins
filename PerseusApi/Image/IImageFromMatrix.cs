@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using BaseLibS.Param;
+﻿using BaseLibS.Param;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
 

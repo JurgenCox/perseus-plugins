@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using BaseLibS.Graph;
-using BaseLibS.Num;
 using BaseLibS.Param;
-using BaseLibS.Util;
 using PerseusApi.Document;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
-using PerseusApi.Utils;
 using PerseusPluginLib.AnnotCols.AnnotationProvider;
 
 namespace PerseusPluginLib.AnnotCols{

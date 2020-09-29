@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using BaseLibS.Graph;
-using BaseLibS.Num;
 using BaseLibS.Param;
 using PerseusApi.Document;
 using PerseusApi.Generic;
