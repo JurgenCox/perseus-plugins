@@ -1,8 +1,9 @@
-﻿namespace PerseusApi.Generic {
-	public enum DataType {
+﻿namespace PerseusApi.Generic{
+	public enum DataType{
 		Matrix,
 		Document,
-        Network,
+		Network,
+		Image,
 		Unknown
 	}
 }
