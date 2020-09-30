@@ -7,5 +7,8 @@ namespace PerseusApi.Image{
 		int LengthY{ get; }
 		int LengthZ{ get; }
 		float GetValueAt(int t, int x, int y, int z);
+
+		float MinValue{ get; }
+		float MaxValue{ get; }
 	}
 }
