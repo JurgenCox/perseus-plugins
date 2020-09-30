@@ -2,20 +2,11 @@
 using PerseusApi.Generic;
 
 namespace PerseusApi.Image{
-	public interface IImageData : IDataWithAnnotationRows, IData, IEnumerable<IImageSeries>{
-		/// <summary>
-		/// Get image info by index.
-		/// </summary>
-		IImageSeries this[int i] { get; }
+	public interface IImageData : IDataWithAnnotationRows, IData, IEnumerable<IImageSeriesCollection>{
+		IImageSeriesCollection this[int i] { get; }
 
-		/// <summary>
-		/// Add a IImageInfo to the collection.
-		/// </summary>
-		void AddImageInfo(params IImageSeries[] data);
+		void AddImageData(float[][,,,] data, string name);
 
-		int ImageSeriesCount{ get; }
-
-		IImageSeries GetImageSeriesAt(int index);
-
+		int Count{ get; }
 	}
 }
