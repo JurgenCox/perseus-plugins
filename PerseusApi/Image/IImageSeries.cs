@@ -10,5 +10,10 @@ namespace PerseusApi.Image{
 
 		float MinValue{ get; }
 		float MaxValue{ get; }
+
+		bool HasTime{ get; }
+
+		bool IsFlat{ get; }
+		int FlatDimension{ get; }
 	}
 }
