@@ -7,13 +7,17 @@ namespace PerseusApi.Image{
 		int LengthY{ get; }
 		int LengthZ{ get; }
 		float GetValueAt(int t, int x, int y, int z);
-
-		float MinValue{ get; }
-		float MaxValue{ get; }
-
+		float GetWeightAt(int c, int x, int y, int z);
+		bool GetIndicatorAt(int c, int x, int y, int z);
+		int IndicatorCount { get; }
+		float MinValue { get; }
+		float MaxValue { get; }
 		bool HasTime{ get; }
-
 		bool IsFlat{ get; }
 		int FlatDimension{ get; }
+		bool HasWeights{ get; }
+		int NumComponents{ get; }
+		bool IsTwoSided{ get; }
+		void SetWeights(float[,,,] weights, bool isTwoSided);
 	}
 }
