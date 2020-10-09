@@ -19,5 +19,9 @@ namespace PerseusApi.Image{
 		int NumComponents{ get; }
 		bool IsTwoSided{ get; }
 		void SetWeights(float[,,,] weights, bool isTwoSided);
+		float RepetitionTimeSeconds{ get; }
+		float VoxelSizeXmm { get; }
+		float VoxelSizeYmm { get; }
+		float VoxelSizeZmm { get; }
 	}
 }

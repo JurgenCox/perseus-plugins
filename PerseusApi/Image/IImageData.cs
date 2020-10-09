@@ -4,7 +4,7 @@ using PerseusApi.Generic;
 namespace PerseusApi.Image{
 	public interface IImageData : IDataWithAnnotationRows, IData, IEnumerable<ISubject>{
 		ISubject this[int i]{ get; }
-		void AddSubject(string name);
+		void AddSubject(string name, SubjectData subjectData);
 		void AddAnat(float[,,] data);
 		void AddFunc(float[,,,] data);
 		void AddDwi(float[,,,] data);
