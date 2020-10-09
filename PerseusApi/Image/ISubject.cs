@@ -8,6 +8,7 @@ namespace PerseusApi.Image{
 		IImageSeries GetAnatAt(int index);
 		IImageSeries GetFuncAt(int index);
 		IImageSeries GetDwiAt(int index);
+		IImageSeries GetAt(MriType type, int index);
 
 		string Name{ get; }
 	}
