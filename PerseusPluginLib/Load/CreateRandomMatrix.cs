@@ -22,7 +22,7 @@ namespace PerseusPluginLib.Load{
 
 		public string Description
 			=>
-				"Create a matrix of given dimensions containg random " +
+				"Create a matrix of given dimensions containing random " +
 				"numbers drawn from a single or a superposition of several normal distributions.";
 
 		public int GetMaxThreads(Parameters parameters){

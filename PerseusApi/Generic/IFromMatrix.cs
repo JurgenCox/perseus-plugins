@@ -1,4 +1,6 @@
-﻿namespace PerseusApi.Generic{
+﻿using BaseLibS.Api.Generic;
+
+namespace PerseusApi.Generic{
 	public interface IFromMatrix : IActivityWithHeading {
 		string HelpOutput { get; }
 		string[] HelpSupplTables { get; }

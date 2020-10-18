@@ -702,8 +702,8 @@ namespace PerseusApi.Utils{
 			}
 			split = SplitLine(line, separator);
 			foreach (Tuple<Relation[], int[], bool> filter in filters){
-				if (!IsValidRowNumFilter(ToDoubles(split.SubArray(filter.Item2), hasAddtlMatrices),
-					filter.Item1, filter.Item3)){
+				if (!IsValidRowNumFilter(ToDoubles(split.SubArray(filter.Item2), hasAddtlMatrices), filter.Item1,
+					filter.Item3)){
 					return false;
 				}
 			}
@@ -717,8 +717,8 @@ namespace PerseusApi.Utils{
 			}
 			string[] w = SplitLine(line, separator);
 			foreach (Tuple<Relation[], int[], bool> filter in filters){
-				if (!IsValidRowNumFilter(ToDoubles(w.SubArray(filter.Item2), hasAddtlMatrices),
-					filter.Item1, filter.Item3)){
+				if (!IsValidRowNumFilter(ToDoubles(w.SubArray(filter.Item2), hasAddtlMatrices), filter.Item1,
+					filter.Item3)){
 					return false;
 				}
 			}
@@ -789,11 +789,42 @@ namespace PerseusApi.Utils{
 		}
 
 		/// <summary>
+		/// Write data table to file with tab separation.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="filename"></param>
+		public static void WriteDataWithAnnotationRows(IDataWithAnnotationRows data, string filename){
+			using (StreamWriter writer = new StreamWriter(filename)){
+				WriteDataWithAnnotationRows(data, writer);
+			}
+		}
+
+		/// <summary>
 		/// Write data table to stream with tab separation.
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="writer"></param>
 		public static void WriteDataWithAnnotationColumns(IDataWithAnnotationColumns data, StreamWriter writer){
+			IEnumerable<string> columnNames = ColumnNames(data);
+			writer.WriteLine(StringUtils.Concat("\t", columnNames));
+			if (HasAnyDescription(data)){
+				IEnumerable<string> columnDescriptions = ColumnDescriptions(data);
+				writer.WriteLine("#!{Description}" + StringUtils.Concat("\t", columnDescriptions));
+			}
+			IEnumerable<string> columnTypes = ColumnTypes(data);
+			writer.WriteLine("#!{Type}" + StringUtils.Concat("\t", columnTypes));
+			IEnumerable<string> dataRows = DataAnnotationRows(data);
+			foreach (string row in dataRows){
+				writer.WriteLine(row);
+			}
+		}
+
+		/// <summary>
+		/// Write data table to stream with tab separation.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="writer"></param>
+		public static void WriteDataWithAnnotationRows(IDataWithAnnotationRows data, StreamWriter writer){
 			IEnumerable<string> columnNames = ColumnNames(data);
 			writer.WriteLine(StringUtils.Concat("\t", columnNames));
 			if (HasAnyDescription(data)){
@@ -857,7 +888,7 @@ namespace PerseusApi.Utils{
 					}
 					words.Add(s1);
 				}
-				IEnumerable<string> row = words.Concat(DataAnnotationRow(data, j));
+				IEnumerable<string> row = words.Concat(DataAnnotationRow((IDataWithAnnotationRows) data, j));
 				writer.WriteLine(StringUtils.Concat("\t", row));
 			}
 		}
@@ -866,6 +897,31 @@ namespace PerseusApi.Utils{
 			for (int i = 0; i < data.RowCount; i++){
 				yield return StringUtils.Concat("\t", DataAnnotationRow(data, i));
 			}
+		}
+
+		private static IEnumerable<string> DataAnnotationRows(IDataWithAnnotationRows data){
+			for (int i = 0; i < data.ColumnCount; i++){
+				yield return StringUtils.Concat("\t", DataAnnotationRow(data, i));
+			}
+		}
+
+		private static IEnumerable<string> DataAnnotationRow(IDataWithAnnotationRows data, int j){
+			List<string> words = new List<string>();
+			for (int i = 0; i < data.CategoryRowCount; i++){
+				string[] q = data.GetCategoryRowEntryAt(i, j) ?? new string[0];
+				words.Add(q.Length > 0 ? StringUtils.Concat(";", q) : "");
+			}
+			for (int i = 0; i < data.NumericRowCount; i++){
+				words.Add(data.NumericRows[i][j].ToString());
+			}
+			for (int i = 0; i < data.StringRowCount; i++){
+				words.Add(data.StringRows[i][j] ?? string.Empty);
+			}
+			for (int i = 0; i < data.MultiNumericRowCount; i++){
+				double[] q = data.MultiNumericRows[i][j];
+				words.Add(q != null && q.Length > 0 ? StringUtils.Concat(";", q) : "");
+			}
+			return words;
 		}
 
 		private static IEnumerable<string> DataAnnotationRow(IDataWithAnnotationColumns data, int j){
@@ -956,6 +1012,23 @@ namespace PerseusApi.Utils{
 			return words;
 		}
 
+		private static IEnumerable<string> ColumnTypes(IDataWithAnnotationRows data){
+			List<string> words = new List<string>();
+			for (int i = 0; i < data.CategoryRowCount; i++){
+				words.Add("C");
+			}
+			for (int i = 0; i < data.NumericRowCount; i++){
+				words.Add("N");
+			}
+			for (int i = 0; i < data.StringRowCount; i++){
+				words.Add("T");
+			}
+			for (int i = 0; i < data.MultiNumericRowCount; i++){
+				words.Add("M");
+			}
+			return words;
+		}
+
 		private static IEnumerable<string> ColumnDescriptions(IMatrixData data){
 			List<string> words = new List<string>();
 			for (int i = 0; i < data.ColumnCount; i++){
@@ -981,6 +1054,23 @@ namespace PerseusApi.Utils{
 			return words;
 		}
 
+		private static IEnumerable<string> ColumnDescriptions(IDataWithAnnotationRows data){
+			List<string> words = new List<string>();
+			for (int i = 0; i < data.CategoryRowCount; i++){
+				words.Add(data.CategoryRowDescriptions[i] ?? "");
+			}
+			for (int i = 0; i < data.NumericRowCount; i++){
+				words.Add(data.NumericRowDescriptions[i] ?? "");
+			}
+			for (int i = 0; i < data.StringRowCount; i++){
+				words.Add(data.StringRowDescriptions[i] ?? "");
+			}
+			for (int i = 0; i < data.MultiNumericRowCount; i++){
+				words.Add(data.MultiNumericRowDescriptions[i] ?? "");
+			}
+			return words;
+		}
+
 		private static IEnumerable<string> ColumnNames(IMatrixData data){
 			List<string> words = new List<string>();
 			for (int i = 0; i < data.ColumnCount; i++){
@@ -1002,6 +1092,23 @@ namespace PerseusApi.Utils{
 			}
 			for (int i = 0; i < data.MultiNumericColumnCount; i++){
 				words.Add(data.MultiNumericColumnNames[i]);
+			}
+			return words;
+		}
+
+		private static IEnumerable<string> ColumnNames(IDataWithAnnotationRows data){
+			List<string> words = new List<string>();
+			for (int i = 0; i < data.CategoryRowCount; i++){
+				words.Add(data.CategoryRowNames[i]);
+			}
+			for (int i = 0; i < data.NumericRowCount; i++){
+				words.Add(data.NumericRowNames[i]);
+			}
+			for (int i = 0; i < data.StringRowCount; i++){
+				words.Add(data.StringRowNames[i]);
+			}
+			for (int i = 0; i < data.MultiNumericRowCount; i++){
+				words.Add(data.MultiNumericRowNames[i]);
 			}
 			return words;
 		}
@@ -1039,6 +1146,30 @@ namespace PerseusApi.Utils{
 			for (int i = 0; i < data.MultiNumericColumnCount; i++){
 				if (data.MultiNumericColumnDescriptions[i] != null &&
 				    data.MultiNumericColumnDescriptions[i].Length > 0){
+					return true;
+				}
+			}
+			return false;
+		}
+
+		private static bool HasAnyDescription(IDataWithAnnotationRows data){
+			for (int i = 0; i < data.CategoryRowCount; i++){
+				if (data.CategoryRowDescriptions[i] != null && data.CategoryRowDescriptions[i].Length > 0){
+					return true;
+				}
+			}
+			for (int i = 0; i < data.NumericRowCount; i++){
+				if (data.NumericRowDescriptions[i] != null && data.NumericRowDescriptions[i].Length > 0){
+					return true;
+				}
+			}
+			for (int i = 0; i < data.StringRowCount; i++){
+				if (data.StringRowDescriptions[i] != null && data.StringRowDescriptions[i].Length > 0){
+					return true;
+				}
+			}
+			for (int i = 0; i < data.MultiNumericRowCount; i++){
+				if (data.MultiNumericRowDescriptions[i] != null && data.MultiNumericRowDescriptions[i].Length > 0){
 					return true;
 				}
 			}

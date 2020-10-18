@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BaseLibS.Api.Image;
 using PerseusApi.Generic;
 
 namespace PerseusApi.Image{
