@@ -3,8 +3,8 @@ using BaseLibS.Api.Image;
 using PerseusApi.Generic;
 
 namespace PerseusApi.Image{
-	public interface IImageData : IDataWithAnnotationRows, IData, IEnumerable<ISubject>{
-		ISubject this[int i]{ get; }
+	public interface IImageData : IDataWithAnnotationRows, IData, IEnumerable<IImageSubject>{
+		IImageSubject this[int i]{ get; }
 		void AddSubject(string name, SubjectData subjectData);
 		void AddAnat(float[,,] data, float voxelSizeXmm, float voxelSizeYmm, float voxelSizeZmm);
 
