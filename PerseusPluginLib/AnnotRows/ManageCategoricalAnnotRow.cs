@@ -158,9 +158,10 @@ namespace PerseusPluginLib.AnnotRows{
 			int groupColInd = s.Value;
 			Parameters sp = s.GetSubParameters();
 			string[][] newRow = new string[mdata.ColumnCount][];
+			Dictionary<string, string> map = sp.GetParam<Dictionary<string, string>>("Values").Value;
 			for (int i = 0; i < mdata.ColumnCount; i++){
 				string t = mdata.ColumnNames[i];
-				string x = sp.GetParam<string>(t).Value;
+				string x = map[t];
 				newRow[i] = x.Length > 0 ? x.Split(';') : new string[0];
 			}
 			mdata.SetCategoryRowAt(newRow, groupColInd);
@@ -175,7 +176,8 @@ namespace PerseusPluginLib.AnnotRows{
 				new SingleChoiceWithSubParams("Category row"){
 					Values = mdata.CategoryRowNames,
 					SubParams = subParams,
-					Help = "Select the category row that should be edited."
+					Help = "Select the category row that should be edited.",
+					ParamNameWidth = 50
 				}
 			};
 			return new Parameters(par);
@@ -183,11 +185,12 @@ namespace PerseusPluginLib.AnnotRows{
 
 		public Parameters GetEditParameters(IMatrixData mdata, int ind){
 			List<Parameter> par = new List<Parameter>();
+			Dictionary<string, string> map = new Dictionary<string, string>();
 			for (int i = 0; i < mdata.ColumnCount; i++){
 				string t = mdata.ColumnNames[i];
-				string help = "Specify a category value for the column '" + t + "'.";
-				par.Add(new StringParam(t, StringUtils.Concat(";", mdata.GetCategoryRowAt(ind)[i])){Help = help});
+				map.Add(t, StringUtils.Concat(";", mdata.GetCategoryRowAt(ind)[i]));
 			}
+			par.Add(new DictionaryStringValueParam("Values", map));
 			return new Parameters(par);
 		}
 
