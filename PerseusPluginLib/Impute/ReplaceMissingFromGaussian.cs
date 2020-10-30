@@ -60,7 +60,7 @@ namespace PerseusPluginLib.Impute{
 				new Parameters(
 					new DoubleParam("Width", 0.3){
 						Help =
-							"The width of the gaussian distibution relative to the standard deviation of measured values. A value of 0.5 " +
+							"The width of the gaussian distribution relative to the standard deviation of measured values. A value of 0.5 " +
 							"would mean that the width of the distribution used for drawing random numbers is half of the standard " +
 							"deviation of the data."
 					},
