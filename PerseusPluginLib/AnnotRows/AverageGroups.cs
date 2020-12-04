@@ -40,7 +40,7 @@ namespace PerseusPluginLib.AnnotRows{
 			return new Parameters(new SingleChoiceParam("Grouping"){Values = mdata.CategoryRowNames},
 				new SingleChoiceParam("Average type"){
 					Values = new[]{"Median", "Mean", "Sum", "Geometric mean"},
-					Help = "Select wether median or mean should be used for the averaging."
+					Help = "Select whether median or mean should be used for the averaging."
 				},
 				new IntParam("Min. valid values per group", 1), new BoolParam("Keep original data", false),
 				new SingleChoiceParam("Add variation"){
