@@ -11,6 +11,9 @@ namespace PerseusApi.Image{
 		void AddFunc(float[,,,] data, float repetitionTimeSeconds, float voxelSizeXmm, float voxelSizeYmm,
 			float voxelSizeZmm);
 
+		void AddFunc(float[,,,] data, float repetitionTimeSeconds, float voxelSizeXmm, float voxelSizeYmm,
+			float voxelSizeZmm, object niftiHeader);
+
 		void AddDwi(float[,,,] data, float repetitionTimeSeconds, float voxelSizeXmm, float voxelSizeYmm,
 			float voxelSizeZmm);
 
