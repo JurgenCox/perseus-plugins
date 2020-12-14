@@ -9,10 +9,7 @@ namespace PerseusApi.Image{
 		void AddAnat(float[,,] data, float voxelSizeXmm, float voxelSizeYmm, float voxelSizeZmm);
 
 		void AddFunc(float[,,,] data, float repetitionTimeSeconds, float voxelSizeXmm, float voxelSizeYmm,
-			float voxelSizeZmm);
-
-		void AddFunc(float[,,,] data, float repetitionTimeSeconds, float voxelSizeXmm, float voxelSizeYmm,
-			float voxelSizeZmm, object niftiHeader);
+			float voxelSizeZmm, object niftiHeader = null, string name = "");
 
 		void AddDwi(float[,,,] data, float repetitionTimeSeconds, float voxelSizeXmm, float voxelSizeYmm,
 			float voxelSizeZmm);
