@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PerseusApi.Generic;
+using PerseusApi.Matrix;
 using PerseusApi.Network;
 using PerseusApi.Utils;
 
@@ -46,25 +47,25 @@ namespace PerseusApi.Network
 				ReadMatrixDataInto(edgeTable, Path.Combine(folder, $"{guid}_edges.txt"), processInfo);
 				var graph = PerseusFactory.CreateGraph();
 				var nodeIndex = new Dictionary<INode, int>();
-				var nameToNode = new Dictionary<string, INode>();
-				var nodeColumn = nodeTable.GetStringColumn("node");
+				Dictionary<string, INode> nameToNode = new Dictionary<string, INode>();
+				string[] nodeColumn = nodeTable.GetStringColumn("node");
 				for (int row = 0; row < nodeTable.RowCount; row++)
 				{
-					var node = graph.AddNode();
+					INode node = graph.AddNode();
 					nodeIndex[node] = row;
 					nameToNode[nodeColumn[row]] = node;
 				}
-				var sourceColumn = edgeTable.GetStringColumn("source");
-				var targetColumn = edgeTable.GetStringColumn("target");
+				string[] sourceColumn = edgeTable.GetStringColumn("source");
+				string[] targetColumn = edgeTable.GetStringColumn("target");
 				var edgeIndex = new Dictionary<IEdge, int>();
 				for (int row = 0; row < edgeTable.RowCount; row++)
 				{
 					var source = nameToNode[sourceColumn[row]];
 					var target = nameToNode[targetColumn[row]];
-					var edge = graph.AddEdge(source, target);
+					IEdge edge = graph.AddEdge(source, target);
 					edgeIndex[edge] = row;
 				}
-				var network = PerseusFactory.CreateNetworkInfo(graph, nodeTable, nodeIndex, edgeTable, edgeIndex, netAttr.name, guid);
+				INetworkInfo network = PerseusFactory.CreateNetworkInfo(graph, nodeTable, nodeIndex, edgeTable, edgeIndex, netAttr.name, guid);
 				ndata.AddNetworks(network);
 			}
 			// overwrite graph table, which was modified by `ndata.AddNetwork(network)`
@@ -72,7 +73,7 @@ namespace PerseusApi.Network
 		}
 		private static void ReadMatrixDataInto(IDataWithAnnotationColumns data, string file, ProcessInfo processInfo)
 		{
-			var mdata = PerseusFactory.CreateMatrixData();
+			IMatrixData mdata = PerseusFactory.CreateMatrixData();
 			PerseusUtils.ReadMatrixFromFile(mdata, processInfo, file, '\t');
 			data.CopyAnnotationColumnsFrom(mdata);
 		}
@@ -87,7 +88,7 @@ namespace PerseusApi.Network
 				Directory.CreateDirectory(folder);
 			}
 			PerseusUtils.WriteDataWithAnnotationColumns(ndata, Path.Combine(folder, "networks.txt"));
-			foreach (var network in ndata)
+			foreach (INetworkInfo network in ndata)
 			{
 				PerseusUtils.WriteDataWithAnnotationColumns(network.NodeTable, Path.Combine(folder, $"{network.Guid}_nodes.txt"));
 				PerseusUtils.WriteDataWithAnnotationColumns(network.EdgeTable, Path.Combine(folder, $"{network.Guid}_edges.txt"));
