@@ -10,6 +10,7 @@ using BaseLibS.Parse;
 using BaseLibS.Util;
 using PerseusApi.Generic;
 using PerseusApi.Matrix;
+using PerseusApi.Network;
 
 namespace PerseusApi.Utils{
 	public static class PerseusUtils{
@@ -1320,6 +1321,169 @@ namespace PerseusApi.Utils{
 			imputed.Init(mdata.RowCount, mdata.ColumnCount);
 			mdata.IsImputed = imputed;
 			return mdata;
+		}
+
+		/// <summary>
+		/// Create index map for mapping between two tables.
+		/// leftIndexMap contains a mapping of row indices between the two tables
+		/// <code>unmatchedRightIndices</code> contains a list of unmapped 
+		/// </summary>
+		public static (int[][] leftIndexMap, int[] unmatchedRightIndices) GetIndexMap(
+			IDataWithAnnotationColumns leftData, IDataWithAnnotationColumns rightData, (int left, int right) first,
+			(int left, int right)? second, bool ignoreCase){
+			Dictionary<string, List<int>> idToRows;
+			string[][] matchCol;
+			if (second.HasValue){
+				idToRows = MapIdToRow(rightData, first.right, second.Value.right, ignoreCase);
+				matchCol = GetColumnPair(leftData, first.left, second.Value.left);
+			} else{
+				idToRows = MapIdToRow(rightData, first.right, ignoreCase);
+				matchCol = GetColumnSplitBySemicolon(leftData, first.left);
+			}
+			HashSet<int> unmatchedIndices = new HashSet<int>(Enumerable.Range(0, rightData.RowCount));
+			int[][] indexMap = new int[matchCol.Length][];
+			for (int i = 0; i < matchCol.Length; i++){
+				int[] indices = GetIndices(matchCol[i], ignoreCase, idToRows);
+				indexMap[i] = indices;
+				foreach (int index in indices){
+					unmatchedIndices.Remove(index);
+				}
+			}
+			return (indexMap, unmatchedIndices.OrderBy(i => i).ToArray());
+		}
+
+		public static string[][] GetColumnSplitBySemicolon(IDataWithAnnotationColumns mdata, int matchingColumn){
+			string[] matchingColumn2;
+			if (matchingColumn < mdata.StringColumnCount){
+				matchingColumn2 = mdata.StringColumns[matchingColumn];
+			} else{
+				matchingColumn2 = mdata.NumericColumns[matchingColumn - mdata.StringColumnCount]
+					.Select(Convert.ToString).ToArray();
+			}
+			string[][] w = new string[matchingColumn2.Length][];
+			for (int i = 0; i < matchingColumn2.Length; i++){
+				string r = matchingColumn2[i].Trim();
+				w[i] = r.Length == 0 ? new string[0] : r.Split(';');
+				w[i] = ArrayUtils.UniqueValues(w[i]);
+			}
+			return w;
+		}
+
+		/// <summary>
+		/// Create a mapping from id to row index from the specified <see cref="idColumn"/>.
+		/// </summary>
+		public static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn,
+			bool ignoreCase){
+			string[][] splitIds = GetColumnSplitBySemicolon(data, idColumn);
+			Dictionary<string, List<int>> idToRow = new Dictionary<string, List<int>>();
+			for (int i = 0; i < splitIds.Length; i++){
+				foreach (string s in splitIds[i]){
+					string id = s;
+					if (ignoreCase){
+						id = id.ToLower();
+					}
+					if (idToRow.TryGetValue(id, out List<int> rows)){
+						rows.Add(i);
+					} else{
+						idToRow.Add(id, new List<int>{i});
+					}
+				}
+			}
+			return idToRow;
+		}
+
+		/// <summary>
+		/// Create a mapping from id1 and id2 with a magic <see cref="separator"/> to row index from the specified id columns.
+		/// </summary>
+		private static Dictionary<string, List<int>> MapIdToRow(IDataWithAnnotationColumns data, int idColumn1,
+			int idColumn2, bool ignoreCase){
+			string[][] splitIds1 = GetColumnSplitBySemicolon(data, idColumn1);
+			string[][] splitIds2 = GetColumnSplitBySemicolon(data, idColumn2);
+			Dictionary<string, List<int>> idToRows = new Dictionary<string, List<int>>();
+			for (int i = 0; i < splitIds1.Length; i++){
+				foreach (string s1 in splitIds1[i]){
+					foreach (string s2 in splitIds2[i]){
+						string id = s1 + separator + s2;
+						if (ignoreCase){
+							id = id.ToLower();
+						}
+						if (idToRows.TryGetValue(id, out List<int> rows)){
+							rows.Add(i);
+						} else{
+							idToRows.Add(id, new List<int>{i});
+						}
+					}
+				}
+			}
+			return idToRows;
+		}
+
+		public static int[] GetIndices(string[] m, bool ignoreCase, Dictionary<string, List<int>> idToRows){
+			List<int> matchingRows = new List<int>();
+			foreach (string s in m){
+				string id = s;
+				if (ignoreCase){
+					id = id.ToLower();
+				}
+				if (idToRows.TryGetValue(id, out List<int> rows)){
+					matchingRows.AddRange(rows);
+				}
+			}
+			int[] indices = ArrayUtils.UniqueValues(matchingRows.ToArray());
+			return indices;
+		}
+
+		private static string[][] GetColumnPair(IDataWithAnnotationColumns mdata1, int matchingColumnInMatrix1,
+			int additionalColumnInMatrix1){
+			string[][] matchCol = GetColumnSplitBySemicolon(mdata1, matchingColumnInMatrix1);
+			string[][] matchColAddtl = GetColumnSplitBySemicolon(mdata1, additionalColumnInMatrix1);
+			string[][] result = new string[matchCol.Length][];
+			for (int i = 0; i < result.Length; i++){
+				result[i] = Combine(matchCol[i], matchColAddtl[i]);
+			}
+			return result;
+		}
+
+		private static string[] Combine(IEnumerable<string> s1, ICollection<string> s2){
+			List<string> result = new List<string>();
+			foreach (string t1 in s1){
+				foreach (string t2 in s2){
+					result.Add(t1 + separator + t2);
+				}
+			}
+			result.Sort();
+			return result.ToArray();
+		}
+
+		private const string separator = "!§$%";
+
+		/// <summary>
+		/// Perform matching between tables and return unmatched indices.
+		/// </summary>
+		public static IEnumerable<(int[][] indexMap, int[] unmappedRightIndices)> MatchDataWithAnnotationRows(
+			((int[] copy, int combine) main, int[] text, (int[] copy, int combine) numeric, int[] category) annotation,
+			ICollection<IDataWithAnnotationColumns> tables, IMatrixData mdata,
+			((int m1, int m2) first, (int m1, int m2)? second, bool outer, bool ignoreCase) matching){
+			int LocalColumnIndex(int global, IDataWithAnnotationColumns edgeTable){
+				string[] commonStringColumns = NetworkUtils.Intersect(tables, table => table.StringColumnNames);
+				string[] commonNumericColumns = NetworkUtils.Intersect(tables, table => table.NumericColumnNames);
+				return global < commonStringColumns.Length
+					? edgeTable.StringColumnNames.FindIndex(col => col.Equals(commonStringColumns[global]))
+					: edgeTable.StringColumnCount + edgeTable.NumericColumnNames.FindIndex(col =>
+						  col.Equals(commonNumericColumns[global - commonStringColumns.Length]));
+			}
+
+			foreach (IDataWithAnnotationColumns table in tables){
+				int first = LocalColumnIndex(matching.first.m1, table);
+				matching.first.m1 = first;
+				if (matching.second.HasValue){
+					int second = LocalColumnIndex(matching.second.Value.m1, table);
+					matching.second = (second, matching.second.Value.m2);
+				}
+				(int[][] indexMatch, int[] unmatchedRightIndices) = PerseusUtils.GetIndexMap(table, mdata,
+					matching.first, matching.second, matching.ignoreCase);
+				yield return (indexMatch, unmatchedRightIndices);
+			}
 		}
 	}
 }
