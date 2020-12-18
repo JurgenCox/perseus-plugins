@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using BaseLibS.Graph;
+using PerseusApi.Network;
 
 namespace PerseusApi.Generic{
 	/// <summary>
@@ -81,5 +83,9 @@ namespace PerseusApi.Generic{
 		/// <param name="errString"></param>
 		/// <returns></returns>
 		bool IsConsistent(out string errString);
+
+		INetworkInfo CreateNetworkInfo(IGraph graph, IDataWithAnnotationColumns nodeTable,
+			Dictionary<INode, int> nodeIndex, IDataWithAnnotationColumns edgeTable, Dictionary<IEdge, int> edgeIndex,
+			string name);
 	}
 }
