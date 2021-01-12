@@ -6,8 +6,8 @@ using System.IO.Compression;
 
 
 
-namespace PerseusApi.Image
-{
+namespace PerseusApi.Image{
+    [Serializable]
     public class MRIMetadata : ICloneable
     {
         // see https://brainder.org/2012/09/23/the-nifti-file-format/
