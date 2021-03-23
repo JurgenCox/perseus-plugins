@@ -41,12 +41,15 @@ namespace PerseusPluginLib.Rearrange{
             switch (scwsp.Value)
             {
                 case 0:
-                    ProcessDataCreate(mdata, spar, processInfo);
+                    ProcessDataCreate(mdata, spar);
                     break;
                 case 1:
-                    ProcessDataWriteTemplateFile(mdata, spar);
+                    ProcessDataCreate(mdata, spar, processInfo);
                     break;
                 case 2:
+                    ProcessDataWriteTemplateFile(mdata, spar);
+                    break;
+                case 3:
                     string err = ProcessDataReadFromFileListNew(mdata, spar);
                     if (err != null)
                     {
@@ -56,8 +59,25 @@ namespace PerseusPluginLib.Rearrange{
             }
         }
 
-     
 
+        private static void ProcessDataCreate(IMatrixData mdata, Parameters param)
+        {
+            Dictionary<string, string> map = param.GetParam<Dictionary<string, string>>("Values").Value;
+            string[] newNames = new string[mdata.ColumnCount];
+            List<string> expressionColumnNames = new List<string>();
+            for (int i = 0; i < mdata.ColumnCount; i++)
+            {
+                string ename = mdata.ColumnNames[i];
+                string value = map[ename];
+                expressionColumnNames.Add(value);
+            }
+            newNames = GetStringArray(expressionColumnNames);
+            for (int i = 0; i < mdata.ColumnCount; i++)
+            {
+                if (newNames[i] != mdata.ColumnNames[i])
+                    mdata.ColumnNames[i] = newNames[i];
+            }
+        }
         private static string[] GetStringArray(List<string> getlistpoli)
         {
             List<string> doubles = getlistpoli.Select(i => (string)i).ToList();
@@ -68,7 +88,6 @@ namespace PerseusPluginLib.Rearrange{
         private static string ProcessDataReadFromFileListNew(IMatrixData mdata, Parameters param)
         {
             var fp = param.GetParam<string>("Input file").Value;
-            // string filename = fp.Value;
             string[] newNames = new string[mdata.ColumnCount];
             string[] newNamesCategory = new string[mdata.ColumnCount];
             string[] newNamesString = new string[mdata.ColumnCount];
@@ -148,29 +167,6 @@ namespace PerseusPluginLib.Rearrange{
             return null;
         }
 
-   
-
-        private static int GetNameIndex(IList<string> colNames)
-        {
-            for (int i = 0; i < colNames.Count; i++)
-            {
-                if (colNames[i].ToLower().Equals("ColumnNames"))
-                {
-                    return i;
-                }
-            }
-            return -1;
-        }
-
-        private static List<string[]> GetSelectableRegexes()
-        {
-            return new List<string[]> {
-                new[] {"..._01,02,03", "^(.*)_[0-9]*$"},
-                new[] {"(LFQ) intensity ..._01,02,03", "^(?:LFQ )?[Ii]ntensity (.*)_[0-9]*$"},
-                new[] {"(Normalized) ratio H/L ..._01,02,03", "^(?:Normalized )?[Rr]atio(?: [HML]/[HML]) (.*)_[0-9]*$"}
-            };
-        }
-
         public Parameters GetWriteTemplateFileParameters(IMatrixData mdata)
         {
             List<Parameter> par = new List<Parameter> {
@@ -217,14 +213,10 @@ namespace PerseusPluginLib.Rearrange{
             {
                 Values =
                     new[] {
-                        "Edit" , "Write template file", "Read from file"
-                     // , "Rename", "Delete",
-                   //     "Write template file", "Read from file"
+                       "Create", "Edit" , "Write template file", "Read from file"
                     },
                 SubParams = new[] {
-                    GetEditParameters(mdata), GetWriteTemplateFileParameters(mdata),
-                    // GetRenameParameters(mdata), GetDeleteParameters(mdata),
-                 //   GetWriteTemplateFileParameters(mdata), 
+                    GetCreateParameters(mdata), GetEditParameters(mdata), GetWriteTemplateFileParameters(mdata),
                     GetReadFromFileParameters(mdata)
                 },
                 ParamNameWidth = 136,
@@ -242,6 +234,19 @@ namespace PerseusPluginLib.Rearrange{
             return new Parameters(par);
         }
 
+
+        public Parameters GetCreateParameters(IMatrixData mdata)
+        {
+            Dictionary<string, string> map = new Dictionary<string, string>();
+            foreach (string t in mdata.ColumnNames)
+            {
+                map.Add(t, t);
+            }
+             List<Parameter> par = new List<Parameter>{
+            new DictionaryStringValueParam("Values", map)
+             };
+            return new Parameters(par);
+        }
         public void ProcessDataCreate(IMatrixData mdata, Parameters param, ProcessInfo processInfo)
         {
             List<string> expressionColumnNames = new List<string>();
