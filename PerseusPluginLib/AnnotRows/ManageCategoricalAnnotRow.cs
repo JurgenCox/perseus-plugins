@@ -84,40 +84,66 @@ namespace PerseusPluginLib.AnnotRows{
 				return "Error: the file has to contain a column called 'Name'.";
 			}
 			if (colNames.Length < 2){
-				return "Error: the file does not contain a grouping column.";
+				return "Error: the file does not contain an annotation column.";
 			}
 			string[] nameCol = TabSep.GetColumn(colNames[nameIndex], filename, '\t');
+			(string[] catColNames, string[] numColNames) = SplitColNames(colNames, nameIndex);
 			Dictionary<string, int> map = ArrayUtils.InverseMap(nameCol);
+			foreach (string catColName in catColNames){
+				AddCategoryRow(catColName, filename, mdata, map);
+			}
+			foreach (string numColName in numColNames){
+				ManageNumericalAnnotRow.AddNumericRow(numColName, filename, mdata, map);
+			}
+			return null;
+		}
+
+		internal static void AddCategoryRow(string catColName, string filename, IDataWithAnnotationRows mdata,
+			Dictionary<string, int> map){
+			string[] groupCol = TabSep.GetColumn(catColName, filename, '\t');
+			string[][] newCol = new string[mdata.ColumnCount][];
+			for (int j = 0; j < newCol.Length; j++){
+				string colName = mdata.ColumnNames[j];
+				if (!map.ContainsKey(colName)){
+					newCol[j] = new string[0];
+					continue;
+				}
+				int ind = map[colName];
+				string group = groupCol[ind] ?? "";
+				group = group.Trim();
+				if (string.IsNullOrEmpty(group)){
+					newCol[j] = new string[0];
+				} else{
+					string[] w = group.Split(';');
+					Array.Sort(w);
+					for (int k = 0; k < w.Length; k++){
+						w[k] = w[k].Trim();
+					}
+					newCol[j] = w;
+				}
+			}
+			if (catColName.ToLower().EndsWith("[c]")){
+				catColName = catColName.Substring(0, catColName.Length - 3);
+				catColName = catColName.Trim();
+			}
+			mdata.AddCategoryRow(catColName, catColName, newCol);
+		}
+
+		private static (string[], string[]) SplitColNames(string[] colNames, int nameIndex){
+			List<string> catColNames = new List<string>();
+			List<string> numColNames = new List<string>();
 			for (int i = 0; i < colNames.Length; i++){
 				if (i == nameIndex){
 					continue;
 				}
-				string groupName = colNames[i];
-				string[] groupCol = TabSep.GetColumn(groupName, filename, '\t');
-				string[][] newCol = new string[mdata.ColumnCount][];
-				for (int j = 0; j < newCol.Length; j++){
-					string colName = mdata.ColumnNames[j];
-					if (!map.ContainsKey(colName)){
-						newCol[j] = new string[0];
-						continue;
-					}
-					int ind = map[colName];
-					string group = groupCol[ind] ?? "";
-					group = group.Trim();
-					if (string.IsNullOrEmpty(group)){
-						newCol[j] = new string[0];
-					} else{
-						string[] w = group.Split(';');
-						Array.Sort(w);
-						for (int k = 0; k < w.Length; k++){
-							w[k] = w[k].Trim();
-						}
-						newCol[j] = w;
-					}
+				string colName = colNames[i];
+				if (colName.ToLower().EndsWith("[n]")){
+					numColNames.Add(colName);
+				} else{
+					catColNames.Add(colName);
 				}
-				mdata.AddCategoryRow(groupName, groupName, newCol);
 			}
-			return null;
+			return (catColNames.ToArray(), numColNames.ToArray());
 		}
 
 		private static int GetNameIndex(IList<string> colNames){
