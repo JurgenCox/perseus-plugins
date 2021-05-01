@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using BaseLibS.Util;
 using PerseusApi.Generic;
 
 namespace PerseusPluginLib.AnnotCols.AnnotationProvider
@@ -132,7 +133,7 @@ namespace PerseusPluginLib.AnnotCols.AnnotationProvider
                         text.Add((name, columns[i].Select(s => string.Join(";", s.OrderBy(x => x))).ToArray()));
                         break;
                     case AnnotType.Numerical:
-                        numeric.Add((name, columns[i].Select(s => double.Parse(s.DefaultIfEmpty("NaN").Single())).ToArray()));
+                        numeric.Add((name, columns[i].Select(s => Parser.Double(s.DefaultIfEmpty("NaN").Single())).ToArray()));
                         break;
                     case AnnotType.Categorical:
                         category.Add((name, columns[i].ToArray()));
