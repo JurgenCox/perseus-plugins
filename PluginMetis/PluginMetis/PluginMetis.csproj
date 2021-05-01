@@ -36,9 +36,6 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BaseLib">
-      <HintPath>..\DLLs\BaseLib.dll</HintPath>
-    </Reference>
     <Reference Include="BaseLibS">
       <HintPath>..\DLLs\BaseLibS.dll</HintPath>
     </Reference>
@@ -48,16 +45,8 @@
     <Reference Include="PerseusPluginLib">
       <HintPath>..\DLLs\PerseusPluginLib.dll</HintPath>
     </Reference>
-    <Reference Include="PluginInterop">
-      <HintPath>..\DLLs\PluginInterop.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -80,7 +69,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\..\PluginInterop\PluginInterop.csproj">
+      <Project>{face58e1-3288-4774-b70d-5735b35c1644}</Project>
+      <Name>PluginInterop</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="R\" />
+    <Folder Include="Python\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BaseLibS">
+      <HintPath>..\DLLs\BaseLibS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
