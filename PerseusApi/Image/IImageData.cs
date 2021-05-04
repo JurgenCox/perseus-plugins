@@ -15,6 +15,21 @@ namespace PerseusApi.Image{
 		void AddDwi(float[][,,] data, float repetitionTimeSeconds, float voxelSizeXmm, float voxelSizeYmm,
 			float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
 
+		void AddParMap(float[,,] data, float voxelSizeXmm, float voxelSizeYmm, float voxelSizeZmm,
+			IImageMetadata metadata = null, string name = "");
+
+		void AddAnatAt(int subInd, int sesInd, float[,,] data, float voxelSizeXmm, float voxelSizeYmm,
+			float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
+
+		void AddFuncAt(int subInd, int sesInd, float[][,,] data, float repetitionTimeSeconds, float voxelSizeXmm,
+			float voxelSizeYmm, float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
+
+		void AddDwiAt(int subInd, int sesInd, float[][,,] data, float repetitionTimeSeconds, float voxelSizeXmm,
+			float voxelSizeYmm, float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
+
+		void AddParMapAt(int subInd, int sesInd, float[,,] data, float voxelSizeXmm, float voxelSizeYmm,
+			float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
+
 		int Count{ get; }
 	}
 }
