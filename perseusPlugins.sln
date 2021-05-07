@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerseusPluginLib", "Perseus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginMetis", "PluginMetis\PluginMetis\PluginMetis.csproj", "{C2C7FCE0-57E7-4FC3-B15B-EB8518185CDA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginInterop", "PluginInterop\PluginInterop.csproj", "{FACE58E1-3288-4774-B70D-5735B35C1644}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginInterop", "PluginInterop\PluginInterop.csproj", "{FACE58E1-3288-4774-B70D-5735B35C1644}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginPHOTON", "PluginPHOTON\PluginPHOTON.csproj", "{7B008268-F7D9-4D73-BC3E-71111D2F4970}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{FACE58E1-3288-4774-B70D-5735B35C1644}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FACE58E1-3288-4774-B70D-5735B35C1644}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FACE58E1-3288-4774-B70D-5735B35C1644}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B008268-F7D9-4D73-BC3E-71111D2F4970}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B008268-F7D9-4D73-BC3E-71111D2F4970}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B008268-F7D9-4D73-BC3E-71111D2F4970}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B008268-F7D9-4D73-BC3E-71111D2F4970}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
