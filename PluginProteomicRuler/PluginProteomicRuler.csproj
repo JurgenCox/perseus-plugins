@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PerseusApi\PerseusApi.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="BaseLib">
+      <HintPath>..\DLLs\BaseLib.dll</HintPath>
+    </Reference>
+    <Reference Include="BaseLibS">
+      <HintPath>..\DLLs\BaseLibS.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
