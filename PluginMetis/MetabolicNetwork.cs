@@ -28,7 +28,7 @@ namespace PluginMetis
 
 			netReactionsselValues = Enumerable.Range(0, netReactionsvalues.Length).Except(netReactionsselValues).ToArray();
 
-			HashSet<string> networkReactionsgoodValues = ValuesSelected(netReactionsvalues, netReactionsselValues);
+			string[] networkReactionsgoodValues = ValuesSelected(netReactionsvalues, netReactionsselValues);
 
 			foreach (INetworkInfo network in networkReactions)
 			{
@@ -43,9 +43,11 @@ namespace PluginMetis
 		}
 
 		//Values selected are taken as HashSet
-		public static HashSet<string> ValuesSelected(string[] netReactionsvalues, int[] netReactionsselValues)
+		public static string[] ValuesSelected(string[] netReactionsvalues, int[] netReactionsselValues)
 		{
-			HashSet<string> networkReactionsgoodValues = netReactionsvalues.SubArray(netReactionsselValues).ToHashSet();
+			string[] networkReactionsgoodValues = netReactionsvalues.SubArray(netReactionsselValues);
+			//hashset
+			//HashSet<string> networkReactionsgoodValues = netReactionsvalues.SubArray(netReactionsselValues).ToHashSet();
 			return networkReactionsgoodValues;
 		}
 
@@ -62,9 +64,12 @@ namespace PluginMetis
 
 
 			ReactProdReactionsselectedValues = Enumerable.Range(0, ReactProdReactionsvalues.Length).Except(ReactProdReactionsselectedValues).ToArray();
-			HashSet<string> ReactProdReactionsgoodValues = ReactProdReactionsvalues.SubArray(ReactProdReactionsselectedValues).ToHashSet();
-
-			HashSet<string> intersectReactantsProductsReactions = ValuesSelected(netReactionsvalues, netReactionsselValues).Intersect(ReactProdReactionsgoodValues).ToHashSet();
+			string[] ReactProdReactionsgoodValues = ReactProdReactionsvalues.SubArray(ReactProdReactionsselectedValues);
+			//hashset
+			// HashSet<string> ReactProdReactionsgoodValues = ReactProdReactionsvalues.SubArray(ReactProdReactionsselectedValues).ToHashSet();
+			var intersectReactantsProductsReactions = ValuesSelected(netReactionsvalues, netReactionsselValues).Intersect(ReactProdReactionsgoodValues);
+			//hashset
+			// HashSet<string> intersectReactantsProductsReactions = ValuesSelected(netReactionsvalues, netReactionsselValues).Intersect(ReactProdReactionsgoodValues).ToHashSet();
 
 
 			foreach (INetworkInfo network in ReactProdReactions)
@@ -93,9 +98,13 @@ namespace PluginMetis
 			string netModifiersReactionscol = netModifiersReactionscols[netModifiersReactionscolParam.Value];
 			string[] netModifiersReactionsvalues = netModifiersReactionscolValues[netModifiersReactionscolParam.Value];
 			netModifiersReactionsselectedValues = Enumerable.Range(0, netModifiersReactionsvalues.Length).Except(netModifiersReactionsselectedValues).ToArray();
-			HashSet<string> netModifiersReactionsgoodValues = netModifiersReactionsvalues.SubArray(netModifiersReactionsselectedValues).ToHashSet();
+			string[] netModifiersReactionsgoodValues = netModifiersReactionsvalues.SubArray(netModifiersReactionsselectedValues);
+			//hashset
+			// HashSet<string> netModifiersReactionsgoodValues = netModifiersReactionsvalues.SubArray(netModifiersReactionsselectedValues).ToHashSet();
 
-			HashSet<string> intersectModifiersReactions = ValuesSelected(netReactionsvalues, netReactionsselValues).Intersect(netModifiersReactionsgoodValues).ToHashSet();
+			var intersectModifiersReactions = ValuesSelected(netReactionsvalues, netReactionsselValues).Intersect(netModifiersReactionsgoodValues);
+			//hashset
+			// HashSet<string> intersectModifiersReactions = ValuesSelected(netReactionsvalues, netReactionsselValues).Intersect(netModifiersReactionsgoodValues).ToHashSet();
 
 			foreach (INetworkInfo network in netModifiersReactions)
 			{
@@ -138,8 +147,8 @@ namespace PluginMetis
 		//Common targets are detected based on the matrixData given as input
 		public static void CommonTargets(IMatrixData mdata, Parameters renameTargetReactantParameters, ProcessInfo processInfo)
 		{
-			HashSet<string> reactantTaken = new HashSet<string>();
-			reactantTaken = new HashSet<string>();
+			List<string> reactantTaken = new List<string>();
+			reactantTaken = new List<string>();
 			List<string> reactantStringColumnNames = new List<string>();
 			for (int i = 0; i < mdata.StringColumnCount; i++)
 			{

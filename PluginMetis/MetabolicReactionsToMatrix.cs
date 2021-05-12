@@ -81,8 +81,9 @@ namespace PluginMetis
 			//take categories in the category column of the network which are designated to be reactions by the user
 			int[] networkReactionsselectedValues = networkParam.GetSubParameters().GetParam<int[]>("Reactions").Value;
 			networkReactionsselectedValues = Enumerable.Range(0, networkValue.Length).Except(networkReactionsselectedValues).ToArray();
-			HashSet<string> networkReactionsgoodValues = networkValue.SubArray(networkReactionsselectedValues).ToHashSet();
-
+			string[] networkReactionsgoodValues = networkValue.SubArray(networkReactionsselectedValues);
+			//hashset
+			//HashSet<string> networkReactionsgoodValues = networkValue.SubArray(networkReactionsselectedValues).ToHashSet();
 			//considering the categories selected by the user to be "Reactions", filter the network 
 			foreach (INetworkInfo network in networkReactions)
 			{
@@ -103,10 +104,14 @@ namespace PluginMetis
 			//take categories in the category column of the network which are designated to be modifiers by the user
 			int[] networkModifiersReactionsselectedValues = networkParam.GetSubParameters().GetParam<int[]>("Modifiers").Value;
 			networkModifiersReactionsselectedValues = Enumerable.Range(0, networkValue.Length).Except(networkModifiersReactionsselectedValues).ToArray();
-			HashSet<string> networkModifiersReactionsgoodValues = networkValue.SubArray(networkModifiersReactionsselectedValues).ToHashSet();
+			string[] networkModifiersReactionsgoodValues = networkValue.SubArray(networkModifiersReactionsselectedValues);
+			//hashset
+			//HashSet<string> networkModifiersReactionsgoodValues = networkValue.SubArray(networkModifiersReactionsselectedValues).ToHashSet();
 
 			//intersection of modifiers vs reactions
-			HashSet<string> intersectModifiersReactions = networkReactionsgoodValues.Intersect(networkModifiersReactionsgoodValues).ToHashSet();
+			var intersectModifiersReactions = networkReactionsgoodValues.Intersect(networkModifiersReactionsgoodValues);
+			//hashset
+			// HashSet<string> intersectModifiersReactions = networkReactionsgoodValues.Intersect(networkModifiersReactionsgoodValues).ToHashSet();
 
 			//considering the categories selected by the user to be "modifiers", filter the network 
 			foreach (INetworkInfo network in networkModifiersReactions)
@@ -130,10 +135,14 @@ namespace PluginMetis
 			int[] networkProductsReactionsselectedValues = networkParam.GetSubParameters().GetParam<int[]>("Products").Value;
 			int[] networkReactantsProductsReactionsselectedValues = (networkReactantsReactionsselectedValues.Concat(networkProductsReactionsselectedValues)).ToArray();
 			networkReactantsProductsReactionsselectedValues = Enumerable.Range(0, networkValue.Length).Except(networkReactantsProductsReactionsselectedValues).ToArray();
-			HashSet<string> networkReactantsProductsReactionsgoodValues = networkValue.SubArray(networkReactantsProductsReactionsselectedValues).ToHashSet();
+			string[] networkReactantsProductsReactionsgoodValues = networkValue.SubArray(networkReactantsProductsReactionsselectedValues);
+			//hashset
+			//HashSet<string> networkReactantsProductsReactionsgoodValues = networkValue.SubArray(networkReactantsProductsReactionsselectedValues).ToHashSet();
 
 			//intersection of reactants and products vs reactions
-			HashSet<string> intersectReactantsProductsReactions = networkReactionsgoodValues.Intersect(networkReactantsProductsReactionsgoodValues).ToHashSet();
+			var intersectReactantsProductsReactions = networkReactionsgoodValues.Intersect(networkReactantsProductsReactionsgoodValues);
+			//hashset
+			//HashSet<string> intersectReactantsProductsReactions = networkReactionsgoodValues.Intersect(networkReactantsProductsReactionsgoodValues).ToHashSet();
 
 			//considering the categories selected by the user to be "reactants" and "products", filter the network 
 			foreach (INetworkInfo network in networkReactantsProductsReactions)
