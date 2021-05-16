@@ -2,8 +2,10 @@
 	public enum DataType{
 		Matrix,
 		Document,
+		Sequence,
 		Network,
-		Image,
+		Mri,
+		Visualization,
 		Unknown
 	}
 }
