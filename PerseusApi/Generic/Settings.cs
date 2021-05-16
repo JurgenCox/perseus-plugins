@@ -1,6 +1,7 @@
 using System;
 
 namespace PerseusApi.Generic{
+	[Serializable]
 	public class Settings{
 		public int Nthreads { get; set; }
 		public string TempFolder { get; set; }
