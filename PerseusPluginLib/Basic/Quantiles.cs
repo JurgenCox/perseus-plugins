@@ -49,9 +49,9 @@ namespace PerseusPluginLib.Basic{
 					}
 				}
 				int[] o = v.ToArray();
-				vals = ArrayUtils.SubArray(vals, o);
-				int[] q = ArrayUtils.Order(vals);
-				o = ArrayUtils.SubArray(o, q);
+				vals = vals.SubArray(o);
+				int[] q = vals.Order();
+				o = o.SubArray(q);
 				string[][] catCol = new string[mdata.RowCount][];
 				for (int i = 0; i < catCol.Length; i++){
 					catCol[i] = new[]{"missing"};

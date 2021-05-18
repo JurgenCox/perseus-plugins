@@ -40,24 +40,24 @@ namespace PerseusPluginLib.Rearrange{
 				data.ExtractColumns(exColInds);
 			}
 			if (numColInds.Length < data.NumericColumnCount){
-				data.NumericColumns = ArrayUtils.SubList(data.NumericColumns, numColInds);
-				data.NumericColumnNames = ArrayUtils.SubList(data.NumericColumnNames, numColInds);
-				data.NumericColumnDescriptions = ArrayUtils.SubList(data.NumericColumnDescriptions, numColInds);
+				data.NumericColumns = data.NumericColumns.SubList(numColInds);
+				data.NumericColumnNames = data.NumericColumnNames.SubList(numColInds);
+				data.NumericColumnDescriptions = data.NumericColumnDescriptions.SubList(numColInds);
 			}
 			if (multiNumColInds.Length < data.MultiNumericColumnCount){
-				data.MultiNumericColumns = ArrayUtils.SubList(data.MultiNumericColumns, multiNumColInds);
-				data.MultiNumericColumnNames = ArrayUtils.SubList(data.MultiNumericColumnNames, multiNumColInds);
-				data.MultiNumericColumnDescriptions = ArrayUtils.SubList(data.MultiNumericColumnDescriptions, multiNumColInds);
+				data.MultiNumericColumns = data.MultiNumericColumns.SubList(multiNumColInds);
+				data.MultiNumericColumnNames = data.MultiNumericColumnNames.SubList(multiNumColInds);
+				data.MultiNumericColumnDescriptions = data.MultiNumericColumnDescriptions.SubList(multiNumColInds);
 			}
 			if (catColInds.Length < data.CategoryColumnCount){
 				data.CategoryColumns = PerseusPluginUtils.GetCategoryColumns(data, catColInds);
-				data.CategoryColumnNames = ArrayUtils.SubList(data.CategoryColumnNames, catColInds);
-				data.CategoryColumnDescriptions = ArrayUtils.SubList(data.CategoryColumnDescriptions, catColInds);
+				data.CategoryColumnNames = data.CategoryColumnNames.SubList(catColInds);
+				data.CategoryColumnDescriptions = data.CategoryColumnDescriptions.SubList(catColInds);
 			}
 			if (textColInds.Length < data.StringColumnCount){
-				data.StringColumns = ArrayUtils.SubList(data.StringColumns, textColInds);
-				data.StringColumnNames = ArrayUtils.SubList(data.StringColumnNames, textColInds);
-				data.ColumnDescriptions = ArrayUtils.SubList(data.StringColumnDescriptions, textColInds);
+				data.StringColumns = data.StringColumns.SubList(textColInds);
+				data.StringColumnNames = data.StringColumnNames.SubList(textColInds);
+				data.ColumnDescriptions = data.StringColumnDescriptions.SubList(textColInds);
 			}
 		}
 

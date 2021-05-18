@@ -160,7 +160,7 @@ namespace PerseusPluginLib.AnnotCols{
 				case SummaryType.Median:
 					return ArrayUtils.Median(vals);
 				case SummaryType.Mean:
-					return ArrayUtils.Mean(vals);
+					return vals.Mean();
 				case SummaryType.Sum:
 					return ArrayUtils.Sum(vals);
 				case SummaryType.StandardDeviation:

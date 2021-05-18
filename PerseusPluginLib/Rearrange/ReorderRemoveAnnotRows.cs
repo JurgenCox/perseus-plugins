@@ -36,18 +36,18 @@ namespace PerseusPluginLib.Rearrange{
 			int[] multiNumColInds = param.GetParam<int[]>("Multi-numerical rows").Value;
 			int[] catColInds = param.GetParam<int[]>("Categorical rows").Value;
 			int[] textColInds = param.GetParam<int[]>("Text rows").Value;
-			data.NumericRows = ArrayUtils.SubList(data.NumericRows, numColInds);
-			data.NumericRowNames = ArrayUtils.SubList(data.NumericRowNames, numColInds);
-			data.NumericRowDescriptions = ArrayUtils.SubList(data.NumericRowDescriptions, numColInds);
-			data.MultiNumericRows = ArrayUtils.SubList(data.MultiNumericRows, multiNumColInds);
-			data.MultiNumericRowNames = ArrayUtils.SubList(data.MultiNumericRowNames, multiNumColInds);
-			data.MultiNumericRowDescriptions = ArrayUtils.SubList(data.MultiNumericRowDescriptions, multiNumColInds);
+			data.NumericRows = data.NumericRows.SubList(numColInds);
+			data.NumericRowNames = data.NumericRowNames.SubList(numColInds);
+			data.NumericRowDescriptions = data.NumericRowDescriptions.SubList(numColInds);
+			data.MultiNumericRows = data.MultiNumericRows.SubList(multiNumColInds);
+			data.MultiNumericRowNames = data.MultiNumericRowNames.SubList(multiNumColInds);
+			data.MultiNumericRowDescriptions = data.MultiNumericRowDescriptions.SubList(multiNumColInds);
 			data.CategoryRows = PerseusPluginUtils.GetCategoryRows(data, catColInds);
-			data.CategoryRowNames = ArrayUtils.SubList(data.CategoryRowNames, catColInds);
-			data.CategoryRowDescriptions = ArrayUtils.SubList(data.CategoryRowDescriptions, catColInds);
-			data.StringRows = ArrayUtils.SubList(data.StringRows, textColInds);
-			data.StringRowNames = ArrayUtils.SubList(data.StringRowNames, textColInds);
-			data.StringRowDescriptions = ArrayUtils.SubList(data.StringRowDescriptions, textColInds);
+			data.CategoryRowNames = data.CategoryRowNames.SubList(catColInds);
+			data.CategoryRowDescriptions = data.CategoryRowDescriptions.SubList(catColInds);
+			data.StringRows = data.StringRows.SubList(textColInds);
+			data.StringRowNames = data.StringRowNames.SubList(textColInds);
+			data.StringRowDescriptions = data.StringRowDescriptions.SubList(textColInds);
            
 		}
 

@@ -135,8 +135,8 @@ namespace PerseusPluginLib.Rearrange{
 				count += entryCount;
 			}
 			int[] multiNumComplement = ArrayUtils.Complement(multiNumCols, mdata.MultiNumericColumnCount);
-			List<double[][]> toBeTransformed = ArrayUtils.SubList(multiNumC, multiNumCols);
-			multiNumC = ArrayUtils.SubList(multiNumC, multiNumComplement);
+			List<double[][]> toBeTransformed = multiNumC.SubList(multiNumCols);
+			multiNumC = multiNumC.SubList(multiNumComplement);
 			foreach (double[][] d in toBeTransformed){
 				numC.Add(Transform(d));
 			}
@@ -149,8 +149,8 @@ namespace PerseusPluginLib.Rearrange{
             mdata.IsImputed.Set(impVals);
 			mdata.SetAnnotationColumns(mdata.StringColumnNames, stringC, mdata.CategoryColumnNames, catC,
 				new List<string>(ArrayUtils.Concat(mdata.NumericColumnNames,
-					ArrayUtils.SubList(mdata.MultiNumericColumnNames, multiNumCols))), numC,
-				new List<string>(ArrayUtils.SubArray(mdata.MultiNumericColumnNames, multiNumComplement)), multiNumC);
+					mdata.MultiNumericColumnNames.SubList(multiNumCols))), numC,
+				new List<string>(mdata.MultiNumericColumnNames.SubArray(multiNumComplement)), multiNumC);
 		}
 
 		private static double[] Transform(IList<double[]> doubles){

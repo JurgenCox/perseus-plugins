@@ -602,7 +602,7 @@ namespace PerseusPluginLib.Utils {
 						break;
 					case TestTruncation.PermutationBased:
 						double[] fdrsX;
-						string[][] significantX = CalcPermutationBasedFdr(ArrayUtils.SubArray(pvalsS0, validRows), nrand, data, test,
+						string[][] significantX = CalcPermutationBasedFdr(pvalsS0.SubArray(validRows), nrand, data, test,
 							test1, side, colInd1, colInd2, s0, threshold, colIndsPreserve1, colIndsPreserve2, validRows, out fdrsX, paired);
 						significant = new string[data.RowCount][];
 						fdrs = new double[data.RowCount];
@@ -744,7 +744,7 @@ namespace PerseusPluginLib.Utils {
 					for (int i = 0; i < colInd1.Length / 2; i++) {
 						pairedPerm[i] = true;
 					}
-					pairedPerm = ArrayUtils.SubArray(pairedPerm, r2.NextPermutation(pairedPerm.Length));
+					pairedPerm = pairedPerm.SubArray(r2.NextPermutation(pairedPerm.Length));
 				}
 				foreach (int row in validRows) {
 					double[] vals1;
@@ -770,7 +770,7 @@ namespace PerseusPluginLib.Utils {
 			}
 			double[] pv = pq.ToArray();
 			int[] inds = indices.ToArray();
-			int[] o = ArrayUtils.Order(pv);
+			int[] o = pv.Order();
 			double forw = 0;
 			double rev = 0;
 			int lastind = -1;
@@ -791,7 +791,7 @@ namespace PerseusPluginLib.Utils {
 			for (int i = 0; i < result.Length; i++) {
 				result[i] = new string[0];
 			}
-			int[] o1 = ArrayUtils.Order(pvalsS0);
+			int[] o1 = pvalsS0.Order();
 			for (int i = 0; i <= lastind; i++) {
 				result[o1[i]] = new[] {"+"};
 			}

@@ -81,7 +81,7 @@ namespace PerseusPluginLib.Basic{
 			string[] ids2 = mdata.StringColumns[param.GetParam<int>("ID column").Value];
 			string[][] ids = SplitIds(ids2);
 			GetPresentAbsentIndices(ids, out int[] present, out int[] absent);
-			ids = ArrayUtils.SubArray(ids, present);
+			ids = ids.SubArray(present);
 			int[][] rowInds = new int[present.Length][];
 			for (int i = 0; i < rowInds.Length; i++){
 				rowInds[i] = new[]{present[i]};
@@ -96,7 +96,7 @@ namespace PerseusPluginLib.Basic{
 			for (int j = 0; j < ncols; j++){
 				double[] c = ArrayUtils.ToDoubles(mdata.Values.GetColumn(j));
 				for (int i = 0; i < nrows; i++){
-					double[] d = ArrayUtils.SubArray(c, rowInds[i]);
+					double[] d = c.SubArray(rowInds[i]);
 					expVals[i, j] = Average(d, atype);
 				}
 			}
@@ -107,7 +107,7 @@ namespace PerseusPluginLib.Basic{
 				double[] c = mdata.NumericColumns[i];
 				double[] newCol = new double[nrows];
 				for (int k = 0; k < nrows; k++){
-					double[] d = ArrayUtils.SubArray(c, rowInds[k]);
+					double[] d = c.SubArray(rowInds[k]);
 					newCol[k] = Average(d, atype1);
 				}
 				mdata.NumericColumns[i] = newCol;
@@ -116,7 +116,7 @@ namespace PerseusPluginLib.Basic{
 				string[][] c = mdata.GetCategoryColumnAt(i);
 				string[][] newCol = new string[nrows][];
 				for (int k = 0; k < nrows; k++){
-					string[][] d = ArrayUtils.SubArray(c, rowInds[k]);
+					string[][] d = c.SubArray(rowInds[k]);
 					newCol[k] = Average(d);
 				}
 				mdata.SetCategoryColumnAt(newCol, i);
@@ -125,7 +125,7 @@ namespace PerseusPluginLib.Basic{
 				string[] c = mdata.StringColumns[i];
 				string[] newCol = new string[nrows];
 				for (int k = 0; k < nrows; k++){
-					string[] d = ArrayUtils.SubArray(c, rowInds[k]);
+					string[] d = c.SubArray(rowInds[k]);
 					newCol[k] = Average(d);
 				}
 				mdata.StringColumns[i] = newCol;
@@ -134,7 +134,7 @@ namespace PerseusPluginLib.Basic{
 				double[][] c = mdata.MultiNumericColumns[i];
 				double[][] newCol = new double[nrows][];
 				for (int k = 0; k < nrows; k++){
-					double[][] d = ArrayUtils.SubArray(c, rowInds[k]);
+					double[][] d = c.SubArray(rowInds[k]);
 					newCol[k] = Average(d);
 				}
 				mdata.MultiNumericColumns[i] = newCol;
@@ -182,7 +182,7 @@ namespace PerseusPluginLib.Basic{
 			}
 			switch (atype){
 				case AverageType.Mean:
-					return ArrayUtils.Mean(g);
+					return g.Mean();
 				case AverageType.Maximum:
 					return ArrayUtils.Max(g);
 				case AverageType.Median:
@@ -256,8 +256,8 @@ namespace PerseusPluginLib.Basic{
 				}
 			}
 			int[] a = valids.ToArray();
-			rowInds = ArrayUtils.SubArray(rowInds, a);
-			geneIds = ArrayUtils.SubArray(geneIds, a);
+			rowInds = rowInds.SubArray(a);
+			geneIds = geneIds.SubArray(a);
 		}
 
 		private static int GetContainer(int contained, IndexedBitMatrix contains){

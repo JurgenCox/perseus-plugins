@@ -206,7 +206,7 @@ namespace PerseusPluginLib.AnnotRows{
 		private static double[] AverageNumericRow(IList<double> numericRow, IList<int[]> colInds){
 			double[] result = new double[colInds.Count];
 			for (int i = 0; i < result.Length; i++){
-				result[i] = ArrayUtils.Mean(ArrayUtils.SubArray(numericRow, colInds[i]));
+				result[i] = ArrayUtils.Mean(numericRow.SubArray(colInds[i]));
 			}
 			return result;
 		}
@@ -214,7 +214,7 @@ namespace PerseusPluginLib.AnnotRows{
 		private static string[][] AverageCategoryRow(IList<string[]> categoryRow, IList<int[]> colInds){
 			string[][] result = new string[colInds.Count][];
 			for (int i = 0; i < result.Length; i++){
-				result[i] = ArrayUtils.UniqueValues(ArrayUtils.Concat(ArrayUtils.SubArray(categoryRow, colInds[i])));
+				result[i] = ArrayUtils.UniqueValues(ArrayUtils.Concat(categoryRow.SubArray(colInds[i])));
 			}
 			return result;
 		}

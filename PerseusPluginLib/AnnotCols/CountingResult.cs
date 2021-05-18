@@ -10,12 +10,12 @@ namespace PerseusPluginLib.AnnotCols{
 		public int Count => allCategoryType1.Count;
 
 		public void Sort(){
-			int[] o = ArrayUtils.Order(allTotalCount);
+			int[] o = allTotalCount.Order();
 			ArrayUtils.Revert(o);
-			allCategoryType1 = ArrayUtils.SubArray(allCategoryType1, o);
-			allCategory1 = ArrayUtils.SubArray(allCategory1, o);
-			allTotalCount = ArrayUtils.SubArray(allTotalCount, o);
-			selectCount = ArrayUtils.SubArray(selectCount, o);
+			allCategoryType1 = allCategoryType1.SubArray(o);
+			allCategory1 = allCategory1.SubArray(o);
+			allTotalCount = allTotalCount.SubArray(o);
+			selectCount = selectCount.SubArray(o);
 		}
 
 		public string GetType1At(int i){

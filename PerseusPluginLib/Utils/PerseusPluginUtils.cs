@@ -591,7 +591,7 @@ namespace PerseusPluginLib.Utils{
 			if (fdrsUnsorted.Length < 1){
 				return new string[0][];
 			}
-			int[] order = ArrayUtils.Order(pvaluesUnsorted);
+			int[] order = pvaluesUnsorted.Order();
 			var sortedValid = order.Select(o => pvaluesUnsorted[o]).Where(p => !double.IsNaN(p)).ToArray();
 			var n = sortedValid.Length;
 			var fdrsRaw = new double[n];

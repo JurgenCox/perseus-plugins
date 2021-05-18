@@ -43,7 +43,7 @@ namespace PerseusPluginLib.Filter{
             int nrows = param.GetParam<int>("Number of rows").Value;
 			nrows = Math.Min(nrows, mdata.RowCount);
 			Random2 rand = new Random2(7);
-			int[] rows = ArrayUtils.SubArray(rand.NextPermutation(mdata.RowCount), nrows);
+			int[] rows = rand.NextPermutation(mdata.RowCount).SubArray(nrows);
 			PerseusPluginUtils.FilterRowsNew(mdata, param, rows);
 		}
 	}

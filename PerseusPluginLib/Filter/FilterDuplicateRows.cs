@@ -62,13 +62,13 @@ namespace PerseusPluginLib.Filter{
             var mainSubset = param.GetParam<int[]>("Main").Value;
 		    var mainColumns = mainSubset.Select(mdata.Values.GetColumn).ToArray();
 		    var numericSubset = param.GetParam<int[]>("Numeric").Value;
-		    var numericColumns = ArrayUtils.SubList(mdata.NumericColumns, numericSubset);
+		    var numericColumns = mdata.NumericColumns.SubList(numericSubset);
 		    var stringSubset = param.GetParam<int[]>("Text").Value;
-		    var stringColumns = ArrayUtils.SubList(mdata.StringColumns, stringSubset);
+		    var stringColumns = mdata.StringColumns.SubList(stringSubset);
 		    var categorySubset = param.GetParam<int[]>("Category").Value;
 		    var categoryColumns = categorySubset.Select(mdata.GetCategoryColumnAt).ToArray();
 		    var multiNumericSubset = param.GetParam<int[]>("MultiNumeric").Value;
-		    var multiNumericColumns = ArrayUtils.SubList(mdata.MultiNumericColumns, multiNumericSubset);
+		    var multiNumericColumns = mdata.MultiNumericColumns.SubList(multiNumericSubset);
 		    var rows = new Dictionary<string, int>();
             var discardrows = new Dictionary<string, int>();
             for (int j = 0; j < mdata.RowCount; j++)

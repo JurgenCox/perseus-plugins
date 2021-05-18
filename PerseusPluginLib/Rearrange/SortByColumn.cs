@@ -47,7 +47,7 @@ namespace PerseusPluginLib.Rearrange{
 		}
 
 		private static void SortByValues<T>(IMatrixData mdata, T[] v, bool descending) where T : IComparable<T>{
-			int[] o = ArrayUtils.Order(v);
+			int[] o = v.Order();
 			if (descending){
 				ArrayUtils.Revert(o);
 			}

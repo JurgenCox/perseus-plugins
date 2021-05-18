@@ -208,8 +208,8 @@ namespace PerseusPluginLib.AnnotCols
                 processInfo.ErrString = errString;
                 return false;
             }
-            type = ArrayUtils.SubArray(type, selection);
-            name = ArrayUtils.SubArray(name, selection);
+            type = type.SubArray(selection);
+            name = name.SubArray(selection);
             HashSet<string> allIds = GetAllIds(baseIds, deHyphenate);
             var files = annotationProvider.Sources.Select(s => s.source).ToArray();
             Dictionary<string, string[]> mapping = ReadMapping(allIds, files[ind], selection);
@@ -260,9 +260,9 @@ namespace PerseusPluginLib.AnnotCols
                     if (mapping.ContainsKey(id))
                     {
                         string[] values = mapping[id];
-                        AddCatVals(ArrayUtils.SubArray(values, catColInds), catVals);
-                        AddTextVals(ArrayUtils.SubArray(values, textColInds), textVals);
-                        AddNumVals(ArrayUtils.SubArray(values, numColInds), numVals);
+                        AddCatVals(values.SubArray(catColInds), catVals);
+                        AddTextVals(values.SubArray(textColInds), textVals);
+                        AddNumVals(values.SubArray(numColInds), numVals);
                     }
                     else if (id.Contains("-"))
                     {
@@ -270,9 +270,9 @@ namespace PerseusPluginLib.AnnotCols
                         if (mapping.ContainsKey(q))
                         {
                             string[] values = mapping[q];
-                            AddCatVals(ArrayUtils.SubArray(values, catColInds), catVals);
-                            AddTextVals(ArrayUtils.SubArray(values, textColInds), textVals);
-                            AddNumVals(ArrayUtils.SubArray(values, numColInds), numVals);
+                            AddCatVals(values.SubArray(catColInds), catVals);
+                            AddTextVals(values.SubArray(textColInds), textVals);
+                            AddNumVals(values.SubArray(numColInds), numVals);
                         }
                     }
                 }
@@ -413,7 +413,7 @@ namespace PerseusPluginLib.AnnotCols
                     string[] q = line.Split('\t');
                     string w = q[0];
                     string[] ids = w.Length > 0 ? w.Split(';') : new string[0];
-                    string[] value = ArrayUtils.SubArray(q, selection.Select(i => i + 1).ToArray());
+                    string[] value = q.SubArray(selection.Select(i => i + 1).ToArray());
                     foreach (string id in ids)
                     {
                         if (!allIds.Contains(id))

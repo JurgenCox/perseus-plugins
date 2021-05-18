@@ -117,7 +117,7 @@ namespace PerseusPluginLib.Mods {
 			mdata.Quality.Set(quality);
 			mdata.IsImputed.Set(imputed);
 			mdata.SetAnnotationColumns(new List<string>(ArrayUtils.Concat(mdata.StringColumnNames, new[] {"Unique identifier"})),
-				stringCols, new List<string>(catColNames), catCols, ArrayUtils.SubList(mdata.NumericColumnNames, validNumCols),
+				stringCols, new List<string>(catColNames), catCols, mdata.NumericColumnNames.SubList(validNumCols),
 				numCols, mdata.MultiNumericColumnNames, multiNumCols);
 		}
 
@@ -186,7 +186,7 @@ namespace PerseusPluginLib.Mods {
 				}
 			}
 			colInds = ExtractCompleteRows(colInds, out int[] valid);
-			allPrefixes = ArrayUtils.SubArray(allPrefixes, valid);
+			allPrefixes = allPrefixes.SubArray(valid);
 			if (colInds.GetLength(0) == 0) {
 				errorString = "There are no suitable columns to expand.";
 				return null;

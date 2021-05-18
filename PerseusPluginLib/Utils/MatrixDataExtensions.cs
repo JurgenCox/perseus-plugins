@@ -10,7 +10,7 @@ namespace PerseusPluginLib.Utils {
 		public static void UniqueRows(this IMatrixData mdata, string[] ids, Func<double[], double> combineNumeric,
 			Func<string[], string> combineString, Func<string[][], string[]> combineCategory,
 			Func<double[][], double[]> combineMultiNumeric) {
-			int[] order = ArrayUtils.Order(ids);
+			int[] order = ids.Order();
 			List<int> uniqueIdx = new List<int>();
 			string lastId = "";
 			List<int> idxsWithSameId = new List<int>();
@@ -44,23 +44,23 @@ namespace PerseusPluginLib.Utils {
 			}
 			for (int i = 0; i < mdata.NumericColumnCount; i++) {
 				double[] column = mdata.NumericColumns[i];
-				double[] values = ArrayUtils.SubArray(column, rowIdxs);
+				double[] values = column.SubArray(rowIdxs);
 				column[resultRow] = combineNumeric(values);
 			}
 			for (int i = 0; i < mdata.StringColumnCount; i++) {
 				string[] column = mdata.StringColumns[i];
-				string[] values = ArrayUtils.SubArray(column, rowIdxs);
+				string[] values = column.SubArray(rowIdxs);
 				column[resultRow] = combineString(values);
 			}
 			for (int i = 0; i < mdata.CategoryColumnCount; i++) {
 				string[][] column = mdata.GetCategoryColumnAt(i);
-				string[][] values = ArrayUtils.SubArray(column, rowIdxs);
+				string[][] values = column.SubArray(rowIdxs);
 				column[resultRow] = combineCategory(values);
 				mdata.SetCategoryColumnAt(column, i);
 			}
 			for (int i = 0; i < mdata.MultiNumericColumnCount; i++) {
 				double[][] column = mdata.MultiNumericColumns[i];
-				double[][] values = ArrayUtils.SubArray(column, rowIdxs);
+				double[][] values = column.SubArray(rowIdxs);
 				column[resultRow] = combineMultiNumeric(values);
 			}
 		}

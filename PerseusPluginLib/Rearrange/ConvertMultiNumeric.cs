@@ -14,7 +14,7 @@ namespace PerseusPluginLib.Rearrange{
 
 		private static readonly Conversion[] operations ={
 			x => x.Length, x => ArrayUtils.Sum(x), x => ArrayUtils.Product(x),
-			x => ArrayUtils.Mean(x), x => ArrayUtils.Median(x)
+			x => x.Mean(), x => ArrayUtils.Median(x)
 		};
 
 		public bool HasButton => false;
