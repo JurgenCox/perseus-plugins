@@ -60,7 +60,7 @@ namespace PerseusPluginLib.Basic{
 					? data.NumericColumnNames[scoreColumn]
 					: data.ColumnNames[scoreColumn - data.NumericColumnCount];
 				CalcCurves(indCol, falseAreIndicated, vals, largeIsGood,
-					PerformanceColumnType.allTypes.SubArray(showColumns), name, expCols, expColNames);
+					PerformanceColumnType.allTypes.SubArray(showColumns), name, expCols, expColNames, true);
 			}
 			double[,] expData = ToMatrix(expCols);
 			data.ColumnNames = expColNames;
@@ -71,8 +71,9 @@ namespace PerseusPluginLib.Basic{
 		}
 
 		private static void CalcCurves(bool[] indicatorCol, bool falseAreIndicated, double[] vals, bool largeIsGood,
-			PerformanceColumnType[] types, string name, List<double[]> expCols, List<string> expColNames){
-			double[][] columns =
+			PerformanceColumnType[] types, string name, List<double[]> expCols, List<string> expColNames,
+			bool includeScore){
+			(double[][] columns, int[] order) =
 				PerformanceColumnType.CalcCurves(indicatorCol, falseAreIndicated, vals, largeIsGood, types);
 			string[] columnNames = new string[types.Length];
 			for (int i = 0; i < types.Length; i++){
@@ -80,6 +81,10 @@ namespace PerseusPluginLib.Basic{
 			}
 			expColNames.AddRange(columnNames);
 			expCols.AddRange(columns);
+			if (includeScore){
+				expColNames.Add("Score");
+				expCols.Add(vals.SubArray(order));
+			}
 		}
 
 		private static double[,] ToMatrix(IList<double[]> x){
