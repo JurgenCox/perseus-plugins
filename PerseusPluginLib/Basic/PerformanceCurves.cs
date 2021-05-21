@@ -82,8 +82,10 @@ namespace PerseusPluginLib.Basic{
 			expColNames.AddRange(columnNames);
 			expCols.AddRange(columns);
 			if (includeScore){
-				expColNames.Add("Score");
-				expCols.Add(vals.SubArray(order));
+				expColNames.Add(name);
+				double[] s = vals.SubArray(order);
+				s = ArrayUtils.Concat(s[0], s);
+				expCols.Add(s);
 			}
 		}
 
