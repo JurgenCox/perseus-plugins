@@ -72,6 +72,8 @@ namespace PerseusApi.Generic{
 		/// <returns>New instance.</returns>
 		IData CreateNewInstance(DataType type);
 
+		IData Copy(int id);
+
 		/// <summary>
 		/// Clears up all data from this instance.
 		/// </summary>
