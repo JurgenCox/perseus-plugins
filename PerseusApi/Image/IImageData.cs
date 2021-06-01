@@ -24,6 +24,9 @@ namespace PerseusApi.Image{
 		void AddAnatAt(int subInd, int sesInd, float[,,] data, float voxelSizeXmm, float voxelSizeYmm,
 			float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
 
+		void AddDefAt(int subInd, int sesInd, float[][,,] data, float voxelSizeXmm, float voxelSizeYmm,
+			float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
+
 		void AddFuncAt(int subInd, int sesInd, float[][,,] data, float repetitionTimeSeconds, float voxelSizeXmm,
 			float voxelSizeYmm, float voxelSizeZmm, IImageMetadata metadata = null, string name = "");
 
