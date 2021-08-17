@@ -31,7 +31,11 @@ namespace PluginInterop{
 		public virtual int NumDocuments => 0;
 		protected virtual bool AdditionalMatrices => false;
 
-		public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
+                /// <summary>
+                /// Process data with the given parameters and matrix data. Overwrite this function for
+                /// full control of the execution process.
+                /// </summary>
+		public virtual void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
 			ref IDocumentData[] documents, ProcessInfo processInfo){
 			string remoteExe = param.GetParam<string>(InterpreterLabel).Value;
 			if (string.IsNullOrWhiteSpace(remoteExe)){
