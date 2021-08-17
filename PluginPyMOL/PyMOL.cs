@@ -159,7 +159,7 @@ namespace PluginPyMOL
             {
                 processInfo.ErrString = $"Your matrix is missing the following required columns: " + string.Join(", ", missingCols) + ". " +
                     "This plugin is only supported for the MaxQuant crosslinkMsms table. If you have uploaded a MaxQuant crosslinkMsms.txt" +
-                    " file as your matrix, include \"Crosslink Product Type\" and \"InterLiks\" in addition to all default fields. " +
+                    " file as your matrix, include \"Crosslink Product Type\" and \"InterLinks\" in addition to all default fields. " +
                     "Note that the \"Main\" column type is not used.";
                 return;
             }

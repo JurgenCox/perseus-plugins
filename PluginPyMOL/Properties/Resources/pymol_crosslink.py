@@ -3,7 +3,7 @@ import os
 import re
 import __main__
 
-if (len(sys.argv) != 7) and False:
+if (len(sys.argv) != 7):
     raise Exception ('There was an error parsing your inputs. Please make sure to fill out the necessary fields.')
 try:
     has_pymol = True
