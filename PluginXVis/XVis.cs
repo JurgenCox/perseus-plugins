@@ -59,11 +59,6 @@ namespace PluginXVis
                 {
                     Help = "If checked, overwrite the existing file found in the specified directory",
                 },
-                new FastaFilesParam("FASTA file")
-                {
-                    Help = "File containing primary sequence information. You can download " +
-                    "FASTA Files for your organism/protein from UniProt.",
-                },
                 new FolderParam("Output directory")
                 {
                     Help = "Select your output folder",
