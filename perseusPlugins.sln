@@ -15,7 +15,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginProteomicRuler", "Plu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginMetis", "PluginMetis\PluginMetis.csproj", "{14BC169B-82AB-47A7-9972-9A520150B7A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginDependentPeptides", "PluginDependentPeptides\PluginDependentPeptides.csproj", "{A8F2731C-E094-48FF-A5CD-1B2F17922127}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginDependentPeptides", "PluginDependentPeptides\PluginDependentPeptides.csproj", "{A8F2731C-E094-48FF-A5CD-1B2F17922127}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginPyMOL", "PluginPyMOL\PluginPyMOL.csproj", "{450C0705-D1BB-49B5-BFD4-2E6BBBC3766D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{455A268B-B63B-4248-872C-6F3435EE1FEE} = {455A268B-B63B-4248-872C-6F3435EE1FEE}
+		{FACE58E1-3288-4774-B70D-5735B35C1644} = {FACE58E1-3288-4774-B70D-5735B35C1644}
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginXVis", "PluginXVis\PluginXVis.csproj", "{617D84D9-1BC4-4402-AF42-C4483CA6C073}"
+	ProjectSection(ProjectDependencies) = postProject
+		{455A268B-B63B-4248-872C-6F3435EE1FEE} = {455A268B-B63B-4248-872C-6F3435EE1FEE}
+		{FACE58E1-3288-4774-B70D-5735B35C1644} = {FACE58E1-3288-4774-B70D-5735B35C1644}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +63,14 @@ Global
 		{A8F2731C-E094-48FF-A5CD-1B2F17922127}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8F2731C-E094-48FF-A5CD-1B2F17922127}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8F2731C-E094-48FF-A5CD-1B2F17922127}.Release|Any CPU.Build.0 = Release|Any CPU
+		{450C0705-D1BB-49B5-BFD4-2E6BBBC3766D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{450C0705-D1BB-49B5-BFD4-2E6BBBC3766D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{450C0705-D1BB-49B5-BFD4-2E6BBBC3766D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{450C0705-D1BB-49B5-BFD4-2E6BBBC3766D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{617D84D9-1BC4-4402-AF42-C4483CA6C073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{617D84D9-1BC4-4402-AF42-C4483CA6C073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{617D84D9-1BC4-4402-AF42-C4483CA6C073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{617D84D9-1BC4-4402-AF42-C4483CA6C073}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
