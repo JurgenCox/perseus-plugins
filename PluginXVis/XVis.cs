@@ -138,6 +138,8 @@ namespace PluginXVis
                 processInfo.ErrString = "Found existing file. To overwrite it, check the \"Overwrite\" box.";
                 return;
             }
+
+            // Map the old col names to the new ones, incude idColNameParams only if specified
             Dictionary<string, string> colNameMappings = new Dictionary<string, string>();
             string[] colNameParams = { "Proteins1", "Proteins2", "AbsPos1", "AbsPos2", "Score" };
             string[] idColNameParams = { "Peptide 1", "Peptide 2", "Relative Position 1", "Relative Position 2" };
@@ -211,7 +213,7 @@ namespace PluginXVis
                 if (!ProcessCol(colName, mdata.GetCategoryColumn(colName))) return;
                 mdata.RemoveCategoryColumnAt(i);
             }
-            if (outputCols.Count != colNameParams.Count())
+            if (outputCols.Count != colNameMappings.Count())
             {
                 processInfo.ErrString = $"We were unable to find one of the columns " +
                     $"specified. Please check your spelling and try again.";
@@ -220,7 +222,7 @@ namespace PluginXVis
             if (param.GetParam<bool>("Generate ID Field for XLinkAnalyzer Specs?").Value)
             {
                 string[] idCol = CreateIdCol(outputCols, mdata.RowCount);
-                outputCols.Add("id", idCol);
+                outputCols.Add("Id", idCol);
                 foreach (string usedIdCol in idColNameParams)
                 {
                     colNameMappings.Remove(usedIdCol);
