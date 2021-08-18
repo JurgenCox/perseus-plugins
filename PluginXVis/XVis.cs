@@ -169,6 +169,12 @@ namespace PluginXVis
                                 $"filter your rows for valid crosslink entries!";
                             return false;
                         }
+                        if (colOutput[i].Contains("REV_"))
+                        {
+                            processInfo.ErrString = $"Found REV_ in {colName}. This is a decoy and not a valid Crosslink! " +
+                                $"Please filter your rows for valid crosslink entries!";
+                            return false;
+                        }
                     }
                     outputCols.Add(colNameMappings[colName], colOutput);
                 }
