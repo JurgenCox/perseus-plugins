@@ -71,8 +71,8 @@ diff = maxlynx_start - pdb_start #can then add diff to maxlynx numbers to
 df = pd.read_perseus(infile) # read the input matrix into a pandas.DataFrame
 out_df = df.copy()
 
-# Remove non-real non-crossliks TODO: mono/looplink support?? 
-df = df[(df['Decoy'] == 'forward') & (df['Crosslink Product Type'].str.contains('ProXL'))].copy()
+# Remove non-real non-crossliks. When inter-protein crosslinks are supported, change to just "ProXL"
+df = df[(df['Decoy'] == 'forward') & (df['Crosslink Product Type'].str.contains('IntraProXL'))].copy() 
 # Adjust to pdb positions from maxlynx positions
 positions = ['Pro_InterLink1', 'Pro_InterLink2']
 for pos_header in positions:
