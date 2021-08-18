@@ -25,7 +25,7 @@ namespace PluginXVis
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
         public string Name => "XLink Analyzer Input";
-        public string Heading => "Crosslink";
+        public string Heading => "Cross link";
         public bool IsActive => true;
         public float DisplayRank => 100;
         public string[] HelpDocuments => new string[0];
@@ -53,7 +53,7 @@ namespace PluginXVis
             {
                 new LabelParam("Instructions")
                 {
-                    Value = "Please filter your rows for only valid crosslinks before using this feature.",
+                    Value = "Please filter your rows for only valid cross links before using this feature.",
                 },
                 new BoolParam("Overwrite existing file?")
                 {
@@ -200,7 +200,7 @@ namespace PluginXVis
             }
             MatrixToCSV(outputCols, outPath);
             processInfo.ErrString = $"File successfully written to {outPath}."; 
-            //NOTE: violation of good programing principles. Thumbs up given by Dr. Sinitcyn
+            //NOTE: violation of good programing principles. Using ErrString to deliver message when not an error.
         }
     }
 }

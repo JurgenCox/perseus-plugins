@@ -20,10 +20,10 @@ namespace PluginPyMOL
 {
     public class PyMOL : PluginInterop.Python.MatrixProcessing
     {
-        public override string Heading => "Crosslink";
-        public override string Name => "Visualize crosslink distances with PyMOL";
-        public override string Description => "Open a pdb file in pymol and visualize the crosslinks in " +
-            "your MaxQuant CrosslinkMsms table. Distances for each crosslink is added to the output matrix.";
+        public override string Heading => "Cross link";
+        public override string Name => "Visualize cross link distances with PyMOL";
+        public override string Description => "Open a pdb file in pymol and visualize the cross links in " +
+            "your MaxQuant CrosslinkMsms table. Distances for each cross link is added to the output matrix.";
 
         protected override string[] ReqiredPythonPackages => new[] { "perseuspy", "Bio", "numpy" };
         // protected override string[] ReqiredPythonPackages => new string[] {};
