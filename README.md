@@ -75,23 +75,15 @@ Developer:
 
 info: [here](http://www.coxdocs.org/doku.php?id=perseus:user:plugins:proteomicruler)
 
-## PluginPyMOL
-Description
+## PluginsCrosslinks
+
+### Measure Euclidean distances by using PyMol
+Further description comes here
+### 
 
 ### Contacts
 Developer: Bryan
 
-Supervisor: Christoph and Sule
+Supervisor: Christoph and Şule 
 
 Maintenance: Juergen and Daniela
-
-## PluginXVis
-Description
-
-### Contacts
-Developer: Bryan
-
-Supervisor: Christoph and Sule
-
-Maintenance: Juergen and Daniela
-
