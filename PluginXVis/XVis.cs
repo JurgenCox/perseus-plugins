@@ -14,6 +14,11 @@ using System.Text.RegularExpressions;
 using BaseLibS.Util;
 using System.Linq;
 
+/// <summary>
+/// Generate input for XVis, by LMU. Also contain the option of generating the necessary fields for 
+/// XLinkAnalyzer. This class more or less rearranges the columns and (in the case the the Id field)
+/// combines them and puts them in a different name. 
+/// </summary>
 namespace PluginXVis
 {
     public class XVis : IMatrixProcessing
@@ -68,35 +73,23 @@ namespace PluginXVis
                     Help = "A file name. Do not include the file extension (.csv).",
                 },
             };
-            Parameter[] fieldParams = new Parameter[]
-            {
-                new StringParam("Proteins1")
-                {
-                    Value = "Proteins1",
-                },
-                new StringParam("Proteins2")
-                {
-                    Value = "Proteins2",
-                },
-                new StringParam("AbsPos1")
-                {
-                    Value = "Pro_InterLink1",
-                },
-                new StringParam("AbsPos2")
-                {
-                    Value = "Pro_InterLink2",
-                },
-                new StringParam("ID")
-                {
-                    Value = "InterLinks",
-                },
-                new StringParam("Score")
-                {
-                    Value = "Score",
-                }
+            Parameter[] fieldParams = {
+                new StringParam("Proteins1", "Proteins1"),
+                new StringParam("Proteins2", "Proteins2"),
+                new StringParam("AbsPos1", "Pro_InterLink1"),
+                new StringParam("AbsPos2", "Pro_InterLink2"),
+                new StringParam("Score", "Score"),
+            };
+            Parameter[] idParams = {
+                new BoolParam("Generate ID Field for XLinkAnalyzer Specs?", true),
+                new StringParam("Peptide 1", "Sequence1"),
+                new StringParam("Peptide 2", "Sequence2"),
+                new StringParam("Relative Position 1", "Pep_InterLink1"),
+                new StringParam("Relative Position 2", "Pep_InterLink2"),
             };
             Parameters ret = new Parameters(normalParams);
             ret.AddParameterGroup(fieldParams, "Matrix Columns Used", false);
+            ret.AddParameterGroup(idParams, "Columns Used To Generate XLinkAnalyzer ID field", false);
             return ret;
         }
 
@@ -119,6 +112,15 @@ namespace PluginXVis
                 }
             }
         }
+        private string[] CreateIdCol(Dictionary<string, string[]> cols, int numRows)
+        {
+            string[] ret = new string[numRows];
+            for (int i = 0; i < numRows; i++)
+            {
+                ret[i] = cols["Peptide1"][i] + '-' + cols["Peptide2"][i] + "-a" + cols["Relative Position 1"][i] + "-b" + cols["Relative Position 2"][i];
+            }
+            return ret;
+        }
         public void ProcessData(IMatrixData mdata, Parameters param, ref IMatrixData[] supplTables,
             ref IDocumentData[] documents, ProcessInfo processInfo)
         { 
@@ -137,11 +139,21 @@ namespace PluginXVis
                 return;
             }
             Dictionary<string, string> colNameMappings = new Dictionary<string, string>();
-            string[] colNameParams = { "Proteins1", "Proteins2", "AbsPos1", "AbsPos2", "ID", "Score" };
+            string[] colNameParams = { "Proteins1", "Proteins2", "AbsPos1", "AbsPos2", "Score" };
+            string[] idColNameParams = { "Peptide 1", "Peptide 2", "Relative Position 1", "Relative Position 2" };
             foreach (string destColName in colNameParams)
             {
                 colNameMappings.Add(param.GetParam(destColName).StringValue, destColName);
             }
+            if (param.GetParam<bool>("Generate ID Field for XLinkAnalyzer Specs?").Value)
+            {
+                // Process each relative ordering column as usual, and combine at the end into one col
+                foreach (string destColName in idColNameParams)
+                {
+                    colNameMappings.Add(param.GetParam(destColName).StringValue, destColName);
+                }
+            }
+            
             Dictionary<string, string[]> outputCols = new Dictionary<string, string[]>();
             /// <summary>
             /// If the column in question is one of the ones specified, we add them to the 
@@ -151,8 +163,9 @@ namespace PluginXVis
             {
                 if (colNameMappings.ContainsKey(colName))
                 {
+                    string outCol = colNameMappings[colName];
                     string[] colOutput = new string[mdata.RowCount];
-                    bool processAsNumeric = colNameMappings[colName].Contains("AbsPos");
+                    bool processAsNumeric = outCol.Contains("AbsPos") || outCol.Contains("Relative Position");
                     for (int i = 0; i < mdata.RowCount; i++)
                     {
                         if (processAsNumeric)
@@ -176,7 +189,7 @@ namespace PluginXVis
                             return false;
                         }
                     }
-                    outputCols.Add(colNameMappings[colName], colOutput);
+                    outputCols.Add(outCol, colOutput);
                 }
                 return true;
             }
@@ -203,6 +216,15 @@ namespace PluginXVis
                 processInfo.ErrString = $"We were unable to find one of the columns " +
                     $"specified. Please check your spelling and try again.";
                 return;
+            }
+            if (param.GetParam<bool>("Generate ID Field for XLinkAnalyzer Specs?").Value)
+            {
+                string[] idCol = CreateIdCol(outputCols, mdata.RowCount);
+                outputCols.Add("id", idCol);
+                foreach (string usedIdCol in idColNameParams)
+                {
+                    colNameMappings.Remove(usedIdCol);
+                }
             }
             MatrixToCSV(outputCols, outPath);
             processInfo.ErrString = $"File successfully written to {outPath}."; 
