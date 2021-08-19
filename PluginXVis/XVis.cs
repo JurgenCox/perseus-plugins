@@ -225,7 +225,7 @@ namespace PluginXVis
                 outputCols.Add("Id", idCol);
                 foreach (string usedIdCol in idColNameParams)
                 {
-                    colNameMappings.Remove(usedIdCol);
+                    outputCols.Remove(usedIdCol);
                 }
             }
             MatrixToCSV(outputCols, outPath);
