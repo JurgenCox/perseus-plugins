@@ -4,7 +4,7 @@ using BaseLibS.Param;
 using System.IO;
 using PluginInterop;
 using System.Text;
-using PluginXVis.Properties; // replace PluginTutorial to your project or solution name
+using PluginCrossLink.Properties; // replace PluginTutorial to your project or solution name
 using PerseusApi.Matrix;
 using BaseLibS.Graph;
 using PerseusApi.Document;
