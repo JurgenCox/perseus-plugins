@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginMetis", "PluginMetis\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginDependentPeptides", "PluginDependentPeptides\PluginDependentPeptides.csproj", "{A8F2731C-E094-48FF-A5CD-1B2F17922127}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginPyMOL", "PluginPyMOL\PluginPyMOL.csproj", "{450C0705-D1BB-49B5-BFD4-2E6BBBC3766D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PluginCrossLink", "PluginCrossLink\PluginCrossLink.csproj", "{450C0705-D1BB-49B5-BFD4-2E6BBBC3766D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{455A268B-B63B-4248-872C-6F3435EE1FEE} = {455A268B-B63B-4248-872C-6F3435EE1FEE}
 		{FACE58E1-3288-4774-B70D-5735B35C1644} = {FACE58E1-3288-4774-B70D-5735B35C1644}
