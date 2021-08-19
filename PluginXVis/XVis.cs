@@ -82,8 +82,8 @@ namespace PluginXVis
             };
             Parameter[] idParams = {
                 new BoolParam("Generate ID Field for XLinkAnalyzer Specs?", true),
-                new StringParam("Peptide 1", "Sequence1"),
-                new StringParam("Peptide 2", "Sequence2"),
+                new StringParam("Peptide1", "Sequence1"),
+                new StringParam("Peptide2", "Sequence2"),
                 new StringParam("Relative Position 1", "Pep_InterLink1"),
                 new StringParam("Relative Position 2", "Pep_InterLink2"),
             };
@@ -142,7 +142,7 @@ namespace PluginXVis
             // Map the old col names to the new ones, incude idColNameParams only if specified
             Dictionary<string, string> colNameMappings = new Dictionary<string, string>();
             string[] colNameParams = { "Proteins1", "Proteins2", "AbsPos1", "AbsPos2", "Score" };
-            string[] idColNameParams = { "Peptide 1", "Peptide 2", "Relative Position 1", "Relative Position 2" };
+            string[] idColNameParams = { "Peptide1", "Peptide2", "Relative Position 1", "Relative Position 2" };
             foreach (string destColName in colNameParams)
             {
                 colNameMappings.Add(param.GetParam(destColName).StringValue, destColName);
@@ -229,7 +229,7 @@ namespace PluginXVis
                 }
             }
             MatrixToCSV(outputCols, outPath);
-            processInfo.ErrString = $"File successfully written to {outPath}."; 
+            processInfo.ErrString = $"File successfully written to {outPath}.";
             //NOTE: violation of good programing principles. Using ErrString to deliver message when not an error.
         }
     }
