@@ -16,7 +16,7 @@ using System.Linq;
 using BaseLibS.Graph;
 
 
-namespace PluginPyMOL
+namespace PluginCrossLink
 {
     public class PyMOL : PluginInterop.Python.MatrixProcessing
     {

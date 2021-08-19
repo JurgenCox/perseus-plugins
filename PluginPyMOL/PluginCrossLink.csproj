@@ -5,6 +5,7 @@
     <ApplicationIcon />
     <OutputType>Library</OutputType>
     <StartupObject />
+    <AssemblyName>PluginCrossLink</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
