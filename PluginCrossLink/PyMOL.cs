@@ -5,7 +5,7 @@ using PerseusApi.Matrix;
 using System.IO;
 using PluginInterop;
 using System.Text;
-using PluginPyMOL.Properties; // replace PluginTutorial to your project or solution name
+using PluginCrossLink.Properties; // replace PluginTutorial to your project or solution name
 using System.Text.RegularExpressions;
 
 using PerseusApi.Document;
