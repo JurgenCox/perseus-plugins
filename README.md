@@ -77,12 +77,39 @@ info: [here](http://www.coxdocs.org/doku.php?id=perseus:user:plugins:proteomicru
 
 ## PluginsCrosslinks
 
-### Measure Euclidean distances by using PyMol
-Further description comes here
-### 
+### Measure Cross Linking Euclidean distances by using [PyMol](https://pymol.org/2/)
+Visualize your intra-protein cross links from the MaxLynx results in 3D using the PyMOL software and measure Euclidean distances between two alpha carbons of linked residues after a sequence alignment.
+#### Prerequisites:
+Output from Maxquant/MaxLynx _only_.
+
+PyMol (Download at https://pymol.org/2/). Remember where you installed this!
+
+single-chain, 3D protein structure PDB File (Multiple Chains will be ignored)
+
+FASTA File containing the protein sequence
+
+Admin Rights (for dependency installation)
+
+#### Instructions
+1. Load the crosslinkMsms.txt table from MaxLynx/MaxQuant. Include all default columns plus "InterLinks" and "Crosslink Product Type" (as "text" column type)
+2. Enter the PDB file, and the fasta file which includes the corresponding protein
+3. Use the protein identifier and protein identifier type boxes to specify the protein being visualized
+4. Go to the PyMol installation directory and select the python.exe there. For single user installations in windows, this is "C:\Users\[name]\AppData\Local\Schrodinger\PyMOL2" by default.
+5. Check the "first time setup" box if this is your first time running the plugin (or if pymol was reinstalled)
+
+### Generate Input for [XVis](https://xvis.genzentrum.lmu.de/) Cross link Visualizer or [XLinkAnalyzer](https://www.embl-hamburg.de/XlinkAnalyzer/XlinkAnalyzer.html)(Chimera cross link plugin)
+#### Instructions
+1. Load any perseus matrix which contains at minimum the following 5 columns for: identifiers for protein 1 and 2, confidence score,
+and the absolute positions of the two crosslinked amino acids within the protein sequences.
+2. Open the plugin in Cross link -> XVis/XLinkAnalyzer input, and enter the names of the columns above.
+3. Optionally add more information if you are using this for XLinkAnalyzer, such as peptide IDs and relative linking positions
+4. Specify an output directory and filename. Do not include the extension (.csv).
+5. Click OK. No new matrix will be generated and instead a .csv will be written to the specified location, which can then 
+be used as input to the corresponding visualization programs.
+
 
 ### Contacts
-Developer: Bryan
+Developer: Bryan [@Github page](https://github.com/BryanZWu)
 
 Supervisor: Christoph and Şule 
 

@@ -29,7 +29,7 @@ namespace PluginXVis
         public string HelpOutput => "Input compatible with XVis/XLink Analyzer.";
         public string[] HelpSupplTables => new string[0];
         public int NumSupplTables => 0;
-        public string Name => "XLink Analyzer Input";
+        public string Name => "XVis/XLink Analyzer Input";
         public string Heading => "Cross link";
         public bool IsActive => true;
         public float DisplayRank => 100;
