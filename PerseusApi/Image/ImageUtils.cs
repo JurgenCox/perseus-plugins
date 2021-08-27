@@ -422,6 +422,29 @@ namespace PerseusApi.Image{
 		}
 
 		/// <summary>
+		/// Get the Subject, Session and Run indices of all paramater maps
+		/// </summary>
+		/// <param name="mdata"></param>
+		/// <returns></returns>
+		public static (List<int>, List<int>, List<int>) GetAllParMapIndices(IImageData mdata){
+			List<int> subInds = new List<int>();
+			List<int> sesInds = new List<int>();
+			List<int> runInds = new List<int>();
+			for (int subInd = 0; subInd < mdata.Count; subInd++){
+				IImageSubject sub = mdata[subInd];
+				for (int sesInd = 0; sesInd < sub.SessionCount; sesInd++){
+					IImageSession ses = sub.GetSessionAt(sesInd);
+					for (int funcInd = 0; funcInd < ses.ParMapCount; funcInd++){
+						subInds.Add(subInd);
+						sesInds.Add(sesInd);
+						runInds.Add(funcInd);
+					}
+				}
+			}
+			return (subInds, sesInds, runInds);
+		}
+
+		/// <summary>
 		/// Get a list of all func image names.
 		/// </summary>
 		/// <param name="mdata"></param>

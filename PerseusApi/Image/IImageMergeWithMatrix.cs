@@ -4,11 +4,11 @@ using PerseusApi.Matrix;
 
 namespace PerseusApi.Image{
 	/// <summary>
-	/// Merge a network and a matrix
+	/// Merge an Image and a matrix
 	/// </summary>
 	public interface IImageMergeWithMatrix : IImageActivity, IMergeWithMatrix{
 		/// <summary>
-		/// Merge the input network with the provided matrix.
+		/// Merge the image with the provided matrix.
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="inMatrix"></param>
@@ -16,6 +16,7 @@ namespace PerseusApi.Image{
 		/// <param name="supplData"></param>
 		/// <param name="processInfo"></param>
 		/// <returns></returns>
+        /// 
 		IImageData ProcessData(IImageData data, IMatrixData inMatrix, Parameters param, ref IData[] supplData,
 			ProcessInfo processInfo);
 
