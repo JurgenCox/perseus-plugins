@@ -247,6 +247,23 @@ namespace PerseusApi.Image{
 		}
 
 		/// <summary>
+		/// Get a list of all anat image names.
+		/// </summary>
+		/// <param name="mdata"></param>
+		/// <returns></returns>
+		public static List<string> GetParMapNames(IImageData mdata) {
+			List<string> allParMaps = new List<string>();
+			for (int subjInd = 0; subjInd < mdata.Count; subjInd++) {
+				for (int sesInd = 0; sesInd < mdata[subjInd].SessionCount; sesInd++) {
+					for (int anatInd = 0; anatInd < mdata[subjInd].GetSessionAt(sesInd).ParMapCount; anatInd++) {
+						allParMaps.Add(mdata[subjInd].GetSessionAt(sesInd).GetParMapAt(anatInd).Name);
+					}
+				}
+			}
+			return allParMaps;
+		}
+
+		/// <summary>
 		/// Get a list of all dwi image names.
 		/// </summary>
 		/// <param name="mdata"></param>
@@ -281,6 +298,26 @@ namespace PerseusApi.Image{
 				}
 			}
 			return allAnats;
+		}
+
+		/// <summary>
+		/// Get a dictionary that translates from image name to the set of three indices Sub, Ses and Run, plus total index (=> int[4]). 
+		/// </summary>
+		/// <param name="mdata"></param>
+		/// <returns>Dictionary<string, int[]>, where string = name and int[4] = {SubInd, SesInd, RunInd, TotalInd}</string></returns>
+		public static Dictionary<string, int[]> GetParMapDict(IImageData mdata) {
+			Dictionary<string, int[]> allParMaps = new Dictionary<string, int[]>();
+			int totalInd = 0;
+			for (int subjInd = 0; subjInd < mdata.Count; subjInd++) {
+				for (int sesInd = 0; sesInd < mdata[subjInd].SessionCount; sesInd++) {
+					for (int anatInd = 0; anatInd < mdata[subjInd].GetSessionAt(sesInd).ParMapCount; anatInd++) {
+						allParMaps.Add(mdata[subjInd].GetSessionAt(sesInd).GetParMapAt(anatInd).Name,
+							new int[4] { subjInd, sesInd, anatInd, totalInd });
+						totalInd += 1;
+					}
+				}
+			}
+			return allParMaps;
 		}
 
 		/// <summary>
