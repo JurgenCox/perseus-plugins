@@ -373,7 +373,7 @@ namespace PerseusPluginLib.Utils{
 						       " has less than the specified percentage of valid values it will be discarded in the output."
 					}),
 				},
-				ParamNameWidth = 50,
+				ParamNameWidth = 150,
 				TotalWidth = 731
 			};
 		}
