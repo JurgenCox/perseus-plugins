@@ -7,7 +7,7 @@ using PerseusApi.Generic;
 using PerseusApi.Network;
 
 namespace PluginInterop{
-	public abstract class NetworkUpload : InteropBase, INetworkUploadAnnColumns{
+	public abstract class NetworkUpload : InteropBase, INetworkUpload{
 		public abstract string Name{ get; }
 		public abstract string Description{ get; }
 		public float DisplayRank => 1;
@@ -43,7 +43,7 @@ namespace PluginInterop{
 			return new Parameter[]{CodeFileParam(), AdditionalArgumentsParam()};
 		}
 
-		public void LoadData(INetworkDataAnnColumns ndata, Parameters param, ref IData[] supplData,
+		public void LoadData(INetworkData ndata, Parameters param, ref IData[] supplData,
 			ProcessInfo processInfo){
 			string remoteExe = GetExectuable(param);
 			if (string.IsNullOrWhiteSpace(remoteExe)){

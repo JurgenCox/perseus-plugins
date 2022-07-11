@@ -11,7 +11,7 @@ namespace PerseusApi.Network{
 		/// <param name="ndata"></param>
 		/// <returns></returns>
 		public static (string[] columns, string[][] values) CommonEdgeAnnotationColumns(
-			this INetworkDataAnnColumns ndata){
+			this INetworkData ndata) {
 			return ndata.CommonAnnotationColumns(network => network.EdgeTable);
 		}
 
@@ -21,12 +21,12 @@ namespace PerseusApi.Network{
 		/// <param name="ndata"></param>
 		/// <returns></returns>
 		public static (string[] columns, string[][] values) CommonNodeAnnotationColumns(
-			this INetworkDataAnnColumns ndata){
+			this INetworkData ndata) {
 			return ndata.CommonAnnotationColumns(network => network.NodeTable);
 		}
 
-		private static (string[] columns, string[][] values) CommonAnnotationColumns(this INetworkDataAnnColumns ndata,
-			Func<INetworkInfo, IDataWithAnnotationColumns> getTable){
+		private static (string[] columns, string[][] values) CommonAnnotationColumns(this INetworkData ndata,
+			Func<INetworkInfo, IDataWithAnnotationColumns> getTable) {
 			IDataWithAnnotationColumns first = getTable(ndata.First());
 			List<string> seed = first.CategoryColumnNames;
 			IEnumerable<List<string>> rest = ndata.Skip(1).Select(network => getTable(network).CategoryColumnNames);
@@ -46,7 +46,7 @@ namespace PerseusApi.Network{
 		/// <param name="ndata"></param>
 		/// <param name="selector"></param>
 		/// <returns></returns>
-		public static T[] Intersect<T>(this INetworkDataAnnColumns ndata, Func<INetworkInfo, IEnumerable<T>> selector){
+		public static T[] Intersect<T>(this INetworkData ndata, Func<INetworkInfo, IEnumerable<T>> selector) {
 			return Aggregate(ndata.ToList(), selector, Enumerable.Intersect);
 		}
 
@@ -66,7 +66,7 @@ namespace PerseusApi.Network{
 		/// <param name="ndata"></param>
 		/// <param name="selector"></param>
 		/// <returns></returns>
-		public static T[] Union<T>(this INetworkDataAnnColumns ndata, Func<INetworkInfo, IEnumerable<T>> selector){
+		public static T[] Union<T>(this INetworkData ndata, Func<INetworkInfo, IEnumerable<T>> selector) {
 			return Aggregate(ndata.ToList(), selector, Enumerable.Union);
 		}
 

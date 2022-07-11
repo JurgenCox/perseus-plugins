@@ -13,7 +13,7 @@ using PluginMetis.Combine;
 
 namespace PluginMetis
 {
-	public class MetabolicReactionsToMatrix : INetworkToMatrixAnnColumns
+	public class MetabolicReactionsToMatrix : INetworkToMatrix
 	{
 		public string Name => "Metabolic reactions to matrix";
 		public float DisplayRank => 0;
@@ -35,7 +35,7 @@ namespace PluginMetis
 		}
 
 
-		public Parameters GetParameters(INetworkDataAnnColumns ndata, ref string errString)
+		public Parameters GetParameters(INetworkData ndata, ref string errString)
 		{
 			(string[] columns, string[][] values) = ndata.CommonNodeAnnotationColumns();
 			if (columns.Length < 1)
@@ -58,7 +58,7 @@ namespace PluginMetis
 			});
 		}
 
-		public void ProcessData(INetworkDataAnnColumns inData, IMatrixData outData, Parameters param, ref IData[] supplTables, ProcessInfo processInfo)
+		public void ProcessData(INetworkData inData, IMatrixData outData, Parameters param, ref IData[] supplTables, ProcessInfo processInfo)
 		{
 			RenameColumnMetabolomics renameColumn = new RenameColumnMetabolomics();
 			AnnotateNodes annotateReactions = new AnnotateNodes();
@@ -68,7 +68,7 @@ namespace PluginMetis
 			string errString = string.Empty;
 
 			//filter network to get reactions
-			INetworkDataAnnColumns networkReactions = (INetworkDataAnnColumns)inData.Clone();
+			INetworkData networkReactions = (INetworkData)inData.Clone();
 
 			//create annotation in the new cloned network
 			(string[] networkColumns, string[][] networkColumnValues) = networkReactions.CommonNodeAnnotationColumns();
@@ -95,7 +95,7 @@ namespace PluginMetis
 			}
 
 			//filter network to get reactions and modifiers
-			INetworkDataAnnColumns networkModifiersReactions = (INetworkDataAnnColumns)inData.Clone();
+			INetworkData networkModifiersReactions = (INetworkData)inData.Clone();
 
 			//create annotation in the new cloned network
 			(string[] networkModifiersReactionscolumns, string[][] networkModifiersReactionscolumnValues) = networkModifiersReactions.CommonNodeAnnotationColumns();
@@ -120,7 +120,7 @@ namespace PluginMetis
 			}
 
 			//filter nodes to get reactions, reactants and products
-			INetworkDataAnnColumns networkReactantsProductsReactions = (INetworkDataAnnColumns)inData.Clone();
+			INetworkData networkReactantsProductsReactions = (INetworkData)inData.Clone();
 
 			//create annotation in the new cloned network
 			(string[] networkReactantsProductsReactionscolumns, string[][] networkReactantsProductsReactionscolumnValues) = networkReactantsProductsReactions.CommonNodeAnnotationColumns();
@@ -147,7 +147,7 @@ namespace PluginMetis
 			}
 
 			//annotate reactions with modifiers
-			INetworkDataAnnColumns ndataReactions = (INetworkDataAnnColumns)networkReactions.Clone();
+			INetworkData ndataReactions = (INetworkData)networkReactions.Clone();
 
 			//get the edge table which only has reactions and modifiers created above according to the user choice
 			IMatrixData mdataModifiersReactions = ToMatrixData(networkModifiersReactions.First().EdgeTable, outData);
@@ -162,7 +162,7 @@ namespace PluginMetis
 			modifierAnnotationParameters.GetParam<int>("Matching column in table 2").Value = 0;
 			modifierAnnotationParameters.GetParam<int[]>("Copy text columns").Value = new[] { 1 };
 			IData[] supplData = null;
-			INetworkDataAnnColumns networkModifiers = annotateReactions.ProcessData(ndataReactions, mdataModifiersReactions, modifierAnnotationParameters, ref supplData, pinfo);
+			INetworkData networkModifiers = annotateReactions.ProcessData(ndataReactions, mdataModifiersReactions, modifierAnnotationParameters, ref supplData, pinfo);
 
 			//get the edge table which only has the reactions and reactants created above according to the user choice
 			IMatrixData mdataReactantsReactions = ToMatrixData(networkReactantsProductsReactions.First().EdgeTable, outData);
@@ -176,7 +176,7 @@ namespace PluginMetis
 			Parameters reactantAnnotationParameters = annotateReactions.GetParameters(networkModifiers, mdataReactantsReactions, ref errString);
 			reactantAnnotationParameters.GetParam<int>("Matching column in table 2").Value = 1;
 			reactantAnnotationParameters.GetParam<int[]>("Copy text columns").Value = new[] { 0 };
-			INetworkDataAnnColumns networkModifiersReactants = annotateReactions.ProcessData(networkModifiers, mdataReactantsReactions, reactantAnnotationParameters, ref supplData, pinfo);
+			INetworkData networkModifiersReactants = annotateReactions.ProcessData(networkModifiers, mdataReactantsReactions, reactantAnnotationParameters, ref supplData, pinfo);
 
 			//annotate reactions with products
 			//get the edge table which only has the reactions and products created above according to the user choice
@@ -189,7 +189,7 @@ namespace PluginMetis
 			Parameters productAnnotationParameters = annotateReactions.GetParameters(networkModifiersReactants, mdataProductsReactions, ref errString);
 			productAnnotationParameters.GetParam<int>("Matching column in table 2").Value = 0;
 			productAnnotationParameters.GetParam<int[]>("Copy text columns").Value = new[] { 1 };
-			INetworkDataAnnColumns networkModifiersReactantsProducts = annotateReactions.ProcessData(networkModifiersReactants, mdataProductsReactions, productAnnotationParameters, ref supplData, pinfo);
+			INetworkData networkModifiersReactantsProducts = annotateReactions.ProcessData(networkModifiersReactants, mdataProductsReactions, productAnnotationParameters, ref supplData, pinfo);
 
 			//output is a matrix in which each row has a reaction, a modifier, a product and a reactant column
 			IDataWithAnnotationColumns table = networkModifiersReactantsProducts.First().NodeTable;

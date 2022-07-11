@@ -7,7 +7,7 @@ using PerseusApi.Generic;
 using PerseusApi.Network;
 
 namespace PluginInterop{
-	public abstract class NetworkProcessing : InteropBase, INetworkProcessingAnnColumns{
+	public abstract class NetworkProcessing : InteropBase, INetworkProcessing{
 		public abstract string Name{ get; }
 		public abstract string Description{ get; }
 		public virtual float DisplayRank => 1;
@@ -24,7 +24,7 @@ namespace PluginInterop{
 		public virtual int NumDocuments => 0;
 		public virtual DataType[] SupplDataTypes => Enumerable.Repeat(DataType.Matrix, NumSupplTables).ToArray();
 
-		public void ProcessData(INetworkDataAnnColumns ndata, Parameters param, ref IData[] supplData,
+		public void ProcessData(INetworkData ndata, Parameters param, ref IData[] supplData,
 			ProcessInfo processInfo){
 			string remoteExe = param.GetParam<string>(InterpreterLabel).Value;
 			if (string.IsNullOrWhiteSpace(remoteExe)){
@@ -54,7 +54,7 @@ namespace PluginInterop{
 		/// Create the parameters for the GUI with default of generic 'Code file'
 		/// and 'Additional arguments' parameters. Overwrite this function for custom structured parameters.
 		/// </summary>
-		protected virtual Parameter[] SpecificParameters(INetworkDataAnnColumns data, ref string errString){
+		protected virtual Parameter[] SpecificParameters(INetworkData data, ref string errString){
 			return new Parameter[]{CodeFileParam(), AdditionalArgumentsParam()};
 		}
 
@@ -63,7 +63,7 @@ namespace PluginInterop{
 		/// Includes buttons for preview downloads of 'Data' and 'Parameters' for development purposes.
 		/// Overwrite <see cref="SpecificParameters"/> to add specific parameter. Overwrite this function for full control.
 		/// </summary>
-		public virtual Parameters GetParameters(INetworkDataAnnColumns data, ref string errString){
+		public virtual Parameters GetParameters(INetworkData data, ref string errString){
 			Parameters parameters = new Parameters();
 			Parameter[] specificParameters = SpecificParameters(data, ref errString);
 			if (!string.IsNullOrEmpty(errString)){

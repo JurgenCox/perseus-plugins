@@ -59,10 +59,10 @@ namespace PerseusApi.Utils
 		/// <summary>
 		/// Creates an empty default implementation of <see cref="INetworkData"/>.
 		/// </summary>
-		public static INetworkDataAnnColumns CreateNetworkData()
+		public static INetworkData CreateNetworkData()
 		{
 			object o = Activator.CreateInstance(Type.GetType("PerseusLibS.Data.Network.NetworkData"));
-			return (INetworkDataAnnColumns)o;
+			return (INetworkData)o;
 		}
 
 		/// <summary>

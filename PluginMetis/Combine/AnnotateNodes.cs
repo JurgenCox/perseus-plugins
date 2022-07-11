@@ -12,8 +12,7 @@ using PerseusPluginLib.Utils;
 
 namespace PluginMetis.Combine
 {
-	public class AnnotateNodes : PerseusApi.Network.INetworkMergeWithMatrixAnnColumns
-	{
+	public class AnnotateNodes : INetworkMergeWithMatrix{
 		public string Name => "Annotate nodes";
 		public string Description => "Transfer node annotations from a matrix to the network.";
 		public float DisplayRank => 1;
@@ -34,7 +33,7 @@ namespace PluginMetis.Combine
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
 
-		public INetworkDataAnnColumns ProcessData(INetworkDataAnnColumns data, IMatrixData inMatrix, Parameters param,
+		public INetworkData ProcessData(INetworkData data, IMatrixData inMatrix, Parameters param,
 			ref IData[] supplTables, ProcessInfo processInfo)
 		{
 			((int m1, int m2) first, (int m1, int m2)? second, bool outer, bool ignoreCase) matching = MatchingRowsByName.ParseMatchingColumns(param);
@@ -51,7 +50,7 @@ namespace PluginMetis.Combine
 				return null;
 			}
 			bool addOriginalRowNumbers = param.GetParam<bool>("Add original row numbers").Value;
-			INetworkDataAnnColumns ndata = (INetworkDataAnnColumns)data.Clone();
+			INetworkData ndata = (INetworkData)data.Clone();
 			IMatrixData mdata = (IMatrixData)inMatrix.Clone();
 			annotation = ConvertMainToNumericAnnotation(annotation, mdata);
 			IDataWithAnnotationColumns[] nodeTables = ndata.Select(network => network.NodeTable).ToArray();
@@ -157,7 +156,7 @@ namespace PluginMetis.Combine
 			return (annotation.main, annotation.text, (copy.ToArray(), combine), annotation.category);
 		}
 
-		public Parameters GetParameters(INetworkDataAnnColumns ndata, IMatrixData inMatrix, ref string errString)
+		public Parameters GetParameters(INetworkData ndata, IMatrixData inMatrix, ref string errString)
 		{
 			if (!ndata.Any())
 			{
@@ -165,7 +164,7 @@ namespace PluginMetis.Combine
 				return null;
 			}
 			Parameter[] matchParams = MatchingRowsByName.CreateMatchParameters(
-				ndata.Intersect(network =>
+				Intersect(ndata,network =>
 					network.NodeTable.StringColumnNames.Concat(network.NodeTable.NumericColumnNames)).ToList(),
 				inMatrix.StringColumnNames.Concat(inMatrix.NumericColumnNames).ToList());
 			Parameter[] annotParams = MatchingRowsByName.CreateCopyParameters(inMatrix);
@@ -177,5 +176,14 @@ namespace PluginMetis.Combine
 					}
 				}).Concat(annotParams).ToArray());
 		}
+
+		public static T[] Intersect<T>(INetworkData ndata, Func<INetworkInfo, IEnumerable<T>> selector) {
+			return Aggregate(ndata.ToList(), selector, Enumerable.Intersect);
+		}
+		private static TOut[] Aggregate<TIn, TOut>(IEnumerable<TIn> ndata, Func<TIn, IEnumerable<TOut>> selector,
+			Func<IEnumerable<TOut>, IEnumerable<TOut>, IEnumerable<TOut>> aggregator) {
+			return ndata.Select(selector).Aggregate(aggregator).ToArray();
+		}
+
 	}
 }

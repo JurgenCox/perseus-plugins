@@ -39,7 +39,7 @@ namespace PluginPHOTON
 			return tempFile;
 		}
 
-		protected override Parameter[] SpecificParameters(INetworkDataAnnColumns ndata, ref string errString)
+		protected override Parameter[] SpecificParameters(INetworkData ndata, ref string errString)
 		{
 			if (ndata.Count() != 1)
 			{

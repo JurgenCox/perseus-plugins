@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using BaseLibS.Calc;
 using BaseLibS.Graph;
@@ -10,7 +11,7 @@ using PerseusApi.Utils;
 
 namespace PluginMetis
 {
-	public class MetabolicNetworksFilter : INetworkProcessingAnnColumns
+	public class MetabolicNetworksFilter : INetworkProcessing
 	{
 		public string Name => "Filter for metabolic reactions";
 		public float DisplayRank => 0;
@@ -31,7 +32,7 @@ namespace PluginMetis
 			return 1;
 		}
 
-		public void ProcessData(INetworkDataAnnColumns ndata, Parameters param, ref IData[] supplTables,
+		public void ProcessData(INetworkData ndata, Parameters param, ref IData[] supplTables,
 			ProcessInfo processInfo)
 		{
 			Relation[] relations =
@@ -41,7 +42,7 @@ namespace PluginMetis
 				processInfo.ErrString = errString;
 				return;
 			}
-			string[] columns = ndata.Intersect(network => network.NodeTable.NumericColumnNames).SubArray(colInds);
+			string[] columns = Intersect(ndata,network => network.NodeTable.NumericColumnNames).SubArray(colInds);
 			foreach (INetworkInfo network in ndata)
 			{
 				double[][] numericalRows = network.NodeTable.NumericalRows(columns);
@@ -54,9 +55,18 @@ namespace PluginMetis
 			}
 		}
 
-		public Parameters GetParameters(INetworkDataAnnColumns ndata, ref string errString)
+		public static T[] Intersect<T>(INetworkData ndata, Func<INetworkInfo, IEnumerable<T>> selector) {
+			return Aggregate(ndata.ToList(), selector, Enumerable.Intersect);
+		}
+		private static TOut[] Aggregate<TIn, TOut>(IEnumerable<TIn> ndata, Func<TIn, IEnumerable<TOut>> selector,
+			Func<IEnumerable<TOut>, IEnumerable<TOut>, IEnumerable<TOut>> aggregator) {
+			return ndata.Select(selector).Aggregate(aggregator).ToArray();
+		}
+
+
+		public Parameters GetParameters(INetworkData ndata, ref string errString)
 		{
-			string[] columns = ndata.Intersect(network => network.NodeTable.NumericColumnNames);
+			string[] columns = Intersect(ndata,network => network.NodeTable.NumericColumnNames);
 			if (columns.Length < 1)
 			{
 				errString = "Please add at least one common numerical column to all node tables for filtering";

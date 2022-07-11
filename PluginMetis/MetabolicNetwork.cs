@@ -16,10 +16,10 @@ namespace PluginMetis
 	{
 		//Network with Reactions is defined: akes the values present in the column selected by the user as Reaction Column
 		//Then the values are filtered based on the values that are already present in the Category Column
-		public static INetworkDataAnnColumns ReactionsNetwork(INetworkDataAnnColumns inData,
+		public static INetworkData ReactionsNetwork(INetworkData inData,
 			ParameterWithSubParams<int> netReactionscolParam, int[] netReactionsselValues)
 		{
-			INetworkDataAnnColumns networkReactions = (INetworkDataAnnColumns)inData.Clone();
+			INetworkData networkReactions = (INetworkData)inData.Clone();
 			(string[] netReactionscols, string[][] netReactionscolValues) = networkReactions.CommonNodeAnnotationColumns();
 
 			string netReactionscol = netReactionscols[netReactionscolParam.Value];
@@ -50,10 +50,10 @@ namespace PluginMetis
 		}
 
 
-		public static INetworkDataAnnColumns ProductsNetwork(INetworkDataAnnColumns inData, ParameterWithSubParams<int> ReactProdReactionscolParam,
+		public static INetworkData ProductsNetwork(INetworkData inData, ParameterWithSubParams<int> ReactProdReactionscolParam,
 			int[] networkReactantsReactionsselectedValues, int[] ProdReactionsselectedValues, int[] netReactionsselValues, string[] netReactionsvalues)
 		{
-			INetworkDataAnnColumns ReactProdReactions = (INetworkDataAnnColumns)inData.Clone();
+			INetworkData ReactProdReactions = (INetworkData)inData.Clone();
 			(string[] ReactProdReactionscolumns, string[][] ReactProdReactionscolumnValues) = ReactProdReactions.CommonNodeAnnotationColumns();
 
 			string ReactProdReactionscolumn = ReactProdReactionscolumns[ReactProdReactionscolParam.Value];
@@ -83,11 +83,11 @@ namespace PluginMetis
 
 		//Network with Modifiers is defined: takes the values present in the column selected by the user as Reaction Column
 		//Then the values are filtered based on the values that are already present in the Category Column
-		public static INetworkDataAnnColumns ModifiersNetwork(INetworkDataAnnColumns inData, ParameterWithSubParams<int> netModifiersReactionscolParam,
+		public static INetworkData ModifiersNetwork(INetworkData inData, ParameterWithSubParams<int> netModifiersReactionscolParam,
 			int[] netModifiersReactionsselectedValues, int[] netReactionsselValues, string[] netReactionsvalues
 			)
 		{
-			INetworkDataAnnColumns netModifiersReactions = (INetworkDataAnnColumns)inData.Clone();
+			INetworkData netModifiersReactions = (INetworkData)inData.Clone();
 			(string[] netModifiersReactionscols, string[][] netModifiersReactionscolValues) = netModifiersReactions.CommonNodeAnnotationColumns();
 
 			string netModifiersReactionscol = netModifiersReactionscols[netModifiersReactionscolParam.Value];
@@ -111,7 +111,7 @@ namespace PluginMetis
 
 		//Match of the columns given as input (for example reactions vs products) so that to generate 
 		//a new updated networks and relative map indexed
-		public static void SetNetworkAndIndexMap(Parameters productAnnotationParameters, INetworkDataAnnColumns ndataReactions, IMatrixData mdataProductsReactions)
+		public static void SetNetworkAndIndexMap(Parameters productAnnotationParameters, INetworkData ndataReactions, IMatrixData mdataProductsReactions)
 		{
 			((int m1, int m2) first, (int m1, int m2)? second, bool outer, bool ignoreCase) productMatching = MatchingRowsByName.ParseMatchingColumns(productAnnotationParameters);
 			((int[] copy, int combine) main, int[] text, (int[] copy, int combine) numeric, int[] category) productAnnotation = MatchingRowsByName.ParseCopyParameters(productAnnotationParameters);

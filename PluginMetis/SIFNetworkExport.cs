@@ -12,7 +12,7 @@ using PerseusApi.Document;
 
 namespace PluginMetis
 {
-	class SIFNetworkExport : INetworkToMatrixAnnColumns
+	class SIFNetworkExport : INetworkToMatrix
 	{
 		public string Name => "SIF export for metabolic reactions";
 		public float DisplayRank => 1;
@@ -34,7 +34,7 @@ namespace PluginMetis
 		}
 
 
-		public Parameters GetParameters(INetworkDataAnnColumns ndata, ref string errString)
+		public Parameters GetParameters(INetworkData ndata, ref string errString)
 		{
 			(string[] columns, string[][] values) = ndata.CommonNodeAnnotationColumns();
 			if (columns.Length < 1)
@@ -53,7 +53,7 @@ namespace PluginMetis
 			});
 		}
 
-		public void ProcessData(INetworkDataAnnColumns inData, IMatrixData outData, Parameters param, ref IData[] supplTables, ProcessInfo processInfo)
+		public void ProcessData(INetworkData inData, IMatrixData outData, Parameters param, ref IData[] supplTables, ProcessInfo processInfo)
 		{
 			string errString = string.Empty;
 			var pinfo = new ProcessInfo(new Settings(), s => { }, i => { }, 1);
@@ -66,24 +66,24 @@ namespace PluginMetis
 			ReorderRemoveColumns removeColumn = new ReorderRemoveColumns();
 
 			//clone input network
-			INetworkDataAnnColumns network = (INetworkDataAnnColumns)inData.Clone();
+			INetworkData network = (INetworkData)inData.Clone();
 
 			//create annotation in the new cloned network
-			(string[] networkColumns, string[][] networkColumnValues) = network.CommonEdgeAnnotationColumns();
+			//(string[] networkColumns, string[][] networkColumnValues) = network.CommonEdgeAnnotationColumns();
 
 			//use AnnotateEdges to match the source column of the edges to their type
 			IMatrixData networkNodeTable = ToMatrixData(network.First().NodeTable, outData);
 			Parameters annotationSourceParams = annotateEdges.GetParameters(network, networkNodeTable, ref errString);
 			annotationSourceParams.GetParam<int>("Matching column in table 2").Value = 0;
 			annotationSourceParams.GetParam<int[]>("Copy categorical columns").Value = new[] { 0 };
-			INetworkDataAnnColumns edgesSource = annotateEdges.ProcessData(network, networkNodeTable, annotationSourceParams, ref supplData, pinfo);
+			INetworkData edgesSource = annotateEdges.ProcessData(network, networkNodeTable, annotationSourceParams, ref supplData, pinfo);
 
 			//use AnnotateEdges to match the target column of the edges to their type
 			Parameters annotationTargetParams = annotateEdges.GetParameters(edgesSource, networkNodeTable, ref errString);
 			annotationTargetParams.GetParam<int>("Matching column in table 1").Value = 1;
 			annotationTargetParams.GetParam<int>("Matching column in table 2").Value = 0;
 			annotationTargetParams.GetParam<int[]>("Copy categorical columns").Value = new[] { 0 };
-			INetworkDataAnnColumns networkModifiers = annotateEdges.ProcessData(edgesSource, networkNodeTable, annotationTargetParams, ref supplData, pinfo);
+			INetworkData networkModifiers = annotateEdges.ProcessData(edgesSource, networkNodeTable, annotationTargetParams, ref supplData, pinfo);
 
 			//format output matrix
 			IDataWithAnnotationColumns table = networkModifiers.First().EdgeTable;

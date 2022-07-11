@@ -23,7 +23,7 @@ namespace PluginMetis.Combine
 	/// Future workflows could include: mapping confidence values to edges etc.
 	/// WRITE UNIT TESTS FIRST PluginNetwork.Test/Combine/AnnotationEdgesTest
 	/// </summary>
-	public class AnnotateEdges : INetworkMergeWithMatrixAnnColumns
+	public class AnnotateEdges : INetworkMergeWithMatrix
 	{
 		public string Name => "Annotate edges";
 		public string Description => "Transfer annotations from a matrix to the network.";
@@ -45,7 +45,7 @@ namespace PluginMetis.Combine
 		public string[] HelpDocuments => new string[0];
 		public int NumDocuments => 0;
 
-		public INetworkDataAnnColumns ProcessData(INetworkDataAnnColumns data, IMatrixData inMatrix, Parameters param,
+		public INetworkData ProcessData(INetworkData data, IMatrixData inMatrix, Parameters param,
 			ref IData[] supplTables, ProcessInfo processInfo)
 		{
 			((int m1, int m2) first, (int m1, int m2)? second, bool outer, bool ignoreCase) matching =
@@ -58,7 +58,7 @@ namespace PluginMetis.Combine
 				processInfo.ErrString = "Please choose consistent values for combining main/numeric columns.";
 				return null;
 			}
-			INetworkDataAnnColumns ndata = (INetworkDataAnnColumns)data.Clone();
+			INetworkData ndata = (INetworkData)data.Clone();
 			IMatrixData mdata = (IMatrixData)inMatrix.Clone();
 			annotation = AnnotateNodes.ConvertMainToNumericAnnotation(annotation, mdata);
 			IDataWithAnnotationColumns[] edgeTables = ndata.Select(network => network.EdgeTable).ToArray();
@@ -178,8 +178,7 @@ namespace PluginMetis.Combine
 			return ndata;
 		}
 
-		public Parameters GetParameters(INetworkDataAnnColumns ndata, IMatrixData inMatrix, ref string errString)
-		{
+		public Parameters GetParameters(INetworkData ndata, IMatrixData inMatrix, ref string errString){
 			Parameter[] matchParams = MatchingRowsByName.CreateMatchParameters(
 				ndata.Intersect(network =>
 					network.EdgeTable.StringColumnNames.Concat(network.EdgeTable.NumericColumnNames)).ToList(),

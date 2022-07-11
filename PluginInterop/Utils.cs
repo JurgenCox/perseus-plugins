@@ -32,7 +32,7 @@ namespace PluginInterop{
 			if (data is IMatrixData mdata){
 				return MatrixDataPreviewButton(mdata);
 			}
-			if (data is INetworkDataAnnColumns ndata){
+			if (data is INetworkData ndata){
 				return NetworkDataPreviewButton(ndata);
 			}
 			throw new NotImplementedException(
@@ -44,7 +44,7 @@ namespace PluginInterop{
 				"tab-separated data, *.txt|*.txt", s => PerseusUtils.WriteMatrixToFile(mdata, s));
 		}
 
-		public static Parameter NetworkDataPreviewButton(INetworkDataAnnColumns ndata){
+		public static Parameter NetworkDataPreviewButton(INetworkData ndata){
 			return new SaveFolderParam("Download data for preview", "save", s => FolderFormat.Write(ndata, s));
 		}
 
@@ -118,7 +118,7 @@ namespace PluginInterop{
 						supplData[i] = mdata;
 						break;
 					case DataType.Network:
-						INetworkDataAnnColumns ndata = PerseusFactoryAnnColumns.CreateNetworkData();
+						INetworkData ndata = PerseusFactory.CreateNetworkData();
 						FolderFormat.Read(ndata, suppFiles[i], processInfo);
 						supplData[i] = ndata;
 						break;
