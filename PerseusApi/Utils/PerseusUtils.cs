@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using BaseLibS.Calc;
 using BaseLibS.Num;
 using BaseLibS.Num.Matrix;
@@ -869,7 +870,7 @@ namespace PerseusApi.Utils{
 		/// <param name="filename"></param>
 		/// <param name="addtlMatrices">if true numbers are converted to triples <code>value;imputed;quality</code></param>
 		public static void WriteMatrixToFile(IMatrixData data, string filename, bool addtlMatrices = false){
-			using (StreamWriter writer = new StreamWriter(filename)){
+			using (StreamWriter writer = new StreamWriter(filename, false, Encoding.UTF8)){
 				WriteMatrix(data, writer, addtlMatrices);
 			}
 		}
