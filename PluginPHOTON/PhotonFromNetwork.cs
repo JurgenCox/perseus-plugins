@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using BaseLib.Graphic;
 using BaseLibS.Graph;
 using BaseLibS.Param;
 using PerseusApi.Generic;
@@ -22,8 +23,10 @@ namespace PluginPHOTON
 		public override Bitmap2 DisplayImage =>
 			Bitmap2.GetImage(Assembly.GetExecutingAssembly(), "PluginPHOTON.img.icon.png");
 
-		protected override string[] ReqiredPythonPackages => new[] { "perseuspy", "phos", "joblib" };
-		public override int NumSupplTables => 2;
+		protected override string[] ReqiredPythonPackages => new[] { "perseuspy", "phos", "joblib", "numpy",
+        "pandas","scipy", "matplotlib", "networkx", "flask","requests","celery","redis","goenrich","scikit-learn","pytest-runner" };
+
+        public override int NumSupplTables => 2;
 		public override DataType[] SupplDataTypes => new[] { DataType.Network, DataType.Matrix };
 
 		protected override bool TryGetCodeFile(Parameters param, out string codeFile)
