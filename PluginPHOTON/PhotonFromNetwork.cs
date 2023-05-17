@@ -72,7 +72,11 @@ namespace PluginPHOTON
 				Help = "Restrict the size of the reconstructed network by considering only the n top-scoring proteins."
 			};
 			return new Parameter[]{
-				new MultiChoiceParam("Data columns"){
+                 new LabelParam("Instructions")
+                {
+                    Value = "Please make sure to install all the packages required for PluginPHOTON. Visit the link: ",
+                },
+                new MultiChoiceParam("Data columns"){
 					Value = Enumerable.Range(0, nodeTable.MultiNumericColumnCount).Where(i =>
 						!new[]{"position"}.Contains(nodeTable.MultiNumericColumnNames[i].ToLower())).ToArray(),
 					Values = nodeTable.MultiNumericColumnNames,

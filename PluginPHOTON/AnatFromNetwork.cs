@@ -80,7 +80,10 @@ namespace PluginPHOTON
 				Values = edgeTable.NumericColumnNames.Concat(new[] { "Use constant value" }).ToList(),
 				Help = "Confidence score for interactions. Will be used as weights in the network reconstruction"
 			};
-			return new Parameter[] { confidenceColumnParam, signalingSourceParam, terminalsParam };
+			return new Parameter[] {                 new LabelParam("Instructions")
+                {
+                    Value = "Please make sure to install all the packages required for PluginPHOTON. Visit the link: ",
+                },confidenceColumnParam, signalingSourceParam, terminalsParam };
 		}
 	}
 }

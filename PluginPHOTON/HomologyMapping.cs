@@ -45,7 +45,11 @@ namespace PluginPHOTON
 			}
 			int geneid = mdata.StringColumnNames.FindIndex(col => col.ToLower().Equals("geneid"));
 			return new Parameter[]{
-				new SingleChoiceParam("GeneID", Math.Max(0, geneid)){Values = mdata.StringColumnNames},
+                new LabelParam("Instructions")
+                {
+                    Value = "Please make sure to install all the packages required for PluginPHOTON. Visit the link: ",
+                },
+                new SingleChoiceParam("GeneID", Math.Max(0, geneid)){Values = mdata.StringColumnNames},
 				new SingleChoiceParam("Map from", 0){Values = new List<string>{"mouse to human", "human to mouse"}},
 			};
 		}
