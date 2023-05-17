@@ -30,6 +30,6 @@ setup(name='photon_ptm',
             'redis',
             'goenrich',
             'joblib',
-            'sklearn',
+            'scikit-learn',
             'pytest-runner'],
         tests_require=['pytest'])
