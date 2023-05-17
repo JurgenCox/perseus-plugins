@@ -47,8 +47,8 @@ Phosphoproteomic experiments typically identify sites within a protein that are 
 
 ### Installation and Tutorial
 
-Follow the [installation instructions](Setup/docs/installation.md) and
-[learn](Setup/docs/tutorial.md) how to use PHOTON from within Perseus.
+Follow the [installation instructions](PluginPHOTON/Setup/docs/installation.md) and
+[learn](PluginPHOTON/Setup/docs/tutorial.md) how to use PHOTON from within Perseus.
 
 Developer: Dr. Jan Rudolph [@Github page](https://github.com/jdrudolph)
 Maintenance: Daniela Ferretti - [@GitHub page](https://github.com/danielaferretti1992)
