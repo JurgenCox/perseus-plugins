@@ -73,8 +73,6 @@ info: [here](https://github.com/cox-labs/PluginDependentPeptides)
 ## PluginProteomicRuler
 This Perseus plugin implements computational strategies for absolute protein quantification without spike-in standards. The concept was published by [Wiśniewski, Hein, et al., MCP, 2014](https://pubmed.ncbi.nlm.nih.gov/25225357/) and builds on earlier work by [Wiśniewski et al., MSB, 2012](https://pubmed.ncbi.nlm.nih.gov/22968445/). 
 
-Developer: 
-
 info: [here](http://www.coxdocs.org/doku.php?id=perseus:user:plugins:proteomicruler)
 
 ## PluginsCrosslinks
