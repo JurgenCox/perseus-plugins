@@ -53,7 +53,6 @@ Follow the [installation instructions](PluginPHOTON/Setup/docs/installation.md) 
 Developer: Dr. Jan Rudolph [@Github page](https://github.com/jdrudolph)
 Maintenance: Daniela Ferretti - [@GitHub page](https://github.com/danielaferretti1992)
 
-info: [here](https://github.com/jdrudolph/photon)
 ## PluginMetis
 PluginMetis: a new plugin for the [Perseus](https://www.maxquant.org/perseus/) software aimed at analyzing quantitative multi-omics data based on metabolic pathways. Data from different omics types are connected through reactions of a genome-scale metabolic pathway reconstruction. Metabolite concentrations connect through the reactants, while transcript, protein and protein post-translational modification (PTM) data are associated through the enzymes catalyzing the reactions. Supported experimental designs include static comparative studies and time series data. 
 
