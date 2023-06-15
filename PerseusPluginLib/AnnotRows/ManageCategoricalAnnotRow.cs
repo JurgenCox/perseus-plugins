@@ -327,7 +327,7 @@ namespace PerseusPluginLib.AnnotRows{
 
 		public Parameters GetCreateParameters(IMatrixData mdata){
 			List<Parameter> par = new List<Parameter>{
-				new StringParam("Row name"){Value = "Group1", Help = "Name of the new category annotation row."}
+				new StringParam("Row name"){Value = "Grouping1", Help = "Name of the new category annotation row."}
 			};
 			Dictionary<string, string> map = new Dictionary<string, string>();
 			foreach (string t in mdata.ColumnNames){

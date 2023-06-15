@@ -69,9 +69,9 @@ namespace PerseusPluginLib.Load{
 						}
 						if (which){
 							m[i, 0] += dist;
-							col[i] = new[]{"Group1"};
+							col[i] = new[]{"Grouping1"};
 						} else{
-							col[i] = new[]{"Group2"};
+							col[i] = new[]{"Grouping2"};
 						}
 					}
 					catColNames.Add("Grouping");
