@@ -26,24 +26,26 @@ namespace PerseusApi.Utils{
 			bool hasAdditionalMatrices = GetHasAddtlMatrices(auxReader, mainColIndices, separator);
 			LoadMatrixData(annotationRows, mainColIndices, catColIndices, numColIndices, textColIndices,
 				multiNumColIndices, processInfo, colNames, mdata, reader, nrows, origin, separator,
-				shortenExpressionNames, hasAdditionalMatrices, filters);
+				shortenExpressionNames, hasAdditionalMatrices, filters, false, -1);
 		}
 
 		public static void LoadMatrixData(IDictionary<string, string[]> annotationRows, int[] mainColIndices,
 			int[] catColIndices, int[] numColIndices, int[] textColIndices, int[] multiNumColIndices,
 			ProcessInfo processInfo, IList<string> colNames, IMatrixData mdata, StreamReader reader, int nrows,
 			string origin, char separator, bool shortenExpressionNames, bool hasAdditionalMatrices,
-			List<Tuple<Relation[], int[], bool>> filters){
+			List<Tuple<Relation[], int[], bool>> filters, bool limit, int nlimit) {
 			string[] colDescriptions = null;
 			if (annotationRows.ContainsKey("Description")){
 				colDescriptions = annotationRows["Description"];
 				annotationRows.Remove("Description");
 			}
 			if (HasBadParameters(mainColIndices, catColIndices, numColIndices, textColIndices, multiNumColIndices,
-				processInfo, colNames)) return;
+				    processInfo, colNames)){
+				return;
+			}
 			LoadMatrixData(colNames, colDescriptions, mainColIndices, catColIndices, numColIndices, textColIndices,
 				multiNumColIndices, origin, mdata, processInfo.Progress, processInfo.Status, separator, reader, nrows,
-				shortenExpressionNames, filters, hasAdditionalMatrices);
+				shortenExpressionNames, filters, hasAdditionalMatrices, limit, nlimit);
 			AddAnnotationRows(mainColIndices, mdata, annotationRows);
 		}
 
@@ -77,11 +79,11 @@ namespace PerseusApi.Utils{
 			IList<int> mainColIndices, IList<int> catColIndices, IList<int> numColIndices, IList<int> textColIndices,
 			IList<int> multiNumColIndices, string origin, IMatrixData matrixData, Action<int> progress,
 			Action<string> status, char separator, TextReader reader, int nrows, bool shortenExpressionNames,
-			List<Tuple<Relation[], int[], bool>> filters, bool addtlMatrices){
+			List<Tuple<Relation[], int[], bool>> filters, bool addtlMatrices, bool limit, int nlimit) {
 			status("Reading data");
 			LoadAllData(matrixData, colNames, mainColIndices, catColIndices, numColIndices, textColIndices,
 				multiNumColIndices, reader, separator, nrows, filters, progress, addtlMatrices,
-				out double[,] qualityValues, out bool[,] isImputedValues, out FloatMatrixIndexer mainValues);
+				out double[,] qualityValues, out bool[,] isImputedValues, out FloatMatrixIndexer mainValues, limit, nlimit);
 			//AddColumnDescriptions(colDescriptions, catColIndices, numColIndices, textColIndices, multiNumColIndices, matrixData);
 			//	AddMainColumnDescriptions(colDescriptions, mainColIndices, matrixData);
 			matrixData.Name = origin;
@@ -110,14 +112,14 @@ namespace PerseusApi.Utils{
 			List<Tuple<Relation[], int[], bool>> filters){
 			LoadAllData(matrixData, colNames, new int[0], catColIndices, numColIndices, textColIndices,
 				multiNumColIndices, reader, separator, nrows, filters, progress, false, out double[,] _, out bool[,] _,
-				out FloatMatrixIndexer _);
+				out FloatMatrixIndexer _, false, -1);
 		}
 
 		private static void LoadAllData(IDataWithAnnotationColumns matrixData, IList<string> colNames,
 			IList<int> mainColIndices, IList<int> catColIndices, IList<int> numColIndices, IList<int> textColIndices,
 			IList<int> multiNumColIndices, TextReader reader, char separator, int nrows,
 			List<Tuple<Relation[], int[], bool>> filters, Action<int> progress, bool addtlMatrices,
-			out double[,] qualityValues, out bool[,] isImputedValues, out FloatMatrixIndexer mainValues){
+			out double[,] qualityValues, out bool[,] isImputedValues, out FloatMatrixIndexer mainValues, bool limit, int nlimit) {
 			InitializeAnnotationColumns(catColIndices, numColIndices, textColIndices, multiNumColIndices, nrows,
 				out List<string[][]> categoryAnnotation, out List<double[]> numericAnnotation,
 				out List<double[][]> multiNumericAnnotation, out List<string[]> stringAnnotation);
@@ -127,13 +129,18 @@ namespace PerseusApi.Utils{
 			int count = 0;
 			string line;
 			while ((line = reader.ReadLine()) != null){
-				if (SkipCommentOrInvalid(separator, filters, addtlMatrices, line, out string[] words)) continue;
+				if (SkipCommentOrInvalid(separator, filters, addtlMatrices, line, out string[] words)){
+					continue;
+				}
 				progress(100 * (count + 1) / nrows);
 				ReadMainColumns(mainColIndices, addtlMatrices, words, mainValues, count, isImputedValues,
 					qualityValues);
 				ReadAnnotationColumns(catColIndices, numColIndices, textColIndices, multiNumColIndices, words,
 					numericAnnotation, count, multiNumericAnnotation, categoryAnnotation, stringAnnotation);
 				count++;
+				if (limit && count >= nlimit){
+					break;
+				}
 			}
 			reader.Close();
 			string[] catColnames = colNames.SubArray(catColIndices);
@@ -747,11 +754,11 @@ namespace PerseusApi.Utils{
 		public static int GetRowCount(StreamReader reader, StreamReader auxReader, int[] mainColIndices,
 			List<Tuple<Relation[], int[], bool>> filters, char separator){
 			return GetRowCount(reader, filters, separator,
-				auxReader != null && GetHasAddtlMatrices(auxReader, mainColIndices, separator));
+				auxReader != null && GetHasAddtlMatrices(auxReader, mainColIndices, separator), false, -1);
 		}
 
 		public static int GetRowCount(StreamReader reader, List<Tuple<Relation[], int[], bool>> filters, char separator,
-			bool addtlMatrices){
+			bool addtlMatrices, bool limit, int nlimit) {
 			reader.BaseStream.Seek(0, SeekOrigin.Begin);
 			reader.ReadLine();
 			int count = 0;
@@ -762,6 +769,9 @@ namespace PerseusApi.Utils{
 				}
 				if (IsValidLine(line, separator, filters, addtlMatrices)){
 					count++;
+					if (limit && count >= nlimit){
+						return count;
+					}
 				}
 			}
 			return count;
@@ -1193,7 +1203,7 @@ namespace PerseusApi.Utils{
 				out bool hasAdditionalMatrices);
 			using (StreamReader reader = getReader()){
 				LoadMatrixData(annotationRows, eInds, cInds, nInds, tInds, mInds, processInfo, colNames, mdata, reader,
-					nrows, name, separator, false, hasAdditionalMatrices, filters);
+					nrows, name, separator, false, hasAdditionalMatrices, filters, false, -1);
 			}
 		}
 
@@ -1213,7 +1223,7 @@ namespace PerseusApi.Utils{
 			}
 			filters = new List<Tuple<Relation[], int[], bool>>();
 			using (StreamReader reader = getReader()){
-				nrows = GetRowCount(reader, filters, separator, hasAdditionalMatrices);
+				nrows = GetRowCount(reader, filters, separator, hasAdditionalMatrices, false, -1);
 			}
 		}
 
@@ -1262,7 +1272,7 @@ namespace PerseusApi.Utils{
 
 		public static void ReadMatrixFromFile(IMatrixData mdata, ProcessInfo processInfo, string filename, int[] eInds,
 			int[] nInds, int[] cInds, int[] tInds, int[] mInds, Parameters[] mainFilterParameters,
-			Parameters[] numericalFilterParameters, bool shortenExpressionColumnNames){
+			Parameters[] numericalFilterParameters, bool shortenExpressionColumnNames, bool limit, int nlimit){
 			if (!File.Exists(filename)){
 				processInfo.ErrString = "File '" + filename + "' does not exist.";
 				return;
@@ -1303,11 +1313,12 @@ namespace PerseusApi.Utils{
 				hasAdditionalMatrices = GetHasAddtlMatrices(reader, eInds, separator);
 			}
 			using (StreamReader reader = FileUtils.GetReader(filename)){
-				nrows = GetRowCount(reader, filters, separator, hasAdditionalMatrices);
+				nrows = GetRowCount(reader, filters, separator, hasAdditionalMatrices, limit, nlimit);
 			}
 			using (StreamReader reader = FileUtils.GetReader(filename)){
-				LoadMatrixData(annotationRows, eInds, cInds, nInds, tInds, mInds, processInfo, colNames, mdata, reader,
-					nrows, origin, separator, shortenExpressionColumnNames, hasAdditionalMatrices, filters);
+				LoadMatrixData(annotationRows, eInds, cInds, nInds, tInds, 
+					mInds, processInfo, colNames, mdata, reader, nrows, origin, separator, 
+					shortenExpressionColumnNames, hasAdditionalMatrices, filters, limit, nlimit);
 			}
 			GC.Collect();
 		}
