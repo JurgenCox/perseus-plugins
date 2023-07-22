@@ -20,7 +20,7 @@ namespace PerseusApi.Generic{
 		/// interface can be used on the server side.
 		/// </returns>
 		object CreateUiElement(Action<string> updateStatus, Action<IData> newData);
-		//void Write(BinaryWriter writer);
-		//void Read(BinaryReader reader);
+		void Write(BinaryWriter writer);
+		void Read(BinaryReader reader, Func<BinaryReader, DataType, IData> readData);
 	}
 }
