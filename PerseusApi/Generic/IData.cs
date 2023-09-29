@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using BaseLibS.Graph;
 using PerseusApi.Network;
 
@@ -72,8 +73,13 @@ namespace PerseusApi.Generic{
 		/// <returns>New instance.</returns>
 		IData CreateNewInstance(DataType type);
 
+		/// <summary>
+		/// Serialize data to file.
+		/// </summary>
+		/// <returns>New instance.</returns>
 		IData Copy(int id);
 
+		void Write(BinaryWriter writer);
 		/// <summary>
 		/// Clears up all data from this instance.
 		/// </summary>

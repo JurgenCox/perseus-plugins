@@ -15,6 +15,5 @@ namespace PerseusApi.Matrix{
 		string QualityName{ get; set; }
 		bool QualityBiggerIsBetter{ get; set; }
 		bool HasQuality{ get; }
-		void Write(BinaryWriter writer);
 	}
 }

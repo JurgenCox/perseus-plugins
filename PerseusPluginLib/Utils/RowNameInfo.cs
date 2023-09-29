@@ -2,22 +2,19 @@
 using BaseLibS.Num;
 using BaseLibS.Util;
 using PerseusApi.Generic;
-
 namespace PerseusPluginLib.Utils{
-    [Serializable]
+	[Serializable]
 	public class RowNameInfo : INameInfo{
-		public bool CutNames { get; set; }
-		public bool CutNames2 { get; set; }
-		public bool CutDescriptions { get; set; }
-		public int NameColumnIndex { get; set; }
-		public int Name2ColumnIndex { get; set; }
-		public int DescriptionColumnIndex { get; set; }
+		public bool CutNames{ get; set; }
+		public bool CutNames2{ get; set; }
+		public bool CutDescriptions{ get; set; }
+		public int NameColumnIndex{ get; set; }
+		public int Name2ColumnIndex{ get; set; }
+		public int DescriptionColumnIndex{ get; set; }
 		private readonly IDataWithAnnotationColumns mdata;
-
 		public RowNameInfo(IDataWithAnnotationColumns mdata){
 			this.mdata = mdata;
 		}
-
 		public string[] GetRowNames(){
 			string[] result = new string[mdata.RowCount];
 			for (int i = 0; i < result.Length; i++){
@@ -25,11 +22,9 @@ namespace PerseusPluginLib.Utils{
 			}
 			return result;
 		}
-
 		public string[] GetNameSelection(){
 			return ArrayUtils.Concat(mdata.StringColumnNames, mdata.CategoryColumnNames);
 		}
-
 		private string GetRowName(int ind, int nameColumnIndex, bool cutNames){
 			if (nameColumnIndex < 0){
 				return "";
@@ -55,15 +50,12 @@ namespace PerseusPluginLib.Utils{
 			}
 			return "";
 		}
-
 		public string GetRowName(int ind){
 			return GetRowName(ind, NameColumnIndex, CutNames);
 		}
-
 		public string GetRowName2(int ind){
 			return GetRowName(ind, Name2ColumnIndex, CutNames2);
 		}
-
 		public string GetRowDescription(int ind){
 			return GetRowName(ind, DescriptionColumnIndex, CutDescriptions);
 		}
