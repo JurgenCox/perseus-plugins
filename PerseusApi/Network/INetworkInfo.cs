@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using PerseusApi.Generic;
 
 namespace PerseusApi.Network{
@@ -43,5 +44,6 @@ namespace PerseusApi.Network{
 		/// <param name="errString"></param>
 		/// <returns></returns>
 		bool IsConsistent(out string errString);
+		void Write(BinaryWriter writer);
 	}
 }
