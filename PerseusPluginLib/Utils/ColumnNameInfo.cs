@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using BaseLibS.Num;
 using BaseLibS.Util;
 using PerseusApi.Matrix;
@@ -12,10 +13,24 @@ namespace PerseusPluginLib.Utils{
 		public int Name2ColumnIndex { get; set; }
 		private readonly IMatrixData mdata;
 
-		public ColumnNameInfo(IMatrixData mdata){
+		public ColumnNameInfo(IMatrixData mdata) {
 			this.mdata = mdata;
 		}
 
+		public ColumnNameInfo(BinaryReader reader, IMatrixData mdata) {
+			this.mdata = mdata;
+			CutNames = reader.ReadBoolean();
+			CutNames2 = reader.ReadBoolean();
+			NameColumnIndex = reader.ReadInt32();
+			Name2ColumnIndex = reader.ReadInt32();
+		}
+
+		public void Write(BinaryWriter writer) {
+			writer.Write(CutNames);
+			writer.Write(CutNames2);
+			writer.Write(NameColumnIndex);
+			writer.Write(Name2ColumnIndex);
+		}
 		public string[] GetRowNames(){
 			string[] result = new string[mdata.ColumnCount];
 			for (int i = 0; i < result.Length; i++){

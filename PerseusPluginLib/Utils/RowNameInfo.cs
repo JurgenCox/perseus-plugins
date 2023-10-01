@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using BaseLibS.Num;
 using BaseLibS.Util;
 using PerseusApi.Generic;
@@ -12,8 +13,25 @@ namespace PerseusPluginLib.Utils{
 		public int Name2ColumnIndex{ get; set; }
 		public int DescriptionColumnIndex{ get; set; }
 		private readonly IDataWithAnnotationColumns mdata;
-		public RowNameInfo(IDataWithAnnotationColumns mdata){
+		public RowNameInfo(IDataWithAnnotationColumns mdata) {
 			this.mdata = mdata;
+		}
+		public RowNameInfo(BinaryReader reader, IDataWithAnnotationColumns mdata) {
+			this.mdata = mdata;
+			CutNames = reader.ReadBoolean();
+			CutNames2 = reader.ReadBoolean();
+			CutDescriptions = reader.ReadBoolean();
+			NameColumnIndex = reader.ReadInt32();
+			Name2ColumnIndex = reader.ReadInt32();
+			DescriptionColumnIndex = reader.ReadInt32();
+		}
+		public void Write(BinaryWriter writer) {
+			writer.Write(CutNames);
+			writer.Write(CutNames2);
+			writer.Write(CutDescriptions);
+			writer.Write(NameColumnIndex);
+			writer.Write(Name2ColumnIndex);
+			writer.Write(DescriptionColumnIndex);
 		}
 		public string[] GetRowNames(){
 			string[] result = new string[mdata.RowCount];
