@@ -111,14 +111,5 @@ namespace PerseusApi.Utils
 			}
 			return (IGraph)Activator.CreateInstance(type, nodes, edges);
 		}
-
-		/// <summary>
-		/// Creates an empty default implementation of <see cref="IDataWithAnnotationColumns"/>.
-		/// </summary>
-		public static IDataWithAnnotationColumns CreateDataWithAnnotationColumns()
-		{
-			object o = Activator.CreateInstance(Type.GetType("PerseusLibS.Data.DataWithAnnotationColumns"));
-			return (IDataWithAnnotationColumns)o;
-		}
 	}
 }

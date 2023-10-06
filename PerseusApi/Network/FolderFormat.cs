@@ -32,8 +32,8 @@ namespace PerseusApi.Network{
 			string[] names = ndata.StringRows[ndata.StringRowNames.IndexOf("name")];
 			for (int i = 0; i < guids.Length; i++){
 				Guid guid = Guid.Parse(guids[i]);
-				IDataWithAnnotationColumns nodeTable = PerseusFactory.CreateDataWithAnnotationColumns();
-				IDataWithAnnotationColumns edgeTable = PerseusFactory.CreateDataWithAnnotationColumns();
+				IDataWithAnnotationColumns nodeTable = new DataWithAnnotationColumns();
+				IDataWithAnnotationColumns edgeTable = new DataWithAnnotationColumns();
 				ReadMatrixDataInto(nodeTable, Path.Combine(folder, $"{guid}_nodes.txt"), processInfo);
 				ReadMatrixDataInto(edgeTable, Path.Combine(folder, $"{guid}_edges.txt"), processInfo);
 				IGraph graph = PerseusFactory.CreateGraph();
