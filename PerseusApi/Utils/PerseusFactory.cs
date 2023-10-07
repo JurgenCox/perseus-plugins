@@ -78,25 +78,15 @@ namespace PerseusApi.Utils{
 		/// <summary>
 		/// Creates and default implementation of <see cref="IGraph"/> without nodes or edges.
 		/// </summary>
-		public static IGraph CreateGraph(){
-			var graphTypeName = Assembly.CreateQualifiedName("PerseusLibS", "PerseusLibS.Data.Network.Graph");
-			var type = Type.GetType(graphTypeName);
-			if (type == null){
-				throw new Exception($"Cannot load type {graphTypeName}.");
-			}
-			return (IGraph) Activator.CreateInstance(type);
+		public static Graph CreateGraph(){
+			return new Graph();
 		}
 
 		/// <summary>
 		/// Creates an default implementation of <see cref="IGraph"/> from nodes and edges.
 		/// </summary>
-		public static IGraph CreateGraph(IEnumerable<INode> nodes, IEnumerable<IEdge> edges){
-			var graphTypeName = "PerseusLibS.Data.Network.Graph";
-			var type = Type.GetType(graphTypeName);
-			if (type == null){
-				throw new Exception($"Cannot load type {graphTypeName}.");
-			}
-			return (IGraph) Activator.CreateInstance(type, nodes, edges);
+		public static Graph CreateGraph(IEnumerable<INode> nodes, IEnumerable<IEdge> edges){
+			return new Graph(nodes, edges);
 		}
 	}
 }

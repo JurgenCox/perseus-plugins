@@ -31,7 +31,7 @@ namespace PerseusApi.Network{
 		/// <summary>
 		/// Node-link graph
 		/// </summary>
-		IGraph Graph{ get; }
+		Graph Graph{ get; }
 
 		/// <summary>
 		/// Network name

@@ -92,7 +92,7 @@ namespace PerseusApi.Generic{
 		/// <returns></returns>
 		bool IsConsistent(out string errString);
 
-		INetworkInfo CreateNetworkInfo(IGraph graph, DataWithAnnotationColumns nodeTable,
+		INetworkInfo CreateNetworkInfo(Graph graph, DataWithAnnotationColumns nodeTable,
 			Dictionary<INode, int> nodeIndex, DataWithAnnotationColumns edgeTable, Dictionary<IEdge, int> edgeIndex,
 			string name);
 	}
