@@ -11,22 +11,22 @@ namespace PerseusApi.Network{
 		/// <summary>
 		/// Node Table
 		/// </summary>
-		IDataWithAnnotationColumns NodeTable{ get; }
+		DataWithAnnotationColumns NodeTable{ get; }
 
 		/// <summary>
 		/// Edge Table
 		/// </summary>
-		IDataWithAnnotationColumns EdgeTable{ get; }
+		DataWithAnnotationColumns EdgeTable{ get; }
 
 		/// <summary>
 		/// Maps the node from the <see cref="Graph"/> to the corresponding row in the <see cref="NodeTable"/>.
 		/// </summary>
-		IDictionary<INode, int> NodeIndex{ get; }
+		Dictionary<INode, int> NodeIndex{ get; }
 
 		/// <summary>
 		/// Maps the edge from the <see cref="Graph"/> to the corresponding row in the <see cref="EdgeTable"/>.
 		/// </summary>
-		IDictionary<IEdge, int> EdgeIndex{ get; }
+		Dictionary<IEdge, int> EdgeIndex{ get; }
 
 		/// <summary>
 		/// Node-link graph
