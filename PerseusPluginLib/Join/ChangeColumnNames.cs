@@ -34,7 +34,7 @@ namespace PluginChangeColumnNames
         public int MinNumInput => 2;
         public int MaxNumInput => 2;
         public string Heading => "Basic";
-        public string Url => "";
+        public string Url => "https://maxquant.org/";
 
         public string GetInputName(int index)
         {
