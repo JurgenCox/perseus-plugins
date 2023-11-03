@@ -6,17 +6,17 @@ namespace PerseusApi.Image{
 	[Serializable]
 	public class BIDSData : ICloneable{
 		// BIDS information (see https://bids-specification.readthedocs.io/en/stable/99-appendices/04-entity-table.html)
-		public string sub{ get; set; }
-		public string ses{ get; set; }
-		public string task{ get; set; }
-		public string acq{ get; set; }
-		public string ce{ get; set; }
-		public string rec{ get; set; }
-		public string dir{ get; set; }
-		public string run{ get; set; }
-		public string mod{ get; set; }
-		public string echo{ get; set; }
-		public string recording{ get; set; }
+		public string sub { get; set; } = "";
+		public string ses { get; set; } = "";
+		public string task { get; set; } = "";
+		public string acq { get; set; } = "";
+		public string ce { get; set; } = "";
+		public string rec { get; set; } = "";
+		public string dir { get; set; } = "";
+		public string run { get; set; } = "";
+		public string mod { get; set; } = "";
+		public string echo { get; set; } = "";
+		public string recording { get; set; } = "";
 		public BIDSData(){
 		}
 		public BIDSData(string BIDS_encoded_path){

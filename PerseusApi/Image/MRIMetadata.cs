@@ -44,36 +44,36 @@ namespace PerseusApi.Image{
 		// information from JSON file (in BIDS specification, see https://bids-specification.readthedocs.io/en/stable/04-modality-specific-files/01-magnetic-resonance-imaging-data.html)
 
 		// scanner hardware information
-		public string Manufacturer{ get; set; }
-		public string ManufacturersModelName{ get; set; }
-		public string DeviceSerialNumber{ get; set; }
-		public string StationName{ get; set; }
-		public string SoftwareVersions{ get; set; }
-		public double? MagneticFieldStrength{ get; set; }
-		public string ReceiveCoilName{ get; set; }
-		public string ReceiveCoilActiveElements{ get; set; }
-		public string GradientSetType{ get; set; }
-		public string MRTransmitCoilSequence{ get; set; }
-		public string MatrixCoilMode{ get; set; }
-		public string CoilCombinationMethod{ get; set; }
+		public string Manufacturer{ get; set; } = "";
+		public string ManufacturersModelName{ get; set; } = "";
+		public string DeviceSerialNumber { get; set; } = "";
+		public string StationName { get; set; } = "";
+		public string SoftwareVersions { get; set; } = "";
+		public double? MagneticFieldStrength{ get; set; }	
+		public string ReceiveCoilName { get; set; } = "";
+		public string ReceiveCoilActiveElements { get; set; } = "";
+		public string GradientSetType { get; set; } = "";
+		public string MRTransmitCoilSequence { get; set; } = "";
+		public string MatrixCoilMode { get; set; } = "";
+		public string CoilCombinationMethod { get; set; } = "";
 
 		// sequence specifics
-		public string PulseSequenceType{ get; set; }
+		public string PulseSequenceType { get; set; } = "";
 		public string[] ScanningSequence{ get; set; }
 		public string[] SequenceVariant{ get; set; }
 		public string[] ScanOptions{ get; set; }
-		public string SequenceName{ get; set; }
-		public string PulseSequenceDetails{ get; set; }
+		public string SequenceName { get; set; } = "";
+		public string PulseSequenceDetails { get; set; } = "";
 		public bool? NonlinearGradientCorrection{ get; set; }
-		public string MRAcquisitionType{ get; set; }
+		public string MRAcquisitionType { get; set; } = "";
 		public bool? MTState{ get; set; }
 		public double? MTOffsetFrequency{ get; set; }
 		public double? MTPulseBandwidth{ get; set; }
 		public double? MTNumberOfPulses{ get; set; }
-		public string MTPulseShape{ get; set; }
+		public string MTPulseShape { get; set; } = "";
 		public double? MTPulseDuration{ get; set; }
 		public bool? SpoilingState{ get; set; }
-		public string SpoilingType{ get; set; }
+		public string SpoilingType { get; set; } = "";
 		public double? SpoilingRFPhaseIncrement{ get; set; }
 		public double? SpoilingGradientMoment{ get; set; }
 		public double? SpoilingGradientDuration{ get; set; }
@@ -81,11 +81,11 @@ namespace PerseusApi.Image{
 		// in-plane spatial encoding
 		public double[] NumberShots{ get; set; }
 		public double? ParallelReductionFactorInPlane{ get; set; }
-		public string ParallelAcquisitionTechnique{ get; set; }
+		public string ParallelAcquisitionTechnique { get; set; } = "";
 		public double? PartialFourier{ get; set; }
-		public string PartialFourierDirection{ get; set; }
-		public string PhaseEncodingDirection{ get; set; }
-		public double? EffectiveEchoSpacing{ get; set; }
+		public string PartialFourierDirection { get; set; } = "";
+		public string PhaseEncodingDirection { get; set; } = "";
+		public double? EffectiveEchoSpacing{ get; set; }	
 		public double? TotalReadoutTime{ get; set; }
 		public double? MixingTime{ get; set; }
 
@@ -93,7 +93,7 @@ namespace PerseusApi.Image{
 		public double[] EchoTime{ get; set; }
 		public double? InversionTime{ get; set; }
 		public double[] SliceTiming{ get; set; }
-		public string SliceEncodingDirection{ get; set; }
+		public string SliceEncodingDirection{ get; set; } = "";
 		public double? DwellTime{ get; set; }
 
 		// RF & Contrast
@@ -107,12 +107,12 @@ namespace PerseusApi.Image{
 		// public object AnatomicalLandmarkCoordinates { get; set; } // TODO I don't know yet what type this should be
 
 		// institution information
-		public string InstitutionName{ get; set; }
-		public string InstitutionAddress{ get; set; }
-		public string InstitutionalDepartmentName{ get; set; }
+		public string InstitutionName { get; set; } = "";
+		public string InstitutionAddress { get; set; } = "";
+		public string InstitutionalDepartmentName { get; set; } = "";
 
 		// metadata information for anatomical images
-		public string ContrastBolusIngredient{ get; set; }
+		public string ContrastBolusIngredient { get; set; } = "";
 		public double? RepetitionTimeExcitation{ get; set; }
 		public double[] RepetitionTimePreparation{ get; set; }
 
@@ -127,13 +127,13 @@ namespace PerseusApi.Image{
 		public double? DelayTime{ get; set; }
 		public double? AcquisitionDuration{ get; set; }
 		public double? DelayAfterTrigger{ get; set; }
-		public string Instructions{ get; set; }
-		public string TaskDescription{ get; set; }
-		public string CogAtlasID{ get; set; }
-		public string CogPOID{ get; set; }
+		public string Instructions { get; set; } = "";
+		public string TaskDescription { get; set; } = "";
+		public string CogAtlasID { get; set; } = "";
+		public string CogPOID { get; set; } = "";
 
 		// metadata information for dwi images
-		public string MultipartID{ get; set; }
+		public string MultipartID { get; set; } = "";
 
 		// other metadata fields were not included yet, can be found at link above. 
 		public MriMetadata(){
