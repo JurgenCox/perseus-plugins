@@ -120,7 +120,7 @@ namespace PerseusApi.Image{
 		// required
 		public double? RepetitionTime{ get; set; }
 		public double[] VolumeTiming{ get; set; }
-		public string TaskName{ get; set; }
+		public string TaskName{ get; set; } = "";
 		// recommended
 		public int? NumberOfVolumesDiscardedByScanner{ get; set; }
 		public int? NumberOfVolumesDiscardedByUser{ get; set; }
@@ -148,7 +148,10 @@ namespace PerseusApi.Image{
 			t_unit = reader.ReadSingle();
 			RigidBodyTransformation = FileUtils.Read3DDoubleArray1(reader);
 			DeformationField = FileUtils.Read5DFloatArray2(reader);
-			DefFieldHeader = new NiftiHeader(reader);
+			bool isNull = reader.ReadBoolean();
+			if (!isNull){
+				DefFieldHeader = new NiftiHeader(reader);
+			}
 			Events = FileUtils.Read2DStringArray2(reader);
 			Manufacturer = reader.ReadString();
 			ManufacturersModelName = reader.ReadString();
@@ -225,7 +228,11 @@ namespace PerseusApi.Image{
 			writer.Write(t_unit);
 			FileUtils.Write(RigidBodyTransformation, writer);
 			FileUtils.Write(DeformationField, writer);
-			DefFieldHeader.Write(writer);
+			bool isNull = DefFieldHeader == null;
+			writer.Write(isNull);
+			if (!isNull){
+				DefFieldHeader.Write(writer);
+			}
 			FileUtils.Write(Events, writer);
 			writer.Write(Manufacturer);
 			writer.Write(ManufacturersModelName);
