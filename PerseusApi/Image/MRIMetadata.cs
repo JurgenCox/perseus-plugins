@@ -143,11 +143,11 @@ namespace PerseusApi.Image{
 		}
 		public MriMetadata(BinaryReader reader){
 			NiftiHeader = new NiftiHeader(reader);
-			//BIDSData = new BIDSData(reader);
-			//xyz_unit = reader.ReadSingle();
-			//t_unit = reader.ReadSingle();
-			//RigidBodyTransformation = FileUtils.Read3DDoubleArray1(reader);
-			//DeformationField = FileUtils.Read5DFloatArray2(reader);
+			BIDSData = new BIDSData(reader);
+			xyz_unit = reader.ReadSingle();
+			t_unit = reader.ReadSingle();
+			RigidBodyTransformation = FileUtils.Read3DDoubleArray1(reader);
+			DeformationField = FileUtils.Read5DFloatArray2(reader);
 			//bool isNull = reader.ReadBoolean();
 			//if (!isNull){
 			//	DefFieldHeader = new NiftiHeader(reader);
@@ -223,11 +223,11 @@ namespace PerseusApi.Image{
 		}
 		public void Write(BinaryWriter writer){
 			NiftiHeader.Write(writer);
-			//BIDSData.Write(writer);
-			//writer.Write(xyz_unit);
-			//writer.Write(t_unit);
-			//FileUtils.Write(RigidBodyTransformation, writer);
-			//FileUtils.Write(DeformationField, writer);
+			BIDSData.Write(writer);
+			writer.Write(xyz_unit);
+			writer.Write(t_unit);
+			FileUtils.Write(RigidBodyTransformation, writer);
+			FileUtils.Write(DeformationField, writer);
 			//bool isNull = DefFieldHeader == null;
 			//writer.Write(isNull);
 			//if (!isNull){
