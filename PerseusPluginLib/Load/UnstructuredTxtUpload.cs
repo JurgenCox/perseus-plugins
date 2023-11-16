@@ -69,10 +69,10 @@ namespace PerseusPluginLib.Load{
 		}
 
 		private static void LoadSplit(IMatrixData mdata, string filename, char separator){
-			string[] colNames = TabSep.GetColumnNames(filename, 0, PerseusUtils.commentPrefix,
-				PerseusUtils.commentPrefixExceptions, null, separator);
-			string[][] cols = TabSep.GetColumns(colNames, filename, 0, PerseusUtils.commentPrefix,
-				PerseusUtils.commentPrefixExceptions, separator);
+			string[] colNames = TabSep.GetColumnNames(filename, 0, StringUtils.commentPrefix,
+				StringUtils.commentPrefixExceptions, null, separator);
+			string[][] cols = TabSep.GetColumns(colNames, filename, 0, StringUtils.commentPrefix,
+				StringUtils.commentPrefixExceptions, separator);
 			var rowCount = (cols.FirstOrDefault() ?? new string[0]).Length;
 			mdata.Values.Init(rowCount,0);
 			mdata.SetAnnotationColumns(new List<string>(colNames), new List<string>(colNames), new List<string[]>(cols), new List<string>(),

@@ -15,9 +15,6 @@ using PerseusApi.Network;
 
 namespace PerseusApi.Utils{
 	public static class PerseusUtils{
-		public static readonly HashSet<string> commentPrefix = new HashSet<string>(new[]{"#", "!"});
-		public static readonly HashSet<string> commentPrefixExceptions = new HashSet<string>(new[]{"#N/A", "#n/a"});
-
 		public static void LoadMatrixData(IDictionary<string, string[]> annotationRows, int[] mainColIndices,
 			int[] catColIndices, int[] numColIndices, int[] textColIndices, int[] multiNumColIndices,
 			ProcessInfo processInfo, IList<string> colNames, IMatrixData mdata, StreamReader reader,
@@ -309,7 +306,7 @@ namespace PerseusApi.Utils{
 		private static bool SkipCommentOrInvalid(char separator, List<Tuple<Relation[], int[], bool>> filters,
 			bool addtlMatrices, string line, out string[] w){
 			w = new string[0];
-			if (TabSep.IsCommentLine(line, commentPrefix, commentPrefixExceptions)){
+			if (TabSep.IsCommentLine(line, StringUtils.commentPrefix, StringUtils.commentPrefixExceptions)){
 				return true;
 			}
 			if (!IsValidLine(line, separator, filters, out w, addtlMatrices)){
@@ -388,7 +385,7 @@ namespace PerseusApi.Utils{
 			string line;
 			bool hasAddtl = false;
 			while ((line = reader.ReadLine()) != null){
-				if (TabSep.IsCommentLine(line, commentPrefix, commentPrefixExceptions)){
+				if (TabSep.IsCommentLine(line, StringUtils.commentPrefix, StringUtils.commentPrefixExceptions)){
 					continue;
 				}
 				string[] w = SplitLine(line, separator);
@@ -764,7 +761,7 @@ namespace PerseusApi.Utils{
 			int count = 0;
 			string line;
 			while ((line = reader.ReadLine()) != null){
-				if (TabSep.IsCommentLine(line, commentPrefix, commentPrefixExceptions)){
+				if (TabSep.IsCommentLine(line, StringUtils.commentPrefix, StringUtils.commentPrefixExceptions)){
 					continue;
 				}
 				if (IsValidLine(line, separator, filters, addtlMatrices)){
@@ -1213,7 +1210,7 @@ namespace PerseusApi.Utils{
 			out int nrows, out bool hasAdditionalMatrices){
 			annotationRows = new Dictionary<string, string[]>();
 			using (StreamReader reader = getReader()){
-				colNames = TabSep.GetColumnNames(reader, 0, commentPrefix, commentPrefixExceptions, annotationRows,
+				colNames = TabSep.GetColumnNames(reader, 0, StringUtils.commentPrefix, StringUtils.commentPrefixExceptions, annotationRows,
 					separator);
 			}
 			string[] typeRow = annotationRows["Type"];
@@ -1283,7 +1280,7 @@ namespace PerseusApi.Utils{
 			string[] colNames;
 			Dictionary<string, string[]> annotationRows = new Dictionary<string, string[]>();
 			try{
-				colNames = TabSep.GetColumnNames(filename, commentPrefix, commentPrefixExceptions, annotationRows,
+				colNames = TabSep.GetColumnNames(filename, StringUtils.commentPrefix, StringUtils.commentPrefixExceptions, annotationRows,
 					separator);
 			} catch (Exception){
 				processInfo.ErrString = "Could not open the file '" + filename +
